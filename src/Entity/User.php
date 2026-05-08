@@ -25,6 +25,9 @@ class User implements UserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    #[ORM\Column(length: 255)]
+    private ?string $discord_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +73,18 @@ class User implements UserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getDiscordId(): ?string
+    {
+        return $this->discord_id;
+    }
+
+    public function setDiscordId(string $discord_id): static
+    {
+        $this->discord_id = $discord_id;
 
         return $this;
     }
