@@ -23,13 +23,13 @@
         <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
             <div class="lg:w-4xl xl:w-7xl m-auto flex flex-row justify-between">
                 <nav class="flex gap-2 flex-wrap items-center">
-                    <a href="#">
+                    <a href="{{ path('app_index') }}">
                         <img class="h-16" src="{{ asset('build/images/whiteknuckle_02.png') }}" alt="White Knuckle Logo">
                     </a>
-                    <a href="#">
+                    <a href="https://store.steampowered.com/app/3195790/White_Knuckle/">
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Steam</button>
                     </a>
-                    <a href="#">
+                    <a href="https://discord.gg/whiteknuckle">
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
                             <img class="h-6" src="{{ asset('build/images/discord-logo-white.svg') }}" alt="White Knuckle Discord">
                         </button>
@@ -38,11 +38,19 @@
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Archive</button>
                     </a>
                 </nav>
-                <div class="flex gap-2 flex-wrap items-center">
-                    <a href="#">
-                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log In</button>
-                    </a>
-                </div>
+                {% if is_granted('IS_AUTHENTICATED') %}
+                    <div class="flex gap-2 flex-wrap items-center">
+                        <a href="{{ path('app_logout') }}">
+                            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log Out</button>
+                        </a>
+                    </div>
+                {% elseif not is_granted('IS_AUTHENTICATED') %}
+                    <div class="flex gap-2 flex-wrap items-center">
+                        <a href="{{ path('auth_discord_start') }}">
+                            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log In</button>
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
         <div class="mt-17 lg:w-4xl xl:w-7xl m-auto">
