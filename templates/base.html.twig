@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
 
         {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
@@ -18,7 +19,156 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white">
+        <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
+            <div class="lg:w-4xl xl:w-7xl m-auto flex flex-row justify-between">
+                <nav class="flex gap-2 flex-wrap items-center">
+                    <a href="#">
+                        <img class="h-16" src="{{ asset('build/images/whiteknuckle_02.png') }}" alt="White Knuckle Logo">
+                    </a>
+                    <a href="#">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Steam</button>
+                    </a>
+                    <a href="#">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
+                            <img class="h-6" src="{{ asset('build/images/discord-logo-white.svg') }}" alt="White Knuckle Discord">
+                        </button>
+                    </a>
+                    <a href="#">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Archive</button>
+                    </a>
+                </nav>
+                <div class="flex gap-2 flex-wrap items-center">
+                    <a href="#">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log In</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-17 lg:w-4xl xl:w-7xl m-auto">
+            <div class="flex flex-row flex-wrap w-full gap-4">
+                <main class="z-3 rounded-lg  h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] flex lg:flex-col lg:flex-2 w-full">
+                    {% block body %}{% endblock %}
+                </main>
+                <div class="flex flex-col flex-1 gap-4">
+                    <div class="rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] z-20">
+                        <div class="pt-2 pr-4 pb-2 pl-4">
+                            <h3 class="uppercase text-xl font-bold">All Climb Stats</h3>
+                            <div class="flex flex-row flex-wrap w-full">
+                                <div class="group relative inline-block flex-1">
+                                    <div>Climbs</div>
+                                    <div>1139</div>
+                                    <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                        Total Climb Time: 6:13:21.550<br>
+                                        Total Climb Height: 18,075,233.46 m<br>
+                                        Total / Recent Climbs: 1,139 / 120
+                                    </div>
+                                </div>
+                                <div class="group relative inline-block flex-1">
+                                    <div>Climbers</div>
+                                    <div>265</div>
+                                    <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                        Climbers (Total / Active): 265 / 63
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] z-0">
+                        <div class="pt-2 pr-4 pb-2 pl-4">
+                            <h3 class="uppercase text-xl font-bold">Recent Climbs</h3>
+                            <div class="hover:bg-gray-600 mt-2">
+                                <a href="#">
+                                    <div>Category</div>
+                                    <div class="flex flex-row flex-wrap w-full">
+                                        <div class="flex flex-col flex-1">
+                                            <div>Status</div>
+                                            <div>Sort By</div>
+                                        </div>
+                                        <div class="flex flex-col flex-1">
+                                            <div>Climber</div>
+                                            <div class="group relative inline-block">
+                                                <div>
+                                                    1 Week Ago
+                                                </div>
+                                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                                    2026-04-26
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="hover:bg-gray-600 mt-2">
+                                <a href="#">
+                                    <div>Category</div>
+                                    <div class="flex flex-row flex-wrap w-full">
+                                        <div class="flex flex-col flex-1">
+                                            <div>Status</div>
+                                            <div>Sort By</div>
+                                        </div>
+                                        <div class="flex flex-col flex-1">
+                                            <div>Climber</div>
+                                            <div class="group relative inline-block">
+                                                <div>
+                                                    1 Week Ago
+                                                </div>
+                                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                                    2026-04-26
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="hover:bg-gray-600 mt-2">
+                                <a href="#">
+                                    <div>Category</div>
+                                    <div class="flex flex-row flex-wrap w-full">
+                                        <div class="flex flex-col flex-1">
+                                            <div>Status</div>
+                                            <div>Sort By</div>
+                                        </div>
+                                        <div class="flex flex-col flex-1">
+                                            <div>Climber</div>
+                                            <div class="group relative inline-block">
+                                                <div>
+                                                    1 Week Ago
+                                                </div>
+                                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                                    2026-04-26
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="hover:bg-gray-600 mt-2">
+                                <a href="#">
+                                    <div>Category</div>
+                                    <div class="flex flex-row flex-wrap w-full">
+                                        <div class="flex flex-col flex-1">
+                                            <div>Status</div>
+                                            <div>Sort By</div>
+                                        </div>
+                                        <div class="flex flex-col flex-1">
+                                            <div>Climber</div>
+                                            <div class="group relative inline-block">
+                                                <div>
+                                                    1 Week Ago
+                                                </div>
+                                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                                    2026-04-26
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
