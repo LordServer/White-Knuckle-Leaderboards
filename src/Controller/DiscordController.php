@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,5 +15,11 @@ final class DiscordController
     #[Route('/login', name: 'login')]
     public function login(Request $request, ClientRegistry $clientRegistry)
     {
+    }
+
+    #[Route('/start', name: 'start')]
+    public function start(ClientRegistry $clientRegistry): RedirectResponse
+    {
+        return $clientRegistry->getClient('discord')->redirect(['identify']);
     }
 }
