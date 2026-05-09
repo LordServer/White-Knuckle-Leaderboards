@@ -34,14 +34,13 @@ class ExtendedDiscordResourceOwner extends DiscordResourceOwner
         return $this->getValueByKey($this->response, 'roles');
     }
 
-    public function getAvatarHash()
+    public function getAvatarHash(): string
     {
-        if (null !== $this->getValueByKey($this->response, 'avatar'))
-        {
-            return $this->getValueByKey($this->response, 'avatar');
-        } else
-        {
-            return $this->getValueByKey($this->response, 'user.avatar');
+        if (null !== $this->getValueByKey($this->response, 'avatar')) {
+            $avatarPath = 'guilds/' . $_ENV['DISCORD_GUILD_ID'] . '/users/' . $this->getValueByKey($this->response, 'user.id') . '/avatars/' . $this->getValueByKey($this->response, 'avatar');
+        } else {
+            $avatarPath = 'avatars/'.$this->getValueByKey($this->response, 'user.id').'/'.$this->getValueByKey($this->response, 'user.avatar');
         }
+        return $avatarPath;
     }
 }
