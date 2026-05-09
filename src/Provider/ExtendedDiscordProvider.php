@@ -8,23 +8,6 @@ use Wohali\OAuth2\Client\Provider\Discord;
 
 class ExtendedDiscordProvider extends Discord
 {
-//    /**
-//     * Get the default scopes used by this provider.
-//     *
-//     * This should not be a complete list of all scopes, but the minimum
-//     * required for the provider user interface!
-//     *
-//     * @return array
-//     */
-//    protected function getDefaultScopes(): array
-//    {
-//        return [
-//            'identify',
-//            'guilds',
-//            'guilds.members.read'
-//        ];
-//    }
-
     /**
      * Get provider URL to retrieve user details
      *
