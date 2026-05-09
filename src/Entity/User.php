@@ -28,6 +28,15 @@ class User implements UserInterface
     #[ORM\Column(length: 255)]
     private ?string $discord_id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $avatar = null;
+
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTimeImmutable $created = null;
+
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTime $modified = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +86,28 @@ class User implements UserInterface
         return $this;
     }
 
+    public function addRole(string $role): static
+    {
+        $role = strtoupper($role);
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): static
+    {
+        $role = strtoupper($role);
+        $key = array_search($role, $this->roles, true);
+        if ($key !== false) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+
+        return $this;
+    }
+
     public function getDiscordId(): ?string
     {
         return $this->discord_id;
@@ -85,6 +116,42 @@ class User implements UserInterface
     public function setDiscordId(string $discord_id): static
     {
         $this->discord_id = $discord_id;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeImmutable
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeImmutable $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getModified(): ?\DateTime
+    {
+        return $this->modified;
+    }
+
+    public function setModified(\DateTime $modified): static
+    {
+        $this->modified = $modified;
 
         return $this;
     }
