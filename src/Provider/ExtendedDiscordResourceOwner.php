@@ -18,7 +18,7 @@ class ExtendedDiscordResourceOwner extends DiscordResourceOwner
         return $this->getValueByKey($this->response, 'user.id');
     }
 
-    public function getGlobalName()
+    public function getGlobalName(): string
     {
         if (null !== $this->getValueByKey($this->response, 'nick'))
         {
@@ -29,7 +29,7 @@ class ExtendedDiscordResourceOwner extends DiscordResourceOwner
         }
     }
 
-    public function getDiscordRoles()
+    public function getDiscordRoles(): array
     {
         return $this->getValueByKey($this->response, 'roles');
     }
