@@ -20,6 +20,6 @@ final class DiscordController
     #[Route('/start', name: 'start')]
     public function start(ClientRegistry $clientRegistry): RedirectResponse
     {
-        return $clientRegistry->getClient('discord')->redirect(['identify']);
+        return $clientRegistry->getClient('discord')->redirect(['identify', 'guilds', 'guilds.members.read']);
     }
 }

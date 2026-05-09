@@ -14,13 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
+use App\Provider\ExtendedDiscordResourceOwner;
 
 /**
  * @see https://symfony.com/doc/current/security/custom_authenticator.html
@@ -58,17 +55,102 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var DiscordResourceOwner $discordUser */
+                /** @var ExtendedDiscordResourceOwner $discordUser */
                 $discordUser = $client->fetchUserFromToken($accessToken);
+//                dd($discordUser);
 
                 $user = $this->userRepository->findOneBy(['discord_id' => $discordUser->getId()]);
+                $discord_roles = $discordUser->getDiscordRoles();
 
                 if (null === $user) {
                     $user = new User();
-                    $user->setUsername($discordUser->getUsername());
+                    $user->setUsername($discordUser->getGlobalName());
                     $user->setDiscordId($discordUser->getId());
+                    $user->setAvatar($discordUser->getAvatarHash());
+
+                    // Setup initial Roles
+                    if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
+                        $user->addRole('ROLE_DISCORD_ADMIN');
+                    } else {
+                        $user->removeRole('ROLE_DISCORD_ADMIN');
+                    }
+                    if (in_array($_ENV['DISCORD_MODERATOR_ROLE_ID'], $discord_roles)) {
+                        $user->addRole('ROLE_DISCORD_MODERATOR');
+                    } else {
+                        $user->removeRole('ROLE_DISCORD_MODERATOR');
+                    }
+                    if (in_array($_ENV['DISCORD_AUTHORIZER_ROLE_ID'], $discord_roles)) {
+                        $user->addRole('ROLE_DISCORD_AUTHORIZER');
+                    } else {
+                        $user->removeRole('ROLE_DISCORD_AUTHORIZER');
+                    }
+
+                    // DateTime Tracking
+                    $user->setCreated(new \DateTimeImmutable());
+                    $user->setModified(new \DateTime());
 
                     $this->entityManager->persist($user);
+                } else {
+                    if ($discordUser->getAvatarHash() !== $user->getAvatar()) {
+                        $user->setAvatar($discordUser->getAvatarHash());
+                        $user->setModified(new \DateTime());
+
+                        $this->entityManager->persist($user);
+                    }
+                    if ($discordUser->getGlobalName() !== $user->getUsername()) {
+                        $user->setUsername($discordUser->getGlobalName());
+                        $user->setModified(new \DateTime());
+
+                        $this->entityManager->persist($user);
+                    }
+
+                    if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
+                        if (!in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
+                            $user->addRole('ROLE_DISCORD_ADMIN');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    } else {
+                        if (in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
+                            $user->removeRole('ROLE_DISCORD_ADMIN');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    }
+
+                    if (in_array($_ENV['DISCORD_MODERATOR_ROLE_ID'], $discord_roles)) {
+                        if (!in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
+                            $user->addRole('ROLE_DISCORD_MODERATOR');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    } else {
+                        if (in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
+                            $user->removeRole('ROLE_DISCORD_MODERATOR');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    }
+
+                    if (in_array($_ENV['DISCORD_AUTHORIZER_ROLE_ID'], $discord_roles)) {
+                        if (!in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
+                            $user->addRole('ROLE_DISCORD_AUTHORIZER');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    } else {
+                        if (in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
+                            $user->removeRole('ROLE_DISCORD_AUTHORIZER');
+                            $user->setModified(new \DateTime());
+
+                            $this->entityManager->persist($user);
+                        }
+                    }
                 }
 
                 $this->entityManager->flush();
