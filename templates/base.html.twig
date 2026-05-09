@@ -40,9 +40,35 @@
                 </nav>
                 {% if is_granted('IS_AUTHENTICATED') %}
                     <div class="flex gap-2 flex-wrap items-center">
-                        <a href="{{ path('app_logout') }}">
-                            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log Out</button>
-                        </a>
+                        <div>{{ user.username }}</div>
+                        <el-dropdown class="relative ml-3">
+                            <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900">
+                                <span class="absolute -inset-1.5"></span>
+                                <span class="sr-only">Open user menu</span>
+                                <img class="h-12 rounded-full outline -outline-offset-1 outline-white/10" src="https://cdn.discordapp.com/{{ user.avatar }}" alt="{{ user.username }}">
+                            </button>
+
+                            <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-900 text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                                {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                                    <div class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">ADMIN</div>
+                                    <hr class="border-red-900">
+                                {% endif %}
+                                {% if is_granted('ROLE_DISCORD_MODERATOR') %}
+                                    <div class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">MODERATOR</div>
+                                    <hr class="border-red-900">
+                                {% endif %}
+                                {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
+                                    <a href="#" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
+                                        Approvals
+                                        <span class="ml-auto w-9 min-w-max rounded-full bg-gray-900 px-2.5 py-0.5 text-center text-3/[5] font-medium whitespace-nowrap text-gray-100 outline-solid outline -outline-offset-1 outline-red-900">99+</span>
+                                    </a>
+                                    <hr class="border-red-900">
+                                {% endif %}
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
+                                <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Log out</a>
+                            </el-menu>
+                        </el-dropdown>
                     </div>
                 {% elseif not is_granted('IS_AUTHENTICATED') %}
                     <div class="flex gap-2 flex-wrap items-center">
