@@ -3,14 +3,11 @@
 {% block title %}Hello RankMethodController!{% endblock %}
 
 {% block body %}
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
     <ul>
-        <li>Your controller at <code>/var/www/wklb/src/Controller/RankMethodController.php</code></li>
-        <li>Your template at <code>/var/www/wklb/templates/rank_method/index.html.twig</code></li>
+        {% for rankMethod in rankMethods %}
+            <li>
+                <a href="{{ path('rank_method_read', {'rankMethodId': rankMethod.id|escape }) }}">{{ rankMethod.name|escape }}</a>
+            </li>
+        {% endfor %}
     </ul>
-</div>
 {% endblock %}
