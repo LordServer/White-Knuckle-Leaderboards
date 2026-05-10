@@ -100,7 +100,7 @@ class User implements UserInterface
     {
         $role = strtoupper($role);
         $key = array_search($role, $this->roles, true);
-        if ($key !== false) {
+        if (false !== $key) {
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
         }

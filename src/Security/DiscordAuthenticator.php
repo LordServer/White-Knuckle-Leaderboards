@@ -29,8 +29,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
         private readonly UserRepository $userRepository,
-    )
-    {
+    ) {
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
@@ -45,7 +44,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
      */
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'auth_discord_login';
+        return 'auth_discord_login' === $request->attributes->get('_route');
     }
 
     public function authenticate(Request $request): SelfValidatingPassport
@@ -57,7 +56,6 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
                 /** @var ExtendedDiscordResourceOwner $discordUser */
                 $discordUser = $client->fetchUserFromToken($accessToken);
-//                dd($discordUser);
 
                 $user = $this->userRepository->findOneBy(['discord_id' => $discordUser->getId()]);
                 $discord_roles = $discordUser->getDiscordRoles();

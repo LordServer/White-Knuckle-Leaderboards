@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
-#[Route('/auth/discord', name:'auth_discord_')]
+#[Route('/auth/discord', name: 'auth_discord_')]
 final class DiscordController
 {
     #[Route('/login', name: 'login')]
