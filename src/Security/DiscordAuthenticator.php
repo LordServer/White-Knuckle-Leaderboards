@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Provider\ExtendedDiscordResourceOwner;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -17,13 +18,15 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use App\Provider\ExtendedDiscordResourceOwner;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * @see https://symfony.com/doc/current/security/custom_authenticator.html
  */
 final class DiscordAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
+    use TargetPathTrait;
+
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
         private readonly EntityManagerInterface $entityManager,
@@ -160,6 +163,10 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+            return new RedirectResponse($targetPath);
+        }
+
         return new RedirectResponse($this->router->generate('app_index'));
     }
 
