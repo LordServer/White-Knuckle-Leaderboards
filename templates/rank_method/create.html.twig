@@ -3,5 +3,27 @@
 {% block title %}Hello RankMethodController!{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <div class="text-xs text-red-900">
+            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
+            <a href="{{ path('rank_method_index') }}" class="hover:text-red-400 cursor-pointer">Rank Methods</a> /
+            <a href="{{ path('rank_method_create') }}" class="hover:text-red-400 cursor-pointer">New</a>
+        </div>
+        <div class="flex justify-between">
+            <h1 class="text-4xl font-bold mt-1">New Rank Method</h1>
+        </div>
+        <div>
+            {{ form_start(form) }}
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.name) }}</div>
+            {{ form_widget(form.name, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+            <div class="text-right pt-2">
+                <a href="{{ path('rank_method_index') }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
+                </a>
+                <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Create</button>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
