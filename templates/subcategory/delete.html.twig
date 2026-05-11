@@ -3,14 +3,16 @@
 {% block title %}Hello SubcategoryController!{% endblock %}
 
 {% block body %}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <div class="text-xs text-red-900">
+            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
+        </div>
+        <h1>Hello {{ controller_name }}! ✅</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/wklb/src/Controller/SubcategoryController.php</code></li>
-        <li>Your template at <code>/var/www/wklb/templates/subcategory/delete.html.twig</code></li>
-    </ul>
-</div>
+        This friendly message is coming from:
+        <ul>
+            <li>Your controller at <code>/var/www/wklb/src/Controller/SubcategoryController.php</code></li>
+            <li>Your template at <code>/var/www/wklb/templates/subcategory/delete.html.twig</code></li>
+        </ul>
+    </div>
 {% endblock %}
