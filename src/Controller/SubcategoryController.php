@@ -72,15 +72,35 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/update', name: 'update')]
-    public function update(): Response
+    #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
+    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+
+        if (!$subcategory) {
+            throw $this->createNotFoundException('Subcategory not found');
+        }
+
+        $form = $this->createForm(SubcategoryType::class, $subcategory);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $subcategory = $form->getData();
+            $subcategory->setModified(new \DateTime());
+
+            $entityManager->persist($subcategory);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
+        }
 
         return $this->render('subcategory/update.html.twig', [
             'controller_name' => 'SubcategoryController',
             'user' => $user,
+            'form' => $form,
+            'subcategory' => $subcategory,
         ]);
     }
 
