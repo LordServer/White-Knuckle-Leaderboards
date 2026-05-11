@@ -3,11 +3,46 @@
 {% block title %}Hello RankMethodController!{% endblock %}
 
 {% block body %}
-    <ul>
-        {% for rankMethod in rankMethods %}
-            <li>
-                <a href="{{ path('rank_method_read', {'rankMethodId': rankMethod.id|escape }) }}">{{ rankMethod.name|escape }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <div class="text-xs text-red-900">
+            <a href="" class="hover:text-red-400 cursor-pointer">Home</a> /
+            <a href="#" class="hover:text-red-400 cursor-pointer">Rank Methods</a>
+        </div>
+        <div class="flex justify-between">
+            <h1 class="text-4xl font-bold mt-1">Rank Methods</h1>
+            {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                <a href="{{ path('rank_method_create') }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">New</button>
+                </a>
+            {% endif %}
+        </div>
+        <div class="mt-2">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="text-left">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rankMethod in rankMethods %}
+                        <tr class="hover:bg-gray-600">
+                            <td class="text-center">{{ rankMethod.id|escape }}</td>
+                            <td>{{ rankMethod.name|escape }}</td>
+                            {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                                <td class="text-right">
+                                    <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
+                                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
+                                    </a>
+                                    <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
+                                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
