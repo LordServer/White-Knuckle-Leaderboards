@@ -17,7 +17,6 @@ class RankMethodType extends AbstractType
             ->add('name', TextType::class, [
                 'required' => true,
             ])
-            ->add('submit', SubmitType::class, [])
         ;
     }
 
