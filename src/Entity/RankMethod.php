@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RankMethodRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RankMethodRepository::class)]
@@ -21,6 +22,9 @@ class RankMethod
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTime $modified = null;
+
+    #[ORM\Column(type: Types::BINARY)]
+    private ?string $bin = null;
 
     public function getId(): ?int
     {
@@ -59,6 +63,18 @@ class RankMethod
     public function setModified(\DateTime $modified): static
     {
         $this->modified = $modified;
+
+        return $this;
+    }
+
+    public function getBin(): ?string
+    {
+        return $this->bin;
+    }
+
+    public function setBin(string $bin): static
+    {
+        $this->bin = $bin;
 
         return $this;
     }
