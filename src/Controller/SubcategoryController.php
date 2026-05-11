@@ -104,15 +104,32 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/delete', name: 'delete')]
-    public function delete(): Response
+    #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
+    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+
+        if (!$subcategory) {
+            throw $this->createNotFoundException('Subcategory not found');
+        }
+
+        $form = $this->createForm(SubcategoryType::class, $subcategory);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->remove($subcategory);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('subcategory_index');
+        }
 
         return $this->render('subcategory/delete.html.twig', [
             'controller_name' => 'SubcategoryController',
             'user' => $user,
+            'form' => $form,
+            'subcategory' => $subcategory,
         ]);
     }
 }
