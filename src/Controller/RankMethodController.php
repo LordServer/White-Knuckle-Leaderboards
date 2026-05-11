@@ -105,19 +105,31 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/delete/{rankMethodId<\d+>}', name: 'delete')]
-    public function delete(int $rankMethodId, RankMethodRepository $rankMethodRepository, EntityManagerInterface $entityManager): Response
+    public function delete(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-
+        $user = $this->getUser();
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
         }
 
-        $entityManager->remove($rankMethod);
-        $entityManager->flush();
+        $form = $this->createForm(RankMethodType::class, $rankMethod);
 
-        return $this->redirectToRoute('rank_method_index');
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $entityManager->remove($rankMethod);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('rank_method_index');
+        }
+
+        return $this->render('rank_method/delete.html.twig', [
+            'controller_name' => 'RankMethodController',
+            'user' => $user,
+            'form' => $form,
+            'rankMethod' => $rankMethod,
+        ]);
     }
 }
