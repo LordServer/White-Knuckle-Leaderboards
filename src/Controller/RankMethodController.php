@@ -59,16 +59,16 @@ final class RankMethodController extends AbstractController
     public function read(int $rankMethodId, RankMethodRepository $rankMethodRepository): Response
     {
         $user = $this->getUser();
-        $rank_method = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
+        $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
-        if (!$rank_method) {
+        if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
         }
 
         return $this->render('rank_method/read.html.twig', [
             'controller_name' => 'RankMethodController',
             'user' => $user,
-            'rank_method' => $rank_method,
+            'rankMethod' => $rankMethod,
         ]);
     }
 
