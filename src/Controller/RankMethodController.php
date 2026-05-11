@@ -77,7 +77,7 @@ final class RankMethodController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
-        $rankMethod = $rankMethodRepository->findOneBy(['rankMethodId' => $rankMethodId]);
+        $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
@@ -93,7 +93,7 @@ final class RankMethodController extends AbstractController
             $entityManager->persist($rankMethod);
             $entityManager->flush();
 
-            return $this->redirectToRoute('rank_method_read', ['id' => $rankMethod->getId()]);
+            return $this->redirectToRoute('rank_method_read', ['rankMethodId' => $rankMethod->getId()]);
         }
 
         return $this->render('rank_method/update.html.twig', [
