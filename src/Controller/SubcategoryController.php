@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Subcategory;
+use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -24,14 +28,30 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $subcategory = new Subcategory();
+
+        $form = $this->createForm(SubcategoryType::class, $subcategory);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $subcategory = $form->getData();
+            $subcategory->setCreated(new \DateTimeImmutable());
+            $subcategory->setModified(new \DateTime());
+
+            $entityManager->persist($subcategory);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
+        }
 
         return $this->render('subcategory/create.html.twig', [
             'controller_name' => 'SubcategoryController',
             'user' => $user,
+            'form' => $form,
         ]);
     }
 
