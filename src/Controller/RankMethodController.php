@@ -100,6 +100,7 @@ final class RankMethodController extends AbstractController
             'controller_name' => 'RankMethodController',
             'user' => $user,
             'form' => $form,
+            'rankMethod' => $rankMethod,
         ]);
     }
 
