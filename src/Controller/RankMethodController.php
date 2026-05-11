@@ -118,7 +118,7 @@ final class RankMethodController extends AbstractController
         $form = $this->createForm(RankMethodType::class, $rankMethod);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($rankMethod);
             $entityManager->flush();
 
