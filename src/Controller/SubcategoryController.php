@@ -55,14 +55,20 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/read', name: 'read')]
-    public function read(): Response
+    #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
+    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository): Response
     {
         $user = $this->getUser();
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+
+        if (!$subcategory) {
+            throw $this->createNotFoundException('Subcategory not found');
+        }
 
         return $this->render('subcategory/read.html.twig', [
             'controller_name' => 'SubcategoryController',
             'user' => $user,
+            'subcategory' => $subcategory,
         ]);
     }
 
