@@ -12,14 +12,15 @@
     <div class="flex justify-between">
         <h1 class="text-4xl font-bold mt-1">{{ rankMethod.name|escape }}</h1>
     </div>
-    <div class="text-right pt-2">
-        <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
-            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
-        </a>
-        <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
-            <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
-        </a>
-    </div>
-
+    {% if is_granted('ROLE_DISCORD_ADMIN') %}
+        <div class="text-right pt-2">
+            <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
+                <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
+            </a>
+            <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
+                <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
+            </a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
