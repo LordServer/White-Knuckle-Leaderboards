@@ -23,7 +23,7 @@ class Category
     private ?string $rules = null;
 
     #[ORM\Column]
-    private ?bool $isArchived = null;
+    private ?bool $is_archived = null;
 
     /**
      * @var Collection<int, Subcategory>
@@ -31,22 +31,19 @@ class Category
     #[ORM\ManyToMany(targetEntity: Subcategory::class, inversedBy: 'categories')]
     private Collection $subcategory;
 
-    /**
-     * @var Collection<int, RankMethod>
-     */
-    #[ORM\ManyToMany(targetEntity: RankMethod::class, inversedBy: 'categories')]
-    private Collection $rankMethod;
+    #[ORM\ManyToOne(inversedBy: 'categories')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?RankMethod $rank_method = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column]
-    private ?\DateTime $updatedAt = null;
+    private ?\DateTime $updated_at = null;
 
     public function __construct()
     {
         $this->subcategory = new ArrayCollection();
-        $this->rankMethod = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,12 +77,12 @@ class Category
 
     public function isArchived(): ?bool
     {
-        return $this->isArchived;
+        return $this->is_archived;
     }
 
-    public function setIsArchived(bool $isArchived): static
+    public function setIsArchived(bool $is_archived): static
     {
-        $this->isArchived = $isArchived;
+        $this->is_archived = $is_archived;
 
         return $this;
     }
@@ -114,50 +111,38 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection<int, RankMethod>
-     */
-    public function getRankMethod(): Collection
+    public function getRankMethod(): ?RankMethod
     {
-        return $this->rankMethod;
+        return $this->rank_method;
     }
 
-    public function addRankMethod(RankMethod $rankMethod): static
+    public function setRankMethod(?RankMethod $rank_method): static
     {
-        if (!$this->rankMethod->contains($rankMethod)) {
-            $this->rankMethod->add($rankMethod);
-        }
-
-        return $this;
-    }
-
-    public function removeRankMethod(RankMethod $rankMethod): static
-    {
-        $this->rankMethod->removeElement($rankMethod);
+        $this->rank_method = $rank_method;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTime
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): static
+    public function setUpdatedAt(\DateTime $updated_at): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->updated_at = $updated_at;
 
         return $this;
     }

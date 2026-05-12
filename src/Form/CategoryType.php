@@ -29,7 +29,6 @@ class CategoryType extends AbstractType
             ->add('rankMethod', EntityType::class, [
                 'class' => RankMethod::class,
                 'choice_label' => 'name',
-                'multiple' => true,
             ])
         ;
     }

@@ -35,7 +35,7 @@
                                     {{ subcategory.name|escape }}{% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
-                            <td>{% for rankMethod in category.rankMethod %}{{ rankMethod.name|escape }}{% endfor %}</td>
+                            <td>{{ category.rankMethod.name|escape }}</td>
                             <td>{% if category.isArchived is true %}Yes{% endif %}</td>
                             {% if is_granted('ROLE_DISCORD_ADMIN') %}
                                 <td>
