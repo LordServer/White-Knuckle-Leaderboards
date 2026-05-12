@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,22 +22,32 @@ class Category
     #[ORM\Column(type: Types::TEXT)]
     private ?string $rules = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Subcategory $subcategory = null;
+    #[ORM\Column]
+    private ?bool $isArchived = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?RankMethod $rank_method = null;
+    /**
+     * @var Collection<int, Subcategory>
+     */
+    #[ORM\ManyToMany(targetEntity: Subcategory::class, inversedBy: 'categories')]
+    private Collection $subcategory;
+
+    /**
+     * @var Collection<int, RankMethod>
+     */
+    #[ORM\ManyToMany(targetEntity: RankMethod::class, inversedBy: 'categories')]
+    private Collection $rankMethod;
 
     #[ORM\Column]
-    private ?bool $is_archived = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created = null;
+    private ?\DateTime $updatedAt = null;
 
-    #[ORM\Column]
-    private ?\DateTime $modified = null;
+    public function __construct()
+    {
+        $this->subcategory = new ArrayCollection();
+        $this->rankMethod = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -66,62 +78,86 @@ class Category
         return $this;
     }
 
-    public function getSubcategory(): ?Subcategory
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): static
+    {
+        $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subcategory>
+     */
+    public function getSubcategory(): Collection
     {
         return $this->subcategory;
     }
 
-    public function setSubcategory(?Subcategory $subcategory): static
+    public function addSubcategory(Subcategory $subcategory): static
     {
-        $this->subcategory = $subcategory;
+        if (!$this->subcategory->contains($subcategory)) {
+            $this->subcategory->add($subcategory);
+        }
 
         return $this;
     }
 
-    public function getRankMethod(): ?RankMethod
+    public function removeSubcategory(Subcategory $subcategory): static
     {
-        return $this->rank_method;
-    }
-
-    public function setRankMethod(?RankMethod $rank_method): static
-    {
-        $this->rank_method = $rank_method;
+        $this->subcategory->removeElement($subcategory);
 
         return $this;
     }
 
-    public function isArchived(): ?bool
+    /**
+     * @return Collection<int, RankMethod>
+     */
+    public function getRankMethod(): Collection
     {
-        return $this->is_archived;
+        return $this->rankMethod;
     }
 
-    public function setIsArchived(bool $is_archived): static
+    public function addRankMethod(RankMethod $rankMethod): static
     {
-        $this->is_archived = $is_archived;
+        if (!$this->rankMethod->contains($rankMethod)) {
+            $this->rankMethod->add($rankMethod);
+        }
 
         return $this;
     }
 
-    public function getCreated(): ?\DateTimeImmutable
+    public function removeRankMethod(RankMethod $rankMethod): static
     {
-        return $this->created;
-    }
-
-    public function setCreated(\DateTimeImmutable $created): static
-    {
-        $this->created = $created;
+        $this->rankMethod->removeElement($rankMethod);
 
         return $this;
     }
 
-    public function getModified(): ?\DateTime
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->modified;
+        return $this->createdAt;
     }
 
-    public function setModified(\DateTime $modified): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->modified = $modified;
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

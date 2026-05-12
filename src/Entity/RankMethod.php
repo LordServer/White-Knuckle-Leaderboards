@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\RankMethodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RankMethodRepository::class)]
@@ -19,19 +18,16 @@ class RankMethod
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $created = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTime $modified = null;
-
-    #[ORM\Column(type: Types::BINARY)]
-    private ?string $bin = null;
+    #[ORM\Column]
+    private ?\DateTime $updatedAt = null;
 
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'rank_method')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'rankMethod')]
     private Collection $categories;
 
     public function __construct()
@@ -56,38 +52,26 @@ class RankMethod
         return $this;
     }
 
-    public function getCreated(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
-    public function setCreated(\DateTimeImmutable $created): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created = $created;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getModified(): ?\DateTime
+    public function getUpdatedAt(): ?\DateTime
     {
-        return $this->modified;
+        return $this->updatedAt;
     }
 
-    public function setModified(\DateTime $modified): static
+    public function setUpdatedAt(\DateTime $updatedAt): static
     {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getBin(): ?string
-    {
-        return $this->bin;
-    }
-
-    public function setBin(string $bin): static
-    {
-        $this->bin = $bin;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -104,7 +88,7 @@ class RankMethod
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            $category->setRankMethod($this);
+            $category->addRankMethod($this);
         }
 
         return $this;
@@ -113,10 +97,7 @@ class RankMethod
     public function removeCategory(Category $category): static
     {
         if ($this->categories->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getRankMethod() === $this) {
-                $category->setRankMethod(null);
-            }
+            $category->removeRankMethod($this);
         }
 
         return $this;

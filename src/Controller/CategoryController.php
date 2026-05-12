@@ -20,24 +20,10 @@ final class CategoryController extends AbstractController
         $user = $this->getUser();
         $categories = $categoryRepository->findAll();
 
-        $number = 15;
-        $setBits = [];
-        $position = 0;
-
-        while ($number > 0) {
-            if ($number & 1) {
-                $setBits[] = pow(2, $position);
-            }
-
-            $number >>= 1;
-            ++$position;
-        }
-
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
             'categories' => $categories,
-            'setBits' => $setBits,
         ]);
     }
 
@@ -53,8 +39,8 @@ final class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
-            $category->setCreated(new \DateTimeImmutable());
-            $category->setModified(new \DateTime());
+            $category->setCreatedAt(new \DateTimeImmutable());
+            $category->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($category);
             $entityManager->flush();
@@ -69,7 +55,7 @@ final class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/read/{categoryId<\d>}', name: 'read')]
+    #[Route('/read/{categoryId<\d+>}', name: 'read')]
     public function read(int $categoryId, CategoryRepository $categoryRepository): Response
     {
         $user = $this->getUser();
@@ -86,7 +72,7 @@ final class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{categoryId<\d>}', name: 'update')]
+    #[Route('/update/{categoryId<\d+>}', name: 'update')]
     public function update(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
@@ -102,7 +88,7 @@ final class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
-            $category->setModified(new \DateTime());
+            $category->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($category);
             $entityManager->flush();

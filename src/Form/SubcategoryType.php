@@ -4,8 +4,6 @@ namespace App\Form;
 
 use App\Entity\Subcategory;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,12 +12,7 @@ class SubcategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'required' => true,
-            ])
-            ->add('bin', IntegerType::class, [
-                'required' => true,
-            ])
+            ->add('name')
         ;
     }
 
@@ -27,9 +20,6 @@ class SubcategoryType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Subcategory::class,
-            'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            'csrf_token_id' => 'subcategory_item',
         ]);
     }
 }

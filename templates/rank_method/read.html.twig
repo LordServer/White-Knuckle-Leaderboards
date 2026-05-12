@@ -10,16 +10,8 @@
         <a href="{{ path('rank_method_read', { 'rankMethodId': rankMethod.id }) }}" class="hover:text-red-400 cursor-pointer">{{ rankMethod.name|escape }}</a>
     </div>
     <h1 class="text-4xl font-bold mt-1">{{ rankMethod.name|escape }}</h1>
-    <div class="flex gap-2">
-        <div class="flex-1">
-            <div class="w-full py-2 text-white text-xl font-medium">ID</div>
-            <div>{{ rankMethod.bin|escape }}</div>
-        </div>
-        <div class="flex-3">
-            <div class="w-full py-2 text-white text-xl font-medium">Name</div>
-            {{ rankMethod.name|escape }}
-        </div>
-    </div>
+    <div class="w-full py-2 text-white text-xl font-medium">Name</div>
+    {{ rankMethod.name|escape }}
     {% if is_granted('ROLE_DISCORD_ADMIN') %}
         <div class="text-right pt-2">
             <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">

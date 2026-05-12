@@ -39,8 +39,8 @@ final class SubcategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $subcategory = $form->getData();
-            $subcategory->setCreated(new \DateTimeImmutable());
-            $subcategory->setModified(new \DateTime());
+            $subcategory->setCreatedAt(new \DateTimeImmutable());
+            $subcategory->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($subcategory);
             $entityManager->flush();
@@ -88,7 +88,7 @@ final class SubcategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $subcategory = $form->getData();
-            $subcategory->setModified(new \DateTime());
+            $subcategory->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($subcategory);
             $entityManager->flush();
