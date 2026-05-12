@@ -52,6 +52,7 @@
                                 {% if is_granted('ROLE_DISCORD_ADMIN') %}
                                     <a href="{{ path('rank_method_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Rank Methods</a>
                                     <a href="{{ path('subcategory_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Subcategories</a>
+                                    <a href="{{ path('category_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Categories</a>
                                     <hr class="border-red-900">
                                 {% endif %}
                                 {% if is_granted('ROLE_DISCORD_MODERATOR') %}

@@ -3,14 +3,53 @@
 {% block title %}Hello CategoryController!{% endblock %}
 
 {% block body %}
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/wklb/src/Controller/CategoryController.php</code></li>
-        <li>Your template at <code>/var/www/wklb/templates/category/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <div class="text-xs text-red-900">
+            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
+            <a href="{{ path('category_index') }}" class="hover:text-red-400 cursor-pointer">Categories</a>
+        </div>
+        <div class="flex justify-between">
+            <h1 class="text-4xl font-bold mt-1">Categories</h1>
+            {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                <a href="{{ path('category_create') }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">New</button>
+                </a>
+            {% endif %}
+        </div>
+        {% for setBit in setBits %}
+            {{ setBit }}
+        {% endfor %}
+        <div class="mt-2">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th class="text-left">Name</th>
+                        <th class="text-left">Subcategories</th>
+                        <th class="text-left">Rank Method</th>
+                        <th class="text-left">Archived?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.subcategory.name }}</td>
+                            <td>{{ category.rankMethod.name }}</td>
+                            <td>{% if category.isArchived is true %}Yes{% endif %}</td>
+                            {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                                <td>
+                                    <a href="{{ path('category_update', { 'categoryId': category.id }) }}">
+                                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
+                                    </a>
+                                    <a href="{{ path('category_delete', { 'categoryId': category.id }) }}">
+                                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

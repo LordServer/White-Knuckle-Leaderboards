@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Form\CategoryType;
+use App\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -10,48 +15,106 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
         $user = $this->getUser();
+        $categories = $categoryRepository->findAll();
+
+        $number = 15;
+        $setBits = [];
+        $position = 0;
+
+        while ($number > 0) {
+            if ($number & 1) {
+                $setBits[] = pow(2, $position);
+            }
+
+            $number >>= 1;
+            ++$position;
+        }
 
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
+            'categories' => $categories,
+            'setBits' => $setBits,
         ]);
     }
 
     #[Route('/create', name: 'create')]
-    public function create(): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $category = new Category();
+
+        $form = $this->createForm(CategoryType::class, $category);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category = $form->getData();
+            $category->setCreated(new \DateTimeImmutable());
+            $category->setModified(new \DateTime());
+
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('category_read', ['categoryId' => $category->getId()]);
+        }
 
         return $this->render('category/create.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
+            'form' => $form,
         ]);
     }
 
-    #[Route('/read', name: 'read')]
-    public function read(): Response
+    #[Route('/read/{categoryId<\d>}', name: 'read')]
+    public function read(int $categoryId, CategoryRepository $categoryRepository): Response
     {
         $user = $this->getUser();
+        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+
+        if (!$category) {
+            throw $this->createNotFoundException('Category not found');
+        }
 
         return $this->render('category/read.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
+            'category' => $category,
         ]);
     }
 
-    #[Route('/update', name: 'update')]
-    public function update(): Response
+    #[Route('/update/{categoryId<\d>}', name: 'update')]
+    public function update(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+
+        if (!$category) {
+            throw $this->createNotFoundException('Category not found');
+        }
+
+        $form = $this->createForm(CategoryType::class, $category);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category = $form->getData();
+            $category->setModified(new \DateTime());
+
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('category_read', ['categoryId' => $category->getId()]);
+        }
 
         return $this->render('category/update.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
+            'form' => $form,
+            'category' => $category,
         ]);
     }
 
