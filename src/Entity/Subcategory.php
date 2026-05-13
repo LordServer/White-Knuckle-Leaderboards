@@ -30,9 +30,16 @@ class Subcategory
     #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'subcategory')]
     private Collection $categories;
 
+    /**
+     * @var Collection<int, Climb>
+     */
+    #[ORM\OneToMany(targetEntity: Climb::class, mappedBy: 'subcategory')]
+    private Collection $climbs;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->climbs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,6 +105,36 @@ class Subcategory
     {
         if ($this->categories->removeElement($category)) {
             $category->removeSubcategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Climb>
+     */
+    public function getClimbs(): Collection
+    {
+        return $this->climbs;
+    }
+
+    public function addClimb(Climb $climb): static
+    {
+        if (!$this->climbs->contains($climb)) {
+            $this->climbs->add($climb);
+            $climb->setSubcategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClimb(Climb $climb): static
+    {
+        if ($this->climbs->removeElement($climb)) {
+            // set the owning side to null (unless already changed)
+            if ($climb->getSubcategory() === $this) {
+                $climb->setSubcategory(null);
+            }
         }
 
         return $this;

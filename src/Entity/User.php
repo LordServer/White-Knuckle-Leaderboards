@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,6 +38,24 @@ class User implements UserInterface
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTime $modified = null;
+
+    /**
+     * @var Collection<int, Climb>
+     */
+    #[ORM\OneToMany(targetEntity: Climb::class, mappedBy: 'climber', orphanRemoval: true)]
+    private Collection $climbs;
+
+    /**
+     * @var Collection<int, Climb>
+     */
+    #[ORM\OneToMany(targetEntity: Climb::class, mappedBy: 'verifier')]
+    private Collection $climbsVerified;
+
+    public function __construct()
+    {
+        $this->climbs = new ArrayCollection();
+        $this->climbsVerified = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -152,6 +172,66 @@ class User implements UserInterface
     public function setModified(\DateTime $modified): static
     {
         $this->modified = $modified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Climb>
+     */
+    public function getClimbs(): Collection
+    {
+        return $this->climbs;
+    }
+
+    public function addClimb(Climb $climb): static
+    {
+        if (!$this->climbs->contains($climb)) {
+            $this->climbs->add($climb);
+            $climb->setClimber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClimb(Climb $climb): static
+    {
+        if ($this->climbs->removeElement($climb)) {
+            // set the owning side to null (unless already changed)
+            if ($climb->getClimber() === $this) {
+                $climb->setClimber(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Climb>
+     */
+    public function getClimbsVerified(): Collection
+    {
+        return $this->climbsVerified;
+    }
+
+    public function addClimbsVerified(Climb $climbsVerified): static
+    {
+        if (!$this->climbsVerified->contains($climbsVerified)) {
+            $this->climbsVerified->add($climbsVerified);
+            $climbsVerified->setVerifier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClimbsVerified(Climb $climbsVerified): static
+    {
+        if ($this->climbsVerified->removeElement($climbsVerified)) {
+            // set the owning side to null (unless already changed)
+            if ($climbsVerified->getVerifier() === $this) {
+                $climbsVerified->setVerifier(null);
+            }
+        }
 
         return $this;
     }

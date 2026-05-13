@@ -41,9 +41,16 @@ class Category
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
 
+    /**
+     * @var Collection<int, Climb>
+     */
+    #[ORM\OneToMany(targetEntity: Climb::class, mappedBy: 'category')]
+    private Collection $climbs;
+
     public function __construct()
     {
         $this->subcategory = new ArrayCollection();
+        $this->climbs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +150,36 @@ class Category
     public function setUpdatedAt(\DateTime $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Climb>
+     */
+    public function getClimbs(): Collection
+    {
+        return $this->climbs;
+    }
+
+    public function addClimb(Climb $climb): static
+    {
+        if (!$this->climbs->contains($climb)) {
+            $this->climbs->add($climb);
+            $climb->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClimb(Climb $climb): static
+    {
+        if ($this->climbs->removeElement($climb)) {
+            // set the owning side to null (unless already changed)
+            if ($climb->getCategory() === $this) {
+                $climb->setCategory(null);
+            }
+        }
 
         return $this;
     }
