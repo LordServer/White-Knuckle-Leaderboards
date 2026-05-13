@@ -21,14 +21,33 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
+        $climb = new Climb();
+
+        $form = $this->createForm(ClimbType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $climb = $form->getData();
+            $climb->setClimber($user);
+            $climb->setIsReviewed(false);
+            $climb->setStatus('unreviewed');
+            $climb->setCreatedAt(new \DateTimeImmutable());
+            $climb->setUpdatedAt(new \DateTime());
+
+            $entityManager->persist($climb);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
+        }
 
         return $this->render('climb/create.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
+            'form' => $form,
         ]);
     }
 

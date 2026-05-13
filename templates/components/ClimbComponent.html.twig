@@ -1,0 +1,51 @@
+<div{{ attributes }}>
+    {{ form_start(form) }}
+    <div class="flex gap-2">
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.category) }}</div>
+            {{ form_widget(form.category, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.subcategory) }}</div>
+            {{ form_widget(form.subcategory, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.time) }}</div>
+            {{ form_widget(form.time, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.height) }}</div>
+            {{ form_widget(form.height, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.speed) }}</div>
+            {{ form_widget(form.speed, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+        <div class="flex-1">
+            <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.score) }}</div>
+            {{ form_widget(form.score, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+        </div>
+    </div>
+    <div>
+        <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.media_url) }}</div>
+        {{ form_widget(form.media_url, {'attr': {'class': 'w-full h-13 py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+    </div>
+    <div>
+        <div class="w-full py-2 text-white text-xl font-medium">{{ form_label(form.notes) }}</div>
+        {{ form_widget(form.notes, {'attr': {'class': 'w-full h-52 py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+    </div>
+    <div class="text-right pt-2">
+        <a href="{{ path('climb_index') }}">
+            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
+        </a>
+        <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Submit</button>
+    </div>
+    <div class="hidden">
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+</div>
