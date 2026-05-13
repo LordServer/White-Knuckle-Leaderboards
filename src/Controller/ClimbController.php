@@ -49,6 +49,7 @@ final class ClimbController extends AbstractController
             $climb->setClimber($user);
             $climb->setIsReviewed(false);
             $climb->setStatus('unreviewed');
+            $climb->setRank(null);
             $climb->setCreatedAt(new \DateTimeImmutable());
             $climb->setUpdatedAt(new \DateTime());
 
