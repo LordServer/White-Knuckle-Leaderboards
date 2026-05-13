@@ -9,14 +9,20 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/climb', name: 'climb_')]
 final class ClimbController extends AbstractController
 {
-    #[Route('/', name: 'index')]
-    public function index(): Response
+    #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
+    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository): Response
     {
         $user = $this->getUser();
+        $categories = $categoryRepository->findAll();
+        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         return $this->render('climb/index.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
+            'categories' => $categories,
+            'category' => $category,
+            'subcategory' => $subcategory,
         ]);
     }
 
