@@ -23,56 +23,80 @@
             MEDIA
         </div>
         <div class="flex gap-2">
-            <div class="flex-1">
-                <div>
-                    <div>Category</div>
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Leaderboard</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Category</div>
                     <div>{{ climb.category.name|escape }}</div>
                 </div>
-                <div>
-                    <div>Subcategory</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Subcategory</div>
                     <div>{{ climb.subcategory.name|escape }}</div>
                 </div>
             </div>
-            <div class="flex-1">
-                <div>
-                    <div>Rank</div>
-                    <div>{{ climb.rank }}</div>
-                </div>
-                <div>
-                    <div>Score</div>
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Details</div>
+                {% if climb.rank is not null %}
+                    <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                        <div class="font-bold">Rank</div>
+                        <div>{{ climb.rank }}</div>
+                    </div>
+                {% endif %}
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Score</div>
                     <div>{{ climb.score }}</div>
                 </div>
-                <div>
-                    <div>Time</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Time</div>
                     <div>{{ climb.time }}</div>
                 </div>
-                <div>
-                    <div>Height</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Height</div>
                     <div>{{ climb.height }}</div>
                 </div>
-                <div>
-                    <div>Speed</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Speed</div>
                     <div>{{ climb.speed }}</div>
                 </div>
             </div>
-            <div class="flex-1">
-                <div>
-                    <div>Climber</div>
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Verification</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Climber</div>
                     <div>{{ climb.climber.username|escape }}</div>
                 </div>
-                <div>
-                    <div>Verified</div>
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Verified</div>
                     <div>{% if climb.isReviewed == 'true' %}{{ climb.status }}{% else %}Pending Review{% endif %}</div>
                 </div>
-                <div>
-                    <div>Reviewer</div>
-                    <div>{% if climb.verifier is not null %}{{ climb.verifier.username|escape }}{% else %}N/A{% endif %}</div>
-                </div>
-                <div>
-                    <div>Date</div>
-                    <div>{{ climb.createdAt|date('Y-m-d H:i:s')|ago }}</div>
+                {% if climb.isReviewed == 'true' %}
+                    <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                        <div class="font-bold">Reviewer</div>
+                        <div>{% if climb.verifier is not null %}{{ climb.verifier.username|escape }}{% else %}N/A{% endif %}</div>
+                    </div>
+                {% endif %}
+                <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                    <div class="font-bold">Date</div>
+                    <div class="group relative inline-block">
+                        <div>{{ climb.createdAt|date('Y-m-d H:i:s')|ago }}</div>
+                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">{{ climb.createdAt|date('Y-m-d H:i:s') }}</div>
+                    </div>
                 </div>
             </div>
         </div>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="text-right pt-2">
+                {% if (climb.climber.id is same as(user.id) and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_VERIFIER') and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_MODERATOR')) %}
+                    <a href="{{ path('climb_update', { 'climbId': climb.id }) }}">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
+                    </a>
+                {% endif %}
+                {% if (climb.climber.id is same as(user.id)) or (is_granted('ROLE_DISCORD_VERIFIER')) %}
+                    <a href="{{ path('climb_delete', { 'climbId': climb.id }) }}">
+                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
