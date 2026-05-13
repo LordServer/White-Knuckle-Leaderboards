@@ -2,7 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Climb;
+use App\Form\ClimbType;
+use App\Repository\CategoryRepository;
+use App\Repository\ClimbRepository;
+use App\Repository\SubcategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -57,14 +65,20 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/read', name: 'read')]
-    public function read(): Response
+    #[Route('/read/{climbId<\d+>}', name: 'read')]
+    public function read(int $climbId, ClimbRepository $climbRepository): Response
     {
         $user = $this->getUser();
+        $climb = $climbRepository->findOneBy(['id' => $climbId]);
+
+        if (!$climb) {
+            throw $this->createNotFoundException('Climb not found');
+        }
 
         return $this->render('climb/read.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
+            'climb' => $climb,
         ]);
     }
 
