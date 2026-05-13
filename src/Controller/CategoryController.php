@@ -104,15 +104,32 @@ final class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/delete', name: 'delete')]
-    public function delete(): Response
+    #[Route('/delete/{categoryId<\d+>}', name: 'delete')]
+    public function delete(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $user = $this->getUser();
+        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+
+        if (!$category) {
+            throw $this->createNotFoundException('Category not found');
+        }
+
+        $form = $this->createForm(CategoryType::class, $category);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->remove($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('category_index');
+        }
 
         return $this->render('category/delete.html.twig', [
             'controller_name' => 'CategoryController',
             'user' => $user,
+            'form' => $form,
+            'category' => $category,
         ]);
     }
 }
