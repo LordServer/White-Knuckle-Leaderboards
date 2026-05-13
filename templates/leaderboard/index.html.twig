@@ -46,134 +46,40 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="hover:bg-gray-600">
-                    <td class="text-center">
-                        <a href="#" class="block">1</a>
-                    </td>
-                    <td>
-                        <a href="#" class="block">LordServer</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">59:12.125</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999.9 m</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">9.9 m/s</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">
-                            <div class="group relative inline-block">
-                                <div>
-                                    1 Week Ago
-                                </div>
-                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                    2026-04-26
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="hover:bg-gray-600">
-                    <td class="text-center">
-                        <a href="#" class="block">2</a>
-                    </td>
-                    <td>
-                        <a href="#" class="block">LordServer</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">59:12.125</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999.9 m</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">9.9 m/s</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">
-                            <div class="group relative inline-block">
-                                <div>
-                                    1 Week Ago
-                                </div>
-                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                    2026-04-26
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="hover:bg-gray-600">
-                    <td class="text-center">
-                        <a href="#" class="block">3</a>
-                    </td>
-                    <td>
-                        <a href="#" class="block">LordServer</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">59:12.125</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999.9 m</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">9.9 m/s</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">
-                            <div class="group relative inline-block">
-                                <div>
-                                    1 Week Ago
-                                </div>
-                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                    2026-04-26
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="hover:bg-gray-600">
-                    <td class="text-center">
-                        <a href="#" class="block">4</a>
-                    </td>
-                    <td>
-                        <a href="#" class="block">LordServer</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">59:12.125</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">999.9 m</a>
-                    </td>
-                    <td class="text-center hidden sm:table-cell">
-                        <a href="#" class="block">9.9 m/s</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#" class="block">
-                            <div class="group relative inline-block">
-                                <div>
-                                    1 Week Ago
-                                </div>
-                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                    2026-04-26
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                </tr>
+                    {% for i in 1..4 %}
+                        <tr class="hover:bg-gray-600">
+                            <td class="text-center">
+                                <a href="#" class="block">{{ i }}</a>
+                            </td>
+                            <td>
+                                <a href="#" class="block">LordServer</a>
+                            </td>
+                            <td class="text-center hidden sm:table-cell">
+                                <a href="#" class="block">999</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="#" class="block">59:12.125</a>
+                            </td>
+                            <td class="text-center hidden sm:table-cell">
+                                <a href="#" class="block">999.9 m</a>
+                            </td>
+                            <td class="text-center hidden sm:table-cell">
+                                <a href="#" class="block">9.9 m/s</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="#" class="block">
+                                    <div class="group relative inline-block">
+                                        <div>
+                                            1 Week Ago
+                                        </div>
+                                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                            2026-04-26
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
