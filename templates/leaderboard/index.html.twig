@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello LeaderboardController!{% endblock %}
+
+{% block body %}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <div class="text-xs text-red-900">
+            <a href="#" class="hover:text-red-400 cursor-pointer">Home</a> / <a href="#" class="hover:text-red-400 cursor-pointer">Leaderboards</a> /
+            <a href="#" class="hover:text-red-400 cursor-pointer">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }}</a>
+        </div>
+        <h1 class="text-4xl font-bold mt-1">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }} Leaderboard</h1>
+        <div class="flex items-center gap-2 flex-wrap mt-4">
+            {% for categoryLoop in categories %}
+                <a href="{{ path('app_leaderboard', { 'categoryId': categoryLoop.id }) }}">
+                    <button class="{% if categoryLoop.id == category.id %}bg-red-900 {% else %}bg-black {% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">{{ categoryLoop.name|escape }}</button>
+                </a>
+            {% endfor %}
+        </div>
+        <div class="mt-2">
+            {% if category.subcategory|length > 1 %}
+                <label for="form-control" class="hidden">Mode</label>
+                <select name="route-selector" id="form-control" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
+                    {% for subcategoryLoop in category.subcategory %}
+                        <option {% if subcategory.id == subcategoryLoop.id %}selected="selected" {% endif %}value="{{ path('app_leaderboard', { 'categoryId': category.id, 'subcategoryId': subcategoryLoop.id }) }}">{{ subcategoryLoop.name|escape }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+            <div class="float-end gap-2 flex">
+                <button command="show-modal" commandfor="dialog" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Category Rules</button>
+                <a href="#">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Submit a Climb</button>
+                </a>
+            </div>
+        </div>
+        <div class="mt-2">
+            <table class="w-full border-collapse">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="text-left">Climber</th>
+                    <th class="hidden sm:table-cell">Score</th>
+                    <th>Play Time</th>
+                    <th class="hidden sm:table-cell">Height</th>
+                    <th class="hidden sm:table-cell">Speed</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hover:bg-gray-600">
+                    <td class="text-center">
+                        <a href="#" class="block">1</a>
+                    </td>
+                    <td>
+                        <a href="#" class="block">LordServer</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">59:12.125</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999.9 m</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">9.9 m/s</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">
+                            <div class="group relative inline-block">
+                                <div>
+                                    1 Week Ago
+                                </div>
+                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                    2026-04-26
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="hover:bg-gray-600">
+                    <td class="text-center">
+                        <a href="#" class="block">2</a>
+                    </td>
+                    <td>
+                        <a href="#" class="block">LordServer</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">59:12.125</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999.9 m</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">9.9 m/s</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">
+                            <div class="group relative inline-block">
+                                <div>
+                                    1 Week Ago
+                                </div>
+                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                    2026-04-26
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="hover:bg-gray-600">
+                    <td class="text-center">
+                        <a href="#" class="block">3</a>
+                    </td>
+                    <td>
+                        <a href="#" class="block">LordServer</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">59:12.125</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999.9 m</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">9.9 m/s</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">
+                            <div class="group relative inline-block">
+                                <div>
+                                    1 Week Ago
+                                </div>
+                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                    2026-04-26
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="hover:bg-gray-600">
+                    <td class="text-center">
+                        <a href="#" class="block">4</a>
+                    </td>
+                    <td>
+                        <a href="#" class="block">LordServer</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">59:12.125</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">999.9 m</a>
+                    </td>
+                    <td class="text-center hidden sm:table-cell">
+                        <a href="#" class="block">9.9 m/s</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="block">
+                            <div class="group relative inline-block">
+                                <div>
+                                    1 Week Ago
+                                </div>
+                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                    2026-04-26
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <el-dialog>
+        <dialog id="dialog" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+            <el-dialog-backdrop class="fixed inset-0 bg-gray-900/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+
+            <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+                <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                    <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 id="dialog-title" class="text-base font-semibold text-white">{{ category.name|escape }} Rules</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-400">{{ category.rules|escape }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700/25 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20 sm:mt-0 sm:w-auto">Close</button>
+                    </div>
+                </el-dialog-panel>
+            </div>
+        </dialog>
+    </el-dialog>
+{% endblock %}
