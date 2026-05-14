@@ -36,10 +36,10 @@ class Category
     #[ORM\JoinColumn(nullable: false)]
     private ?RankMethod $rank_method = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $created_at;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTime $updated_at;
 
     /**

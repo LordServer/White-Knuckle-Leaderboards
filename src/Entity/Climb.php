@@ -54,10 +54,10 @@ class Climb
     #[ORM\ManyToOne(inversedBy: 'climbsVerified')]
     private ?User $verifier = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $created_at;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTime $updated_at;
 
     #[ORM\Column(type: Types::TEXT)]
