@@ -34,10 +34,10 @@ class User implements UserInterface
     private ?string $avatar = null;
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $created = null;
+    private ?\DateTimeImmutable $created_at;
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTime $modified = null;
+    private ?\DateTime $updated_at;
 
     /**
      * @var Collection<int, Climb>
@@ -152,16 +152,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getCreated(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created;
+        return $this->created_at;
     }
 
-    public function setCreated(\DateTimeImmutable $created): static
+    public function getUpdatedAt(): ?\DateTime
     {
-        $this->created = $created;
-
-        return $this;
+        return $this->updated_at;
     }
 
     public function getModified(): ?\DateTime
