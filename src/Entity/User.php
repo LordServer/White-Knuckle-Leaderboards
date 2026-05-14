@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface
 {
     #[ORM\Id]
@@ -55,6 +56,7 @@ class User implements UserInterface
     {
         $this->climbs = new ArrayCollection();
         $this->climbsVerified = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -162,16 +164,11 @@ class User implements UserInterface
         return $this->updated_at;
     }
 
-    public function getModified(): ?\DateTime
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
     {
-        return $this->modified;
-    }
-
-    public function setModified(\DateTime $modified): static
-    {
-        $this->modified = $modified;
-
-        return $this;
+        $this->updated_at = new \DateTime();
     }
 
     /**

@@ -50,8 +50,6 @@ final class ClimbController extends AbstractController
             $climb->setIsReviewed(false);
             $climb->setStatus('unreviewed');
             $climb->setRank(null);
-            $climb->setCreatedAt(new \DateTimeImmutable());
-            $climb->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($climb);
             $entityManager->flush();

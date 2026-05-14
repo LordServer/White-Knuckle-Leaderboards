@@ -39,8 +39,6 @@ final class RankMethodController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $rankMethod = $form->getData();
-            $rankMethod->setCreatedAt(new \DateTimeImmutable());
-            $rankMethod->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($rankMethod);
             $entityManager->flush();
@@ -88,7 +86,6 @@ final class RankMethodController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $rankMethod = $form->getData();
-            $rankMethod->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($rankMethod);
             $entityManager->flush();

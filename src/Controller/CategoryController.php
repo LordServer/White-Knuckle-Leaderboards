@@ -39,8 +39,6 @@ final class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
-            $category->setCreatedAt(new \DateTimeImmutable());
-            $category->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($category);
             $entityManager->flush();
@@ -88,7 +86,6 @@ final class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
-            $category->setUpdatedAt(new \DateTime());
 
             $entityManager->persist($category);
             $entityManager->flush();
