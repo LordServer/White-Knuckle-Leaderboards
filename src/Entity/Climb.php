@@ -80,6 +80,10 @@ class Climb
 
     public function setClimber(?User $climber): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->climber = $climber;
 
         return $this;
@@ -92,6 +96,10 @@ class Climb
 
     public function setCategory(?Category $category): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->category = $category;
 
         return $this;
@@ -104,6 +112,10 @@ class Climb
 
     public function setSubcategory(?Subcategory $subcategory): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->subcategory = $subcategory;
 
         return $this;
@@ -128,6 +140,10 @@ class Climb
 
     public function setScore(?string $score): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->score = $score;
 
         return $this;
@@ -140,6 +156,10 @@ class Climb
 
     public function setTime(?float $time): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->time = $time;
 
         return $this;
@@ -152,6 +172,10 @@ class Climb
 
     public function setHeight(?float $height): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->height = $height;
 
         return $this;
@@ -164,6 +188,10 @@ class Climb
 
     public function setSpeed(?float $speed): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->speed = $speed;
 
         return $this;
@@ -176,6 +204,10 @@ class Climb
 
     public function setNotes(?string $notes): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->notes = $notes;
 
         return $this;
@@ -188,6 +220,10 @@ class Climb
 
     public function setStatus(string $status): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->status = $status;
 
         return $this;
@@ -200,6 +236,10 @@ class Climb
 
     public function setIsReviewed(bool $is_reviewed): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->is_reviewed = $is_reviewed;
 
         return $this;
@@ -212,6 +252,10 @@ class Climb
 
     public function setVerifier(?User $verifier): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->verifier = $verifier;
 
         return $this;
@@ -231,6 +275,10 @@ class Climb
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->updated_at = new \DateTime();
     }
 
@@ -241,6 +289,10 @@ class Climb
 
     public function setMediaUrl(string $media_url): static
     {
+        if ($this->isReviewed()) {
+            throw new \LogicException('This entry is locked.');
+        }
+
         $this->media_url = $media_url;
 
         return $this;

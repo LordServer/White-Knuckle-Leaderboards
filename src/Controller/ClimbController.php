@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Climb;
 use App\Form\ClimbType;
 use App\Repository\CategoryRepository;
@@ -81,11 +80,20 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/update', name: 'update')]
-    public function update(): Response
+    #[Route('/update/{climbId<\d+>}', name: 'update')]
+    public function update(int $climbId, ClimbRepository $climbRepository, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
+        $climb = $climbRepository->findOneBy(['id' => $climbId]);
+
+        if (!$climb) {
+            throw $this->createNotFoundException('Climb not found');
+        }
+
+        if ($climb->isReviewed()) {
+            throw $this->createAccessDeniedException('Climb has already been reviewed and can no longer be updated');
+        }
 
         return $this->render('climb/update.html.twig', [
             'controller_name' => 'ClimbController',

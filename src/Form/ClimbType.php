@@ -17,22 +17,41 @@ class ClimbType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $entry = $options['data'];
+        $locked = $entry && $entry->isReviewed();
+
         $builder = new DynamicFormBuilder($builder);
 
         $builder
-            ->add('rank')
-            ->add('score')
-            ->add('time')
-            ->add('height')
-            ->add('speed')
-            ->add('notes')
-            ->add('status')
-            ->add('is_reviewed')
-            ->add('media_url')
+            ->add('score', null, [
+                'disabled' => $locked,
+            ])
+            ->add('time', null, [
+                'disabled' => $locked,
+            ])
+            ->add('height', null, [
+                'disabled' => $locked,
+            ])
+            ->add('speed', null, [
+                'disabled' => $locked,
+            ])
+            ->add('notes', null, [
+                'disabled' => $locked,
+            ])
+            ->add('status', null, [
+                'disabled' => $locked,
+            ])
+            ->add('is_reviewed', null, [
+                'disabled' => $locked,
+            ])
+            ->add('media_url', null, [
+                'disabled' => $locked,
+            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a category',
+                'disabled' => $locked,
                 'attr' => [
                     'data-model' => 'on(change)|formValues.category',
                 ],
@@ -40,7 +59,7 @@ class ClimbType extends AbstractType
         ;
 
         $builder
-            ->addDependent('subcategory', 'category', function (DependentField $field, ?Category $category) {
+            ->addDependent('subcategory', 'category', function (DependentField $field, ?Category $category) use ($locked) {
                 if (!$category) {
                     $field->add(ChoiceType::class, [
                         'disabled' => true,
@@ -53,6 +72,7 @@ class ClimbType extends AbstractType
                     'choices' => $category?->getSubcategory(),
                     'choice_label' => 'name',
                     'placeholder' => 'Please select a Category',
+                    'disabled' => $locked,
                 ]);
             });
     }
