@@ -133,15 +133,46 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/delete', name: 'delete')]
-    public function delete(): Response
+    #[Route('/delete/{climbId<\d+>}', name: 'delete')]
+    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
+        $climb = $climbRepository->findOneBy(['id' => $climbId]);
+
+        if (!$climb) {
+            throw $this->createNotFoundException('Climb not found');
+        }
+
+        if (($climb->getClimber()->getId() !== $user->getId()) || !$this->isGranted('ROLE_DISCORD_MODERATOR')) {
+            throw $this->createAccessDeniedException('You can not delete this climb');
+        }
+
+        $form = $this->createForm(ClimbType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (null !== $climb->getRank()) {
+                $ranked = true;
+            } else {
+                $ranked = false;
+            }
+
+            $entityManager->remove($climb);
+            $entityManager->flush();
+
+            if ($ranked) {
+                // TODO: Call a function to set new ranks for the leaderboard
+            }
+
+            return $this->redirectToRoute('climb_index');
+        }
 
         return $this->render('climb/delete.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
+            'form' => $form,
+            'climb' => $climb,
         ]);
     }
 }
