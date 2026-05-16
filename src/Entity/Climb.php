@@ -140,9 +140,9 @@ class Climb
 
     public function setScore(?string $score): static
     {
-        if ($this->isReviewed()) {
-            throw new \LogicException('This entry is locked.');
-        }
+        //        if ($this->isReviewed()) {
+        //            throw new \LogicException('This entry is locked.');
+        //        }
 
         $this->score = $score;
 
