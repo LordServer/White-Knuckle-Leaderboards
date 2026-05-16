@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Climb;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -33,6 +35,25 @@ class ClimbRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function getClimbStats(): array
+    {
+        $oneMonthAgo = new \DateTime('-1 month');
+
+        $parameters = new ArrayCollection([
+            new Parameter('pastDate', $oneMonthAgo),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id) as totalClimbs')
+            ->addSelect('sum(c.time) as totalTime')
+            ->addSelect('sum(c.height) as totalHeight')
+            ->addSelect('count(case when c.created_at >= :pastDate then c.id else 0 end) as recentClimbs')
+            ->setParameters($parameters)
+            ->getQuery()
+            ->getSingleResult()
         ;
     }
 

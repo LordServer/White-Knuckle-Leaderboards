@@ -31,6 +31,10 @@ class Extensions extends AbstractExtension
                 'recent_climbs',
                 [$this, 'getRecentClimbs']
             ),
+            new TwigFunction(
+                'climb_stats',
+                [$this, 'getClimbStats']
+            ),
         ];
     }
 
@@ -47,5 +51,10 @@ class Extensions extends AbstractExtension
     public function getRecentClimbs(): array
     {
         return $this->climbRepository->getRecentClimbs();
+    }
+
+    public function getClimbStats(): array
+    {
+        return $this->climbRepository->getClimbStats();
     }
 }

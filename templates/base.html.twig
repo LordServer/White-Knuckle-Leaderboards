@@ -93,11 +93,11 @@
                             <div class="flex flex-row flex-wrap w-full">
                                 <div class="group relative inline-block flex-1">
                                     <div>Climbs</div>
-                                    <div>1139</div>
+                                    <div>{{ climb_stats().totalClimbs }}</div>
                                     <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                        Total Climb Time: 6:13:21.550<br>
-                                        Total Climb Height: 18,075,233.46 m<br>
-                                        Total / Recent Climbs: 1,139 / 120
+                                        Total Climb Time: {{ climb_stats().totalTime }}<br>
+                                        Total Climb Height: {{ climb_stats().totalHeight }} m<br>
+                                        Total / Recent Climbs: {{ climb_stats().totalClimbs }} / {{ climb_stats().recentClimbs }}
                                     </div>
                                 </div>
                                 <div class="group relative inline-block flex-1">
