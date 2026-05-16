@@ -21,66 +21,7 @@
     </head>
     <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white">
         <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
-            <div class="lg:w-4xl xl:w-7xl m-auto flex flex-row justify-between">
-                <nav class="flex gap-2 flex-wrap items-center">
-                    <a href="{{ path('app_index') }}">
-                        <img class="h-16" src="{{ asset('build/images/whiteknuckle_02.png') }}" alt="White Knuckle Logo">
-                    </a>
-                    <a href="https://store.steampowered.com/app/3195790/White_Knuckle/">
-                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Steam</button>
-                    </a>
-                    <a href="https://discord.gg/whiteknuckle">
-                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
-                            <img class="h-6" src="{{ asset('build/images/discord-logo-white.svg') }}" alt="White Knuckle Discord">
-                        </button>
-                    </a>
-                    <a href="#">
-                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Archive</button>
-                    </a>
-                </nav>
-                {% if is_granted('IS_AUTHENTICATED') %}
-                    <div class="flex gap-2 flex-wrap items-center">
-                        <div>{{ current_user().displayName }}</div>
-                        <el-dropdown class="relative ml-3">
-                            <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900">
-                                <span class="absolute -inset-1.5"></span>
-                                <span class="sr-only">Open user menu</span>
-                                <img class="h-12 rounded-full outline -outline-offset-1 outline-white/10" src="https://cdn.discordapp.com/{{ current_user().avatar }}" alt="{{ current_user().username }}">
-                            </button>
-
-                            <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-900 text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                                {% if is_granted('ROLE_DISCORD_ADMIN') %}
-                                    <a href="{{ path('rank_method_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Rank Methods</a>
-                                    <a href="{{ path('subcategory_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Subcategories</a>
-                                    <a href="{{ path('category_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Categories</a>
-                                    <hr class="border-red-900">
-                                {% endif %}
-                                {% if is_granted('ROLE_DISCORD_MODERATOR') %}
-                                    <div class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">MODERATOR</div>
-                                    <hr class="border-red-900">
-                                {% endif %}
-                                {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
-                                    <a href="{{ path('approvals_index') }}" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
-                                        Approvals
-                                        <span class="ml-auto w-9 min-w-max rounded-full bg-gray-900 px-2.5 py-0.5 text-center text-3/[5] font-medium whitespace-nowrap text-gray-100 outline-solid outline -outline-offset-1 outline-red-900">{{ approvals() }}</span>
-                                    </a>
-                                    <hr class="border-red-900">
-                                {% endif %}
-                                <a href="{{ path('user_climbs', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your climbs</a>
-                                <a href="{{ path('user_read', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
-                                <a href="{{ path('user_update', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
-                                <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Log out</a>
-                            </el-menu>
-                        </el-dropdown>
-                    </div>
-                {% elseif not is_granted('IS_AUTHENTICATED') %}
-                    <div class="flex gap-2 flex-wrap items-center">
-                        <a href="{{ path('auth_discord_start') }}">
-                            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log In</button>
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+            {% include 'partials/navbar.html.twig' %}
         </div>
         <div class="mt-17 lg:w-4xl xl:w-7xl m-auto">
             <div class="flex flex-row flex-wrap w-full gap-4">
@@ -88,58 +29,8 @@
                     {% block body %}{% endblock %}
                 </main>
                 <div class="flex flex-col flex-1 gap-4">
-                    <div class="rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] z-20">
-                        <div class="pt-2 pr-4 pb-2 pl-4">
-                            <h3 class="uppercase text-xl font-bold">All Climb Stats</h3>
-                            <div class="flex flex-row flex-wrap w-full">
-                                <div class="group relative inline-block flex-1">
-                                    <div>Climbs</div>
-                                    <div>{{ climb_stats().totalClimbs }}</div>
-                                    <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                        Total Climb Time: {{ climb_stats().totalTime|seconds_to_time }}<br>
-                                        Total Climb Height: {{ climb_stats().totalHeight }} m<br>
-                                        Total / Recent Climbs: {{ climb_stats().totalClimbs }} / {{ climb_stats().recentClimbs }}
-                                    </div>
-                                </div>
-                                <div class="group relative inline-block flex-1">
-                                    <div>Climbers</div>
-                                    <div>265</div>
-                                    <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                        Climbers (Total / Active): 265 / 63
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] z-0">
-                        <div class="pt-2 pr-4 pb-2 pl-4">
-                            <h3 class="uppercase text-xl font-bold">Recent Climbs</h3>
-                            {% for recentClimb in recent_climbs() %}
-                                <div class="hover:bg-gray-600 mt-2">
-                                    <a href="{{ path('climb_read', {'climbId': recentClimb.id}) }}">
-                                        <div>{% if recentClimb.subcategory.name != 'Normal' %}{{ recentClimb.subcategory.name|escape }} {% endif %}{{ recentClimb.category.name|escape }}</div>
-                                        <div class="flex flex-row flex-wrap w-full">
-                                            <div class="flex flex-col flex-1">
-                                                <div>{% if recentClimb.rank is null and recentClimb.status == 'approved' %}Obsolete{% elseif recentClimb.rank is not null %}{{ recentClimb.rank|ordinalize }}{% else %}{{ recentClimb.status|capitalize }}{% endif %}</div>
-                                                <div>{% if recentClimb.category.rankMethod.name == 'Score' %}{{ recentClimb.score }}{% elseif recentClimb.category.rankMethod.name == 'Time' %}{{ recentClimb.time|seconds_to_time }}{% elseif recentClimb.category.rankMethod.name == 'Height' %}{{ recentClimb.height }} m{% elseif recentClimb.category.rankMethod.name == 'Speed' %}{{ recentClimb.speed }} m/s{% endif %}</div>
-                                            </div>
-                                            <div class="flex flex-col flex-1">
-                                                <div>{{ recentClimb.climber.displayName }}</div>
-                                                <div class="group relative inline-block">
-                                                    <div>
-                                                        {{ recentClimb.createdAt|date('Y-m-d H:i:s')|ago }}
-                                                    </div>
-                                                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                                        {{ recentClimb.createdAt|date('Y-m-d H:i:s') }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    {% include 'partials/climb_stats.html.twig' %}
+                    {% include 'partials/recent_climbs.html.twig' %}
                 </div>
             </div>
         </div>

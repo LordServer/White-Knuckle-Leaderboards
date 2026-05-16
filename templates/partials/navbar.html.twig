@@ -1,0 +1,60 @@
+<div class="lg:w-4xl xl:w-7xl m-auto flex flex-row justify-between">
+    <nav class="flex gap-2 flex-wrap items-center">
+        <a href="{{ path('app_index') }}">
+            <img class="h-16" src="{{ asset('build/images/whiteknuckle_02.png') }}" alt="White Knuckle Logo">
+        </a>
+        <a href="https://store.steampowered.com/app/3195790/White_Knuckle/">
+            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Steam</button>
+        </a>
+        <a href="https://discord.gg/whiteknuckle">
+            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
+                <img class="h-6" src="{{ asset('build/images/discord-logo-white.svg') }}" alt="White Knuckle Discord">
+            </button>
+        </a>
+        <a href="#">
+            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Archive</button>
+        </a>
+    </nav>
+    {% if is_granted('IS_AUTHENTICATED') %}
+        <div class="flex gap-2 flex-wrap items-center">
+            <div>{{ current_user().displayName }}</div>
+            <el-dropdown class="relative ml-3">
+                <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900">
+                    <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">Open user menu</span>
+                    <img class="h-12 rounded-full outline -outline-offset-1 outline-white/10" src="https://cdn.discordapp.com/{{ current_user().avatar }}" alt="{{ current_user().username }}">
+                </button>
+
+                <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-900 text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                    {% if is_granted('ROLE_DISCORD_ADMIN') %}
+                        <a href="{{ path('rank_method_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Rank Methods</a>
+                        <a href="{{ path('subcategory_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Subcategories</a>
+                        <a href="{{ path('category_index') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Categories</a>
+                        <hr class="border-red-900">
+                    {% endif %}
+                    {% if is_granted('ROLE_DISCORD_MODERATOR') %}
+                        <div class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">MODERATOR</div>
+                        <hr class="border-red-900">
+                    {% endif %}
+                    {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
+                        <a href="{{ path('approvals_index') }}" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
+                            Approvals
+                            <span class="ml-auto w-9 min-w-max rounded-full bg-gray-900 px-2.5 py-0.5 text-center text-3/[5] font-medium whitespace-nowrap text-gray-100 outline-solid outline -outline-offset-1 outline-red-900">{{ approvals() }}</span>
+                        </a>
+                        <hr class="border-red-900">
+                    {% endif %}
+                    <a href="{{ path('user_climbs', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your climbs</a>
+                    <a href="{{ path('user_read', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
+                    <a href="{{ path('user_update', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
+                    <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Log out</a>
+                </el-menu>
+            </el-dropdown>
+        </div>
+    {% elseif not is_granted('IS_AUTHENTICATED') %}
+        <div class="flex gap-2 flex-wrap items-center">
+            <a href="{{ path('auth_discord_start') }}">
+                <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Log In</button>
+            </a>
+        </div>
+    {% endif %}
+</div>

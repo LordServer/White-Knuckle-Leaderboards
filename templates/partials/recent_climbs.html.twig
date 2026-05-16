@@ -1,0 +1,29 @@
+<div class="rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] z-0">
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        <h3 class="uppercase text-xl font-bold">Recent Climbs</h3>
+        {% for recentClimb in recent_climbs() %}
+            <div class="hover:bg-gray-600 mt-2">
+                <a href="{{ path('climb_read', {'climbId': recentClimb.id}) }}">
+                    <div>{% if recentClimb.subcategory.name != 'Normal' %}{{ recentClimb.subcategory.name|escape }} {% endif %}{{ recentClimb.category.name|escape }}</div>
+                    <div class="flex flex-row flex-wrap w-full">
+                        <div class="flex flex-col flex-1">
+                            <div>{% if recentClimb.rank is null and recentClimb.status == 'approved' %}Obsolete{% elseif recentClimb.rank is not null %}{{ recentClimb.rank|ordinalize }}{% else %}{{ recentClimb.status|capitalize }}{% endif %}</div>
+                            <div>{% if recentClimb.category.rankMethod.name == 'Score' %}{{ recentClimb.score }}{% elseif recentClimb.category.rankMethod.name == 'Time' %}{{ recentClimb.time|seconds_to_time }}{% elseif recentClimb.category.rankMethod.name == 'Height' %}{{ recentClimb.height }} m{% elseif recentClimb.category.rankMethod.name == 'Speed' %}{{ recentClimb.speed }} m/s{% endif %}</div>
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <div>{{ recentClimb.climber.displayName }}</div>
+                            <div class="group relative inline-block">
+                                <div>
+                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s')|ago }}
+                                </div>
+                                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
