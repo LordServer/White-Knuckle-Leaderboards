@@ -4,10 +4,11 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Climb;
-use App\Entity\Subcategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
@@ -15,10 +16,17 @@ use Symfonycasts\DynamicForms\DynamicFormBuilder;
 
 class ClimbType extends AbstractType
 {
+    private Security $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $entry = $options['data'];
-        $locked = $entry && $entry->isReviewed();
+        $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_DISCORD_ADMIN');
 
         $builder = new DynamicFormBuilder($builder);
 
@@ -38,12 +46,6 @@ class ClimbType extends AbstractType
             ->add('notes', null, [
                 'disabled' => $locked,
             ])
-            ->add('status', null, [
-                'disabled' => $locked,
-            ])
-            ->add('is_reviewed', null, [
-                'disabled' => $locked,
-            ])
             ->add('media_url', null, [
                 'disabled' => $locked,
             ])
@@ -55,7 +57,13 @@ class ClimbType extends AbstractType
                 'attr' => [
                     'data-model' => 'on(change)|formValues.category',
                 ],
-            ]);
+            ])
+            ->add('approve', SubmitType::class, [
+                'label' => 'Approve',
+            ])
+            ->add('reject', SubmitType::class, [
+                'label' => 'Reject',
+            ])
         ;
 
         $builder
