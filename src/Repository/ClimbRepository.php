@@ -16,6 +16,16 @@ class ClimbRepository extends ServiceEntityRepository
         parent::__construct($registry, Climb::class);
     }
 
+    public function getApprovals(): string
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->andWhere('c.is_reviewed = FALSE')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
