@@ -275,10 +275,6 @@ class Climb
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        if ($this->isReviewed()) {
-            throw new \LogicException('This entry is locked.');
-        }
-
         $this->updated_at = new \DateTime();
     }
 
