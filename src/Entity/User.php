@@ -52,6 +52,9 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Climb::class, mappedBy: 'verifier')]
     private Collection $climbsVerified;
 
+    #[ORM\Column(length: 255)]
+    private ?string $display_name = null;
+
     public function __construct()
     {
         $this->climbs = new ArrayCollection();
@@ -227,6 +230,18 @@ class User implements UserInterface
                 $climbsVerified->setVerifier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->display_name;
+    }
+
+    public function setDisplayName(string $display_name): static
+    {
+        $this->display_name = $display_name;
 
         return $this;
     }

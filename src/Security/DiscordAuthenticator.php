@@ -65,7 +65,8 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
                 if (null === $user) {
                     $user = new User();
-                    $user->setUsername($discordUser->getGlobalName());
+                    $user->setUsername($discordUser->getUsername());
+                    $user->setDisplayName($discordUser->getDisplayName());
                     $user->setDiscordId($discordUser->getId());
                     $user->setAvatar($discordUser->getAvatarHash());
 
@@ -93,8 +94,8 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
                         $this->entityManager->persist($user);
                     }
-                    if ($discordUser->getGlobalName() !== $user->getUsername()) {
-                        $user->setUsername($discordUser->getGlobalName());
+                    if ($discordUser->getDisplayName() !== $user->getDisplayName()) {
+                        $user->setDisplayName($discordUser->getDisplayName());
 
                         $this->entityManager->persist($user);
                     }

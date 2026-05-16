@@ -17,7 +17,12 @@ class ExtendedDiscordResourceOwner extends DiscordResourceOwner
         return $this->getValueByKey($this->response, 'user.id');
     }
 
-    public function getGlobalName(): string
+    public function getUsername(): string
+    {
+        return $this->getValueByKey($this->response, 'user.username');
+    }
+
+    public function getDisplayName(): string
     {
         if (null !== $this->getValueByKey($this->response, 'nick')) {
             return $this->getValueByKey($this->response, 'nick');

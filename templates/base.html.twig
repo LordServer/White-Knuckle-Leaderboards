@@ -40,7 +40,7 @@
                 </nav>
                 {% if is_granted('IS_AUTHENTICATED') %}
                     <div class="flex gap-2 flex-wrap items-center">
-                        <div>{{ user.username }}</div>
+                        <div>{{ user.displayName }}</div>
                         <el-dropdown class="relative ml-3">
                             <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900">
                                 <span class="absolute -inset-1.5"></span>
