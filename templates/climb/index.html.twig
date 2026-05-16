@@ -57,16 +57,16 @@
                                     <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{% if climb.rank is null and climb.status == 'approved' %}Obsolete{% elseif climb.rank is not null %}{{ climb.rank|ordinalize|escape }}{% else %}{{ climb.status|capitalize|escape }}{% endif %}</a>
                                 </td>
                                 <td class="text-center hidden sm:table-cell">
-                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.score|escape }}</a>
+                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.score|number_format()|escape }}</a>
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.time|seconds_to_time|escape }}</a>
                                 </td>
                                 <td class="text-center hidden sm:table-cell">
-                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.height|escape }} m</a>
+                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.height|number_format(2)|escape }} m</a>
                                 </td>
                                 <td class="text-center hidden sm:table-cell">
-                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.speed|escape }} m/s</a>
+                                    <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.speed|number_format(2)|escape }} m/s</a>
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">

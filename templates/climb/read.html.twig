@@ -7,7 +7,7 @@
         <div class="text-xs text-red-900">
             <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
             <a href="{{ path('climb_index') }}" class="hover:text-red-400 cursor-pointer">Climbs</a> /
-            <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">{% if climb.subcategory.name != 'Normal' %}{{ climb.subcategory.name|escape }} {% endif %}{{ climb.category.name|escape }} with a {{ climb.category.rankMethod.name|lower }} of {% if climb.category.rankMethod.name == 'Score' %}{{ climb.score }}{% elseif climb.category.rankMethod.name == 'Time' %}{{ climb.time }}{% elseif climb.category.rankMethod.name == 'Height' %}{{ climb.height }}{% elseif climb.category.rankMethod.name == 'Speed' %}{{ climb.speed }}{% endif %} by {{ climb.climber.username|escape }}</a>
+            <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">{% if climb.subcategory.name != 'Normal' %}{{ climb.subcategory.name|escape }} {% endif %}{{ climb.category.name|escape }} with a {{ climb.category.rankMethod.name|lower }} of {% if climb.category.rankMethod.name == 'Score' %}{{ climb.score|number_format()|escape }}{% elseif climb.category.rankMethod.name == 'Time' %}{{ climb.time|seconds_to_time|escape }}{% elseif climb.category.rankMethod.name == 'Height' %}{{ climb.height|number_format(2)|escape }}{% elseif climb.category.rankMethod.name == 'Speed' %}{{ climb.speed|number_format(2)|escape }}{% endif %} by {{ climb.climber.username|escape }}</a>
         </div>
         <h1 class="text-2xl font-bold mt-1">
             {% if climb.subcategory.name != 'Normal' %}
@@ -16,13 +16,13 @@
             {{ climb.category.name|escape }}
             <span class="font-normal text-gray-700 text-sm">with a {{ climb.category.rankMethod.name|lower }} of</span>
             {% if climb.category.rankMethod.name == 'Score' %}
-                {{ climb.score|escape }}
+                {{ climb.score|number_format()|escape }}
             {% elseif climb.category.rankMethod.name == 'Time' %}
                 {{ climb.time|seconds_to_time|escape }}
             {% elseif climb.category.rankMethod.name == 'Height' %}
-                {{ climb.height|escape }} m
+                {{ climb.height|number_format(2)|escape }} m
             {% elseif climb.category.rankMethod.name == 'Speed' %}
-                {{ climb.speed|escape }} m/s
+                {{ climb.speed|number_format(2)|escape }} m/s
             {% endif %}
             <span class="font-normal text-gray-700 text-sm">by</span>
             {{ climb.climber.username|escape }}
@@ -52,7 +52,7 @@
                 {% endif %}
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Score</div>
-                    <div>{{ climb.score|escape }}</div>
+                    <div>{{ climb.score|number_format()|escape }}</div>
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Time</div>
@@ -60,11 +60,11 @@
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Height</div>
-                    <div>{{ climb.height|escape }} m</div>
+                    <div>{{ climb.height|number_format(2)|escape }} m</div>
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Speed</div>
-                    <div>{{ climb.speed|escape }} m/s</div>
+                    <div>{{ climb.speed|number_format(2)|escape }} m/s</div>
                 </div>
             </div>
             <div class="flex-1 flex flex-col">
@@ -90,6 +90,12 @@
                         <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">{{ climb.createdAt|date('Y-m-d H:i:s') }}</div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div>
+            <div class="text-sm text-gray-700 pl-1">Notes</div>
+            <div class="border-gray-700 border mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                {{ climb.notes|escape }}
             </div>
         </div>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
