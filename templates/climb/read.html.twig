@@ -94,12 +94,12 @@
         </div>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="text-right pt-2">
-                {% if ((is_granted('ROLE_DISCORD_ADMIN') or climb.climber.id is same as(user.id) and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_VERIFIER') and climb.isReviewed == false)) %}
+                {% if ((is_granted('ROLE_DISCORD_ADMIN') or climb.climber.id is same as(current_user().id) and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_VERIFIER') and climb.isReviewed == false)) %}
                     <a href="{{ path('climb_update', { 'climbId': climb.id }) }}">
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
                     </a>
                 {% endif %}
-                {% if (climb.climber.id is same as(user.id)) or (is_granted('ROLE_DISCORD_VERIFIER')) %}
+                {% if (climb.climber.id is same as(current_user().id)) or (is_granted('ROLE_DISCORD_VERIFIER')) %}
                     <a href="{{ path('climb_delete', { 'climbId': climb.id }) }}">
                         <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
                     </a>
