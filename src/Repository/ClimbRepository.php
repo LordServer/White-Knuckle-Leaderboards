@@ -90,6 +90,23 @@ class ClimbRepository extends ServiceEntityRepository
         return $qb->setParameters($parameters)->getQuery()->getResult();
     }
 
+    public function findByCategoryAndSubcategorySortByCreateAt(Category $category, Subcategory $subcategory)
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('category', $category),
+            new Parameter('subcategory', $subcategory),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.category = :category')
+            ->andWhere('c.subcategory = :subcategory')
+            ->setParameters($parameters)
+            ->orderBy('c.created_at', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
