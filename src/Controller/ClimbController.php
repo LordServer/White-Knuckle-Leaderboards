@@ -105,6 +105,20 @@ final class ClimbController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $climb = $form->getData();
 
+            if ($form->get('approve')->isClicked()) {
+                if ($climb->getClimber()->getId() === $user->getId()) {
+                    throw $this->createAccessDeniedException('You can not approve your own submissions');
+                }
+                $climb->setStatus('approved');
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+            // TODO: Call a function to set new ranks for the leaderboard
+            } elseif ($form->get('reject')->isClicked()) {
+                $climb->setStatus('rejected');
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+            }
+
             $entityManager->persist($climb);
             $entityManager->flush();
 
