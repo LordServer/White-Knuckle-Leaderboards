@@ -7,6 +7,7 @@ use App\Form\ClimbType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
+use App\Service\UpdateClimbRanks;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,11 +78,12 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/update/{climbId<\d+>}', name: 'update')]
-    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
+        $approved = false;
 
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
@@ -108,7 +110,7 @@ final class ClimbController extends AbstractController
                 $climb->setStatus('approved');
                 $climb->setVerifier($user);
                 $climb->setIsReviewed(true);
-            // TODO: Call a function to set new ranks for the leaderboard
+                $approved = true;
             } elseif ($form->get('reject')->isClicked()) {
                 $climb->setStatus('rejected');
                 $climb->setVerifier($user);
@@ -117,6 +119,10 @@ final class ClimbController extends AbstractController
 
             $entityManager->persist($climb);
             $entityManager->flush();
+
+            if ($approved) {
+                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
+            }
 
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
@@ -130,9 +136,10 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/delete/{climbId<\d+>}', name: 'delete')]
-    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         if (!$climb) {
@@ -157,7 +164,7 @@ final class ClimbController extends AbstractController
             $entityManager->flush();
 
             if ($ranked) {
-                // TODO: Call a function to set new ranks for the leaderboard
+                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
             }
 
             return $this->redirectToRoute('climb_index');
