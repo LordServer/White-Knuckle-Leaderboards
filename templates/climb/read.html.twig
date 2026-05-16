@@ -14,17 +14,17 @@
                 {{ climb.subcategory.name|escape }}
             {% endif %}
             {{ climb.category.name|escape }}
-            <span class="font-normal text-gray-700">with a {{ climb.category.rankMethod.name|lower }} of</span>
+            <span class="font-normal text-gray-700 text-sm">with a {{ climb.category.rankMethod.name|lower }} of</span>
             {% if climb.category.rankMethod.name == 'Score' %}
-                {{ climb.score }}
+                {{ climb.score|escape }}
             {% elseif climb.category.rankMethod.name == 'Time' %}
-                {{ climb.time }}
+                {{ climb.time|seconds_to_time|escape }}
             {% elseif climb.category.rankMethod.name == 'Height' %}
-                {{ climb.height }}
+                {{ climb.height|escape }} m
             {% elseif climb.category.rankMethod.name == 'Speed' %}
-                {{ climb.speed }}
+                {{ climb.speed|escape }} m/s
             {% endif %}
-            <span class="font-normal text-gray-700">by</span>
+            <span class="font-normal text-gray-700 text-sm">by</span>
             {{ climb.climber.username|escape }}
         </h1>
         <div>
@@ -47,24 +47,24 @@
                 {% if climb.rank is not null %}
                     <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                         <div class="font-bold">Rank</div>
-                        <div>{% if climb.rank == 0 %}Obsolete{% else %}{{ climb.rank }}{% endif %}</div>
+                        <div>{% if climb.rank == 0 %}Obsolete{% else %}{{ climb.rank|ordinalize|escape }}{% endif %}</div>
                     </div>
                 {% endif %}
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Score</div>
-                    <div>{{ climb.score }}</div>
+                    <div>{{ climb.score|escape }}</div>
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Time</div>
-                    <div>{{ climb.time }}</div>
+                    <div>{{ climb.time|seconds_to_time|escape }}</div>
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Height</div>
-                    <div>{{ climb.height }}</div>
+                    <div>{{ climb.height|escape }} m</div>
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Speed</div>
-                    <div>{{ climb.speed }}</div>
+                    <div>{{ climb.speed|escape }} m/s</div>
                 </div>
             </div>
             <div class="flex-1 flex flex-col">
