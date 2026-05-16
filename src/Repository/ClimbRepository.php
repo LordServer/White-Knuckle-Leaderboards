@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Climb;
+use App\Entity\Subcategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
@@ -55,6 +57,37 @@ class ClimbRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult()
         ;
+    }
+
+    public function findForRanking(Category $category, Subcategory $subcategory): array
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('category', $category),
+            new Parameter('subcategory', $subcategory),
+            new Parameter('status', 'approved'),
+        ]);
+
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.category = :category')
+            ->andWhere('c.subcategory = :subcategory')
+            ->andWhere('c.status = :status');
+
+        switch ($category->getRankMethod()->getName()) {
+            case 'Score':
+                $qb->orderBy('c.score', 'DESC');
+                break;
+            case 'Time':
+                $qb->orderBy('c.time', 'ASC');
+                break;
+            case 'Height':
+                $qb->orderBy('c.height', 'DESC');
+                break;
+            case 'Speed':
+                $qb->orderBy('c.speed', 'DESC');
+                break;
+        }
+
+        return $qb->setParameters($parameters)->getQuery()->getResult();
     }
 
     //    /**
