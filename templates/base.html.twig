@@ -116,7 +116,7 @@
                             {% for recentClimb in recent_climbs() %}
                                 <div class="hover:bg-gray-600 mt-2">
                                     <a href="{{ path('climb_read', {'climbId': recentClimb.id}) }}">
-                                        <div>{{ recentClimb.category.name }}</div>
+                                        <div>{% if recentClimb.subcategory.name != 'Normal' %}{{ recentClimb.subcategory.name|escape }} {% endif %}{{ recentClimb.category.name|escape }}</div>
                                         <div class="flex flex-row flex-wrap w-full">
                                             <div class="flex flex-col flex-1">
                                                 <div>{{ recentClimb.status|capitalize }}</div>
