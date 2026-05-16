@@ -76,14 +76,26 @@ class ClimbRepository extends ServiceEntityRepository
             case 'Score':
                 $qb->orderBy('c.score', 'DESC');
                 break;
+            case 'Score Ascending':
+                $qb->orderBy('c.score', 'ASC');
+                break;
             case 'Time':
+                $qb->orderBy('c.time', 'DESC');
+                break;
+            case 'Time Ascending':
                 $qb->orderBy('c.time', 'ASC');
                 break;
             case 'Height':
                 $qb->orderBy('c.height', 'DESC');
                 break;
+            case 'Height Ascending':
+                $qb->orderBy('c.height', 'ASC');
+                break;
             case 'Speed':
                 $qb->orderBy('c.speed', 'DESC');
+                break;
+            case 'Speed Ascending':
+                $qb->orderBy('c.speed', 'ASC');
                 break;
         }
 
