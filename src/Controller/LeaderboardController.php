@@ -13,14 +13,12 @@ final class LeaderboardController extends AbstractController
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
     public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository): Response
     {
-        $user = $this->getUser();
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         return $this->render('leaderboard/index.html.twig', [
             'controller_name' => 'LeaderboardController',
-            'user' => $user,
             'categories' => $categories,
             'category' => $category,
             'subcategory' => $subcategory,

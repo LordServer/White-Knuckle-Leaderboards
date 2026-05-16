@@ -17,12 +17,10 @@ final class SubcategoryController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(SubcategoryRepository $subcategoryRepository): Response
     {
-        $user = $this->getUser();
         $subcategories = $subcategoryRepository->findAll();
 
         return $this->render('subcategory/index.html.twig', [
             'controller_name' => 'SubcategoryController',
-            'user' => $user,
             'subcategories' => $subcategories,
         ]);
     }
@@ -31,7 +29,6 @@ final class SubcategoryController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $subcategory = new Subcategory();
 
         $form = $this->createForm(SubcategoryType::class, $subcategory);
@@ -48,7 +45,6 @@ final class SubcategoryController extends AbstractController
 
         return $this->render('subcategory/create.html.twig', [
             'controller_name' => 'SubcategoryController',
-            'user' => $user,
             'form' => $form,
         ]);
     }
@@ -56,7 +52,6 @@ final class SubcategoryController extends AbstractController
     #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
     public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository): Response
     {
-        $user = $this->getUser();
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         if (!$subcategory) {
@@ -65,7 +60,6 @@ final class SubcategoryController extends AbstractController
 
         return $this->render('subcategory/read.html.twig', [
             'controller_name' => 'SubcategoryController',
-            'user' => $user,
             'subcategory' => $subcategory,
         ]);
     }
@@ -74,7 +68,6 @@ final class SubcategoryController extends AbstractController
     public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         if (!$subcategory) {
@@ -95,7 +88,6 @@ final class SubcategoryController extends AbstractController
 
         return $this->render('subcategory/update.html.twig', [
             'controller_name' => 'SubcategoryController',
-            'user' => $user,
             'form' => $form,
             'subcategory' => $subcategory,
         ]);
@@ -105,7 +97,6 @@ final class SubcategoryController extends AbstractController
     public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         if (!$subcategory) {
@@ -124,7 +115,6 @@ final class SubcategoryController extends AbstractController
 
         return $this->render('subcategory/delete.html.twig', [
             'controller_name' => 'SubcategoryController',
-            'user' => $user,
             'form' => $form,
             'subcategory' => $subcategory,
         ]);

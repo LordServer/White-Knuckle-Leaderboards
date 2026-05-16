@@ -17,12 +17,10 @@ final class CategoryController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(CategoryRepository $categoryRepository): Response
     {
-        $user = $this->getUser();
         $categories = $categoryRepository->findAll();
 
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
-            'user' => $user,
             'categories' => $categories,
         ]);
     }
@@ -31,7 +29,6 @@ final class CategoryController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $category = new Category();
 
         $form = $this->createForm(CategoryType::class, $category);
@@ -48,7 +45,6 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/create.html.twig', [
             'controller_name' => 'CategoryController',
-            'user' => $user,
             'form' => $form,
         ]);
     }
@@ -56,7 +52,6 @@ final class CategoryController extends AbstractController
     #[Route('/read/{categoryId<\d+>}', name: 'read')]
     public function read(int $categoryId, CategoryRepository $categoryRepository): Response
     {
-        $user = $this->getUser();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         if (!$category) {
@@ -65,7 +60,6 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/read.html.twig', [
             'controller_name' => 'CategoryController',
-            'user' => $user,
             'category' => $category,
         ]);
     }
@@ -74,7 +68,6 @@ final class CategoryController extends AbstractController
     public function update(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         if (!$category) {
@@ -95,7 +88,6 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/update.html.twig', [
             'controller_name' => 'CategoryController',
-            'user' => $user,
             'form' => $form,
             'category' => $category,
         ]);
@@ -105,7 +97,6 @@ final class CategoryController extends AbstractController
     public function delete(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         if (!$category) {
@@ -124,7 +115,6 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/delete.html.twig', [
             'controller_name' => 'CategoryController',
-            'user' => $user,
             'form' => $form,
             'category' => $category,
         ]);

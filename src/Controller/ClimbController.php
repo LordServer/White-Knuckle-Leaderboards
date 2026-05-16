@@ -19,14 +19,12 @@ final class ClimbController extends AbstractController
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
     public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository): Response
     {
-        $user = $this->getUser();
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         return $this->render('climb/index.html.twig', [
             'controller_name' => 'ClimbController',
-            'user' => $user,
             'categories' => $categories,
             'category' => $category,
             'subcategory' => $subcategory,
@@ -66,7 +64,6 @@ final class ClimbController extends AbstractController
     #[Route('/read/{climbId<\d+>}', name: 'read')]
     public function read(int $climbId, ClimbRepository $climbRepository): Response
     {
-        $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         if (!$climb) {
@@ -75,7 +72,6 @@ final class ClimbController extends AbstractController
 
         return $this->render('climb/read.html.twig', [
             'controller_name' => 'ClimbController',
-            'user' => $user,
             'climb' => $climb,
         ]);
     }
@@ -137,7 +133,6 @@ final class ClimbController extends AbstractController
     public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         if (!$climb) {
@@ -170,7 +165,6 @@ final class ClimbController extends AbstractController
 
         return $this->render('climb/delete.html.twig', [
             'controller_name' => 'ClimbController',
-            'user' => $user,
             'form' => $form,
             'climb' => $climb,
         ]);

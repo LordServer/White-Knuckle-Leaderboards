@@ -40,12 +40,12 @@
                 </nav>
                 {% if is_granted('IS_AUTHENTICATED') %}
                     <div class="flex gap-2 flex-wrap items-center">
-                        <div>{{ user.displayName }}</div>
+                        <div>{{ current_user().displayName }}</div>
                         <el-dropdown class="relative ml-3">
                             <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900">
                                 <span class="absolute -inset-1.5"></span>
                                 <span class="sr-only">Open user menu</span>
-                                <img class="h-12 rounded-full outline -outline-offset-1 outline-white/10" src="https://cdn.discordapp.com/{{ user.avatar }}" alt="{{ user.username }}">
+                                <img class="h-12 rounded-full outline -outline-offset-1 outline-white/10" src="https://cdn.discordapp.com/{{ current_user().avatar }}" alt="{{ current_user().username }}">
                             </button>
 
                             <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-900 text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">

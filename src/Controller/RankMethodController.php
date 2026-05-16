@@ -17,12 +17,10 @@ final class RankMethodController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(RankMethodRepository $rankMethodRepository): Response
     {
-        $user = $this->getUser();
         $rankMethods = $rankMethodRepository->findAll();
 
         return $this->render('rank_method/index.html.twig', [
             'controller_name' => 'RankMethodController',
-            'user' => $user,
             'rankMethods' => $rankMethods,
         ]);
     }
@@ -31,7 +29,6 @@ final class RankMethodController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $rankMethod = new RankMethod();
 
         $form = $this->createForm(RankMethodType::class, $rankMethod);
@@ -48,7 +45,6 @@ final class RankMethodController extends AbstractController
 
         return $this->render('rank_method/create.html.twig', [
             'controller_name' => 'RankMethodController',
-            'user' => $user,
             'form' => $form,
         ]);
     }
@@ -65,7 +61,6 @@ final class RankMethodController extends AbstractController
 
         return $this->render('rank_method/read.html.twig', [
             'controller_name' => 'RankMethodController',
-            'user' => $user,
             'rankMethod' => $rankMethod,
         ]);
     }
@@ -74,7 +69,6 @@ final class RankMethodController extends AbstractController
     public function update(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         if (!$rankMethod) {
@@ -95,7 +89,6 @@ final class RankMethodController extends AbstractController
 
         return $this->render('rank_method/update.html.twig', [
             'controller_name' => 'RankMethodController',
-            'user' => $user,
             'form' => $form,
             'rankMethod' => $rankMethod,
         ]);
@@ -105,7 +98,6 @@ final class RankMethodController extends AbstractController
     public function delete(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
-        $user = $this->getUser();
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         if (!$rankMethod) {
@@ -124,7 +116,6 @@ final class RankMethodController extends AbstractController
 
         return $this->render('rank_method/delete.html.twig', [
             'controller_name' => 'RankMethodController',
-            'user' => $user,
             'form' => $form,
             'rankMethod' => $rankMethod,
         ]);
