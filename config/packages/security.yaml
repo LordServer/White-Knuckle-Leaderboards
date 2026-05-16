@@ -11,6 +11,10 @@ security:
                 class: App\Entity\User
                 property: username
 
+    role_hierarchy:
+        ROLE_DISCORD_MODERATOR: [ROLE_DISCORD_AUTHORIZER]
+        ROLE_DISCORD_ADMIN: [ROLE_DISCORD_MODERATOR]
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
