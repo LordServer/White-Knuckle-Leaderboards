@@ -90,7 +90,7 @@ class ClimbRepository extends ServiceEntityRepository
         return $qb->setParameters($parameters)->getQuery()->getResult();
     }
 
-    public function findByCategoryAndSubcategorySortByCreateAt(Category $category, Subcategory $subcategory)
+    public function findByCategoryAndSubcategorySortByCreateAt(?Category $category, ?Subcategory $subcategory)
     {
         $parameters = new ArrayCollection([
             new Parameter('category', $category),
