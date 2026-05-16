@@ -86,21 +86,15 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                         $user->removeRole('ROLE_DISCORD_AUTHORIZER');
                     }
 
-                    // DateTime Tracking
-                    $user->setCreated(new \DateTimeImmutable());
-                    $user->setModified(new \DateTime());
-
                     $this->entityManager->persist($user);
                 } else {
                     if ($discordUser->getAvatarHash() !== $user->getAvatar()) {
                         $user->setAvatar($discordUser->getAvatarHash());
-                        $user->setModified(new \DateTime());
 
                         $this->entityManager->persist($user);
                     }
                     if ($discordUser->getGlobalName() !== $user->getUsername()) {
                         $user->setUsername($discordUser->getGlobalName());
-                        $user->setModified(new \DateTime());
 
                         $this->entityManager->persist($user);
                     }
@@ -108,14 +102,12 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                     if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
                         if (!in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
                             $user->addRole('ROLE_DISCORD_ADMIN');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
                     } else {
                         if (in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
                             $user->removeRole('ROLE_DISCORD_ADMIN');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
@@ -124,14 +116,12 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                     if (in_array($_ENV['DISCORD_MODERATOR_ROLE_ID'], $discord_roles)) {
                         if (!in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
                             $user->addRole('ROLE_DISCORD_MODERATOR');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
                     } else {
                         if (in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
                             $user->removeRole('ROLE_DISCORD_MODERATOR');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
@@ -140,14 +130,12 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                     if (in_array($_ENV['DISCORD_AUTHORIZER_ROLE_ID'], $discord_roles)) {
                         if (!in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
                             $user->addRole('ROLE_DISCORD_AUTHORIZER');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
                     } else {
                         if (in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
                             $user->removeRole('ROLE_DISCORD_AUTHORIZER');
-                            $user->setModified(new \DateTime());
 
                             $this->entityManager->persist($user);
                         }
