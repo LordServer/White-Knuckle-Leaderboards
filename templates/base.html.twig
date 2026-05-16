@@ -95,7 +95,7 @@
                                     <div>Climbs</div>
                                     <div>{{ climb_stats().totalClimbs }}</div>
                                     <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                        Total Climb Time: {{ climb_stats().totalTime }}<br>
+                                        Total Climb Time: {{ climb_stats().totalTime|seconds_to_time }}<br>
                                         Total Climb Height: {{ climb_stats().totalHeight }} m<br>
                                         Total / Recent Climbs: {{ climb_stats().totalClimbs }} / {{ climb_stats().recentClimbs }}
                                     </div>

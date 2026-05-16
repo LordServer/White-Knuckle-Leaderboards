@@ -6,6 +6,7 @@ use App\Repository\ClimbRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class Extensions extends AbstractExtension
@@ -38,6 +39,16 @@ class Extensions extends AbstractExtension
         ];
     }
 
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter(
+                'seconds_to_time',
+                [$this, 'secondsToTime']
+            ),
+        ];
+    }
+
     public function getApprovals(): int
     {
         return $this->climbRepository->getApprovals();
@@ -56,5 +67,21 @@ class Extensions extends AbstractExtension
     public function getClimbStats(): array
     {
         return $this->climbRepository->getClimbStats();
+    }
+
+    public function secondsToTime(float $seconds): string
+    {
+        $msec = ($seconds * 100) % 100;
+        $secs = $seconds % 60;
+        $mins = floor($seconds / 60) % 60;
+        $hours = floor($seconds / 3600);
+
+        if (0 != $hours) {
+            return sprintf('%02d:%02d:%02d.%02d', $hours, $mins, $secs, $msec);
+        } elseif (0 != $mins) {
+            return sprintf('%02d:%02d.%02d', $mins, $secs, $msec);
+        }
+
+        return sprintf('%02d.%02d', $secs, $msec);
     }
 }
