@@ -7,20 +7,28 @@
         <div class="text-xs text-red-900">
             <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
             <a href="{{ path('climb_index') }}" class="hover:text-red-400 cursor-pointer">Climbs</a> /
-            <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">{% if climb.subcategory.name != 'Normal' %}{{ climb.subcategory.name|escape }} {% endif %}{{ climb.category.name|escape }}</a>
+            <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">{% if climb.subcategory.name != 'Normal' %}{{ climb.subcategory.name|escape }} {% endif %}{{ climb.category.name|escape }} with a {{ climb.category.rankMethod.name|lower }} of {% if climb.category.rankMethod.name == 'Score' %}{{ climb.score }}{% elseif climb.category.rankMethod.name == 'Time' %}{{ climb.time }}{% elseif climb.category.rankMethod.name == 'Height' %}{{ climb.height }}{% elseif climb.category.rankMethod.name == 'Speed' %}{{ climb.speed }}{% endif %} by {{ climb.climber.username|escape }}</a>
         </div>
         <h1 class="text-2xl font-bold mt-1">
             {% if climb.subcategory.name != 'Normal' %}
                 {{ climb.subcategory.name|escape }}
             {% endif %}
             {{ climb.category.name|escape }}
-            <span class="font-normal text-gray-700">in</span>
-            {{ climb.score }}
+            <span class="font-normal text-gray-700">with a {{ climb.category.rankMethod.name|lower }} of</span>
+            {% if climb.category.rankMethod.name == 'Score' %}
+                {{ climb.score }}
+            {% elseif climb.category.rankMethod.name == 'Time' %}
+                {{ climb.time }}
+            {% elseif climb.category.rankMethod.name == 'Height' %}
+                {{ climb.height }}
+            {% elseif climb.category.rankMethod.name == 'Speed' %}
+                {{ climb.speed }}
+            {% endif %}
             <span class="font-normal text-gray-700">by</span>
             {{ climb.climber.username|escape }}
         </h1>
         <div>
-            MEDIA
+            {{ climb.mediaUrl }}
         </div>
         <div class="flex gap-2">
             <div class="flex-1 flex flex-col">
@@ -39,7 +47,7 @@
                 {% if climb.rank is not null %}
                     <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                         <div class="font-bold">Rank</div>
-                        <div>{{ climb.rank }}</div>
+                        <div>{% if climb.rank == 0 %}Obsolete{% else %}{{ climb.rank }}{% endif %}</div>
                     </div>
                 {% endif %}
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
@@ -67,7 +75,7 @@
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Verified</div>
-                    <div>{% if climb.isReviewed == 'true' %}{{ climb.status }}{% else %}Pending Review{% endif %}</div>
+                    <div>{% if climb.isReviewed == 'true' %}{{ climb.status|capitalize }}{% else %}Pending Review{% endif %}</div>
                 </div>
                 {% if climb.isReviewed == 'true' %}
                     <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
@@ -86,7 +94,7 @@
         </div>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="text-right pt-2">
-                {% if (climb.climber.id is same as(user.id) and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_VERIFIER') and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_MODERATOR')) %}
+                {% if ((is_granted('ROLE_DISCORD_ADMIN') or climb.climber.id is same as(user.id) and climb.isReviewed == false) or (is_granted('ROLE_DISCORD_VERIFIER') and climb.isReviewed == false)) %}
                     <a href="{{ path('climb_update', { 'climbId': climb.id }) }}">
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
                     </a>
