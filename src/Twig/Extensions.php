@@ -27,6 +27,10 @@ class Extensions extends AbstractExtension
                 'current_user',
                 [$this, 'getCurrentUser']
             ),
+            new TwigFunction(
+                'recent_climbs',
+                [$this, 'getRecentClimbs']
+            ),
         ];
     }
 
@@ -38,5 +42,10 @@ class Extensions extends AbstractExtension
     public function getCurrentUser(): UserInterface
     {
         return $this->security->getUser();
+    }
+
+    public function getRecentClimbs(): array
+    {
+        return $this->climbRepository->getRecentClimbs();
     }
 }

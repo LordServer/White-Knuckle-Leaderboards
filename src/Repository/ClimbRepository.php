@@ -26,6 +26,16 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getRecentClimbs(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.created_at', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
