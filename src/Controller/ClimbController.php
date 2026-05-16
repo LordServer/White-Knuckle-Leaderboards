@@ -81,7 +81,7 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/update/{climbId<\d+>}', name: 'update')]
-    public function update(int $climbId, ClimbRepository $climbRepository, EntityManagerInterface $entityManager): Response
+    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -91,13 +91,31 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        if ($climb->isReviewed()) {
+        if ($climb->isReviewed() && !$this->isGranted('ROLE_DISCORD_ADMIN')) {
             throw $this->createAccessDeniedException('Climb has already been reviewed and can no longer be updated');
+        }
+
+        if (!($climb->getClimber()->getId() === $user->getId())) {
+            throw $this->createAccessDeniedException('You do not have permission to edit this climb');
+        }
+
+        $form = $this->createForm(ClimbType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $climb = $form->getData();
+
+            $entityManager->persist($climb);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
 
         return $this->render('climb/update.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
+            'form' => $form,
+            'climb' => $climb,
         ]);
     }
 
