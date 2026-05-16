@@ -25,8 +25,12 @@ class ClimbType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $entry = $options['data'];
-        $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_DISCORD_ADMIN');
+        if (isset($options['data'])) {
+            $entry = $options['data'];
+            $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_DISCORD_ADMIN');
+        } else {
+            $locked = false;
+        }
 
         $builder = new DynamicFormBuilder($builder);
 
@@ -60,9 +64,11 @@ class ClimbType extends AbstractType
             ])
             ->add('approve', SubmitType::class, [
                 'label' => 'Approve',
+                'disabled' => $locked,
             ])
             ->add('reject', SubmitType::class, [
                 'label' => 'Reject',
+                'disabled' => $locked,
             ])
         ;
 
