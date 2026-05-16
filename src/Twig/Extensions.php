@@ -46,6 +46,10 @@ class Extensions extends AbstractExtension
                 'seconds_to_time',
                 [$this, 'secondsToTime']
             ),
+            new TwigFilter(
+                'ordinalize',
+                [$this, 'getOrdinalSuffix']
+            ),
         ];
     }
 
@@ -83,5 +87,21 @@ class Extensions extends AbstractExtension
         }
 
         return sprintf('%02d.%02d', $secs, $msec);
+    }
+
+    public function getOrdinalSuffix(int $number): string
+    {
+        $tens = (($number / 10) % 10);
+        $ones = substr($number, -1);
+
+        return match ($tens) {
+            1 => $number.'th',
+            default => match ($ones) {
+                '1' => $number.'st',
+                '2' => $number.'nd',
+                '3' => $number.'rd',
+                default => $number.'th',
+            },
+        };
     }
 }
