@@ -60,14 +60,15 @@
                                     <hr class="border-red-900">
                                 {% endif %}
                                 {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
-                                    <a href="#" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
+                                    <a href="{{ path('approvals_index') }}" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
                                         Approvals
                                         <span class="ml-auto w-9 min-w-max rounded-full bg-gray-900 px-2.5 py-0.5 text-center text-3/[5] font-medium whitespace-nowrap text-gray-100 outline-solid outline -outline-offset-1 outline-red-900">{{ approvals() }}</span>
                                     </a>
                                     <hr class="border-red-900">
                                 {% endif %}
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
+                                <a href="{{ path('user_climbs', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your climbs</a>
+                                <a href="{{ path('user_read', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
+                                <a href="{{ path('user_update', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
                                 <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Log out</a>
                             </el-menu>
                         </el-dropdown>
