@@ -13,7 +13,7 @@
             <h1 class="text-4xl font-bold mt-1">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }} Climbs</h1>
             <div class="flex items-center gap-2 flex-wrap mt-4">
                 {% for categoryLoop in categories %}
-                    <a href="{{ path('climb_index', { 'categoryId': categoryLoop.id }) }}">
+                    <a href="{{ path('climb_index', { 'categoryId': categoryLoop.id, 'subcategoryId': categoryLoop.subcategory[0].id }) }}">
                         <button class="{% if categoryLoop.id == category.id %}bg-red-900 {% else %}bg-black {% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">{{ categoryLoop.name|escape }}</button>
                     </a>
                 {% endfor %}
@@ -109,7 +109,7 @@
                 </dialog>
             </el-dialog>
         {% else %}
-            <h1 class="text-4xl font-bold mt-1">No Categories have been setup!</h1>
+            <h1 class="text-4xl font-bold mt-1">No Categories have been set up!</h1>
         {% endif %}
     </div>
 {% endblock %}

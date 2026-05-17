@@ -22,7 +22,13 @@ final class ClimbController extends AbstractController
     {
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+        if (!$category) {
+            $category = $categoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $categories))]);
+        }
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+        if (!$category->getSubcategory()->contains($subcategory)) {
+            $subcategory = $subcategoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $category->getSubcategory()->toArray()))]);
+        }
         $climbs = $climbRepository->findByCategoryAndSubcategorySortByCreateAt($category, $subcategory);
 
         return $this->render('climb/index.html.twig', [
