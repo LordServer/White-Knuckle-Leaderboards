@@ -40,6 +40,23 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getRecentUserClimbs(): int
+    {
+        $oneMonthAgo = new \DateTime('-1 month');
+
+        $parameters = new ArrayCollection([
+            new Parameter('pastDate', $oneMonthAgo),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(DISTINCT c.climber)')
+            ->where('c.created_at >= :pastDate')
+            ->setParameters($parameters)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     public function getClimbStats(): array
     {
         $oneMonthAgo = new \DateTime('-1 month');

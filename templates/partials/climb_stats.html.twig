@@ -13,9 +13,9 @@
             </div>
             <div class="group relative inline-block flex-1">
                 <div>Climbers</div>
-                <div>265</div>
+                <div>{{ total_users()|escape }}</div>
                 <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                    Climbers (Total / Active): 265 / 63
+                    Climbers (Total / Active): {{ total_users()|escape }} / {{ active_users()|escape }}
                 </div>
             </div>
         </div>

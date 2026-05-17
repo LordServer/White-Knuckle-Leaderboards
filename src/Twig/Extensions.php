@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Repository\ClimbRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
@@ -14,6 +15,7 @@ class Extensions extends AbstractExtension
     public function __construct(
         private readonly ClimbRepository $climbRepository,
         private readonly Security $security,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -35,6 +37,14 @@ class Extensions extends AbstractExtension
             new TwigFunction(
                 'climb_stats',
                 [$this, 'getClimbStats']
+            ),
+            new TwigFunction(
+                'total_users',
+                [$this, 'getTotalUsers']
+            ),
+            new TwigFunction(
+                'active_users',
+                [$this, 'getActiveUsers']
             ),
         ];
     }
@@ -71,6 +81,16 @@ class Extensions extends AbstractExtension
     public function getClimbStats(): array
     {
         return $this->climbRepository->getClimbStats();
+    }
+
+    public function getTotalUsers(): int
+    {
+        return $this->userRepository->getTotalUsers();
+    }
+
+    public function getActiveUsers(): int
+    {
+        return $this->climbRepository->getRecentUserClimbs();
     }
 
     public function secondsToTime(float $seconds): string
