@@ -38,6 +38,7 @@ final class ClimbFactory extends PersistentObjectFactory
     {
         $time = self::faker()->randomFloat(2, 331.02, 5501.75);
         $height = self::faker()->randomFloat(2, 3565.65, 84129.47);
+        $multiplier = self::faker()->randomFloat(2, 1.00, 10.00);
 
         $isReviewed = self::faker()->boolean();
 
@@ -56,10 +57,10 @@ final class ClimbFactory extends PersistentObjectFactory
         );
 
         return [
-            'score' => self::faker()->numberBetween(58499, 3737964),
             'time' => $time,
             'height' => $height,
             'speed' => $height / $time,
+            'score' => round((($height / $time) * $height) * $multiplier),
             'notes' => self::faker()->text(),
             'is_reviewed' => $isReviewed,
             'status' => $isReviewed
