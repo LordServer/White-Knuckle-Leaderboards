@@ -75,7 +75,7 @@
                 </div>
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                     <div class="font-bold">Status</div>
-                    <div>{% if climb.isReviewed == 'true' %}{{ climb.status|capitalize }}{% else %}Pending Review{% endif %}</div>
+                    <div>{% if climb.isReviewed == 'true' %}{{ climb.status.value|capitalize }}{% else %}Pending Review{% endif %}</div>
                 </div>
                 {% if climb.isReviewed == 'true' %}
                     <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
