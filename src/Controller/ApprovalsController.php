@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
+use App\Service\Breadcrumbs;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,16 +14,24 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ApprovalsController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
-    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository): Response
+    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
-        $categories = $categoryRepository->findAll();
-        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
-        if (!$category) {
-            $category = $categoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $categories))]);
+        $this->denyAccessUnlessGranted('ROLE_DISCORD_AUTHORIZER');
+
+        $approvalBreakdown = $climbRepository->getUnreviewedBreakdown();
+
+        $categoryExists = in_array($categoryId, array_column($approvalBreakdown, 'id'));
+        if (!$categoryExists) {
+            $category = $categoryRepository->findOneBy(['id' => array_key_first($approvalBreakdown)]);
+        } else {
+            $category = $categoryRepository->findOneBy(['id' => $categoryId]);
         }
-        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
-        if (!$category->getSubcategory()->contains($subcategory)) {
-            $subcategory = $subcategoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $category->getSubcategory()->toArray()))]);
+
+        $subcategoryExists = in_array($subcategoryId, array_column($approvalBreakdown[$category->getId()]['subcategories'], 'id'));
+        if (!$subcategoryExists) {
+            $subcategory = $subcategoryRepository->findOneBy(['id' => array_key_first($approvalBreakdown)]);
+        } else {
+            $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
         }
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt($category, $subcategory, false);
@@ -31,7 +40,6 @@ final class ApprovalsController extends AbstractController
 
         return $this->render('approvals/index.html.twig', [
             'controller_name' => 'ApprovalsController',
-            'categories' => $categories,
             'category' => $category,
             'subcategory' => $subcategory,
             'climbs' => $climbs,
