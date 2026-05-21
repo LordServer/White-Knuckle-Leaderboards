@@ -7,17 +7,35 @@
                     <div>{% if recentClimb.subcategory.name != 'Normal' %}{{ recentClimb.subcategory.name|escape }} {% endif %}{{ recentClimb.category.name|escape }}</div>
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="flex flex-col flex-1">
-                            <div>{% if recentClimb.rank is null and recentClimb.status == 'approved' %}Obsolete{% elseif recentClimb.rank is not null %}{{ recentClimb.rank|ordinalize }}{% else %}{{ recentClimb.status.value|capitalize }}{% endif %}</div>
-                            <div>{% if recentClimb.category.rankMethod.name == 'Score' %}{{ recentClimb.score }}{% elseif recentClimb.category.rankMethod.name == 'Time' %}{{ recentClimb.time|seconds_to_time }}{% elseif recentClimb.category.rankMethod.name == 'Height' %}{{ recentClimb.height }} m{% elseif recentClimb.category.rankMethod.name == 'Speed' %}{{ recentClimb.speed }} m/s{% endif %}</div>
+                            <div>
+                                {% if recentClimb.rank is null and recentClimb.status == 'approved' %}
+                                    Obsolete
+                                {% elseif recentClimb.rank is not null %}
+                                    {{ recentClimb.rank|ordinalize|escape }}
+                                {% else %}
+                                    {{ recentClimb.status.value|capitalize|escape }}
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if recentClimb.category.rankMethod.name == 'Score' %}
+                                    {{ recentClimb.score|number_format()|escape }}
+                                {% elseif recentClimb.category.rankMethod.name == 'Time Ascending' %}
+                                    {{ recentClimb.time|seconds_to_time|escape }}
+                                {% elseif recentClimb.category.rankMethod.name == 'Height' %}
+                                    {{ recentClimb.height|escape }} m
+                                {% elseif recentClimb.category.rankMethod.name == 'Speed' %}
+                                    {{ recentClimb.speed|escape }} m/s
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="flex flex-col flex-1">
-                            <div>{{ recentClimb.climber.displayName }}</div>
+                            <div>{{ recentClimb.climber.displayName|escape }}</div>
                             <div class="group relative inline-block">
                                 <div>
-                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s')|ago }}
+                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s')|ago|escape }}
                                 </div>
                                 <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s') }}
+                                    {{ recentClimb.createdAt|date('Y-m-d H:i:s')|escape }}
                                 </div>
                             </div>
                         </div>
