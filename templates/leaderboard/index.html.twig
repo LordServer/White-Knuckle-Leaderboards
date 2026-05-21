@@ -46,34 +46,34 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {% for i in 1..4 %}
+                    {% for climb in climbs %}
                         <tr class="hover:bg-gray-600">
                             <td class="text-center">
-                                <a href="#" class="block">{{ i }}</a>
+                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.rank }}</a>
                             </td>
                             <td>
-                                <a href="#" class="block">LordServer</a>
+                                <a href="#" class="block">{{ climb.climber.displayName|escape }}</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="#" class="block">999</a>
+                                <a href="#" class="block">{{ climb.score|number_format()|escape }}</a>
                             </td>
                             <td class="text-center">
-                                <a href="#" class="block">59:12.125</a>
+                                <a href="#" class="block">{{ climb.time|seconds_to_time|escape }}</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="#" class="block">999.9 m</a>
+                                <a href="#" class="block">{{ climb.height|number_format(2)|escape }} m</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="#" class="block">9.9 m/s</a>
+                                <a href="#" class="block">{{ climb.speed|number_format(2)|escape }} m/s</a>
                             </td>
                             <td class="text-center">
                                 <a href="#" class="block">
                                     <div class="group relative inline-block">
                                         <div>
-                                            1 Week Ago
+                                            {{ climb.createdAt|date('Y-m-d H:i:s')|ago|escape }}
                                         </div>
                                         <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                                            2026-04-26
+                                            {{ climb.createdAt|date('Y-m-d H:i:s')|escape }}
                                         </div>
                                     </div>
                                 </a>
