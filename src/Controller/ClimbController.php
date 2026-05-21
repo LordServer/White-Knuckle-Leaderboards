@@ -102,7 +102,7 @@ final class ClimbController extends AbstractController
             throw $this->createAccessDeniedException('Climb has already been reviewed and can no longer be updated');
         }
 
-        if (!($climb->getClimber()->getId() === $user->getId())) {
+        if (($climb->getClimber()->getId() !== $user->getId()) && !$this->isGranted('ROLE_DISCORD_AUTHORIZER')) {
             throw $this->createAccessDeniedException('You do not have permission to edit this climb');
         }
 
