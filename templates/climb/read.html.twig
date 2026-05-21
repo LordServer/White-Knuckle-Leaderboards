@@ -44,10 +44,10 @@
             </div>
             <div class="flex-1 flex flex-col">
                 <div class="text-sm text-gray-700 pl-1">Details</div>
-                {% if climb.rank is not null %}
+                {% if climb.isReviewed is true and climb.status.value === 'approved' %}
                     <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
                         <div class="font-bold">Rank</div>
-                        <div>{% if climb.rank == 0 %}Obsolete{% else %}{{ climb.rank|ordinalize|escape }}{% endif %}</div>
+                        <div>{% if climb.rank === null %}Obsolete{% else %}{{ climb.rank|ordinalize|escape }}{% endif %}</div>
                     </div>
                 {% endif %}
                 <div class="bg-gray-700 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
