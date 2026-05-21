@@ -136,6 +136,24 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByCategoryAndSubcategoryAndRankSortByRank(?Category $category, ?Subcategory $subcategory)
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('category', $category),
+            new Parameter('subcategory', $subcategory),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.category = :category')
+            ->andWhere('c.subcategory = :subcategory')
+            ->andWhere('c.rank IS NOT NULL')
+            ->setParameters($parameters)
+            ->orderBy('c.rank', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
