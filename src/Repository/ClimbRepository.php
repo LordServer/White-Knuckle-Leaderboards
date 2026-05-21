@@ -69,7 +69,7 @@ class ClimbRepository extends ServiceEntityRepository
             ->select('count(c.id) as totalClimbs')
             ->addSelect('coalesce(sum(c.time), 0) as totalTime')
             ->addSelect('coalesce(sum(c.height), 0) as totalHeight')
-            ->addSelect('count(case when c.created_at >= :pastDate then c.id else 0 end) as recentClimbs')
+            ->addSelect('sum(case when c.created_at >= :pastDate then 1 else 0 end) as recentClimbs')
             ->setParameters($parameters)
             ->getQuery()
             ->getSingleResult()
