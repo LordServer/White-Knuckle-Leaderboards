@@ -1,5 +1,5 @@
 TODO: Setup leaderboards to appear on the main page
-TODO: Setup the approvals page. Same layout as the regular climbs by category pages, but sorted by oldest first. Also try to make a category not appear if it has no pending approvals
+TODO: Error when category is selected in approvals and there are no pending approvals for said category
 TODO: Setup climber pages.
 TODO: Find a way to add the approve and reject button to the main climb/read page
 TODO: Fix hyperlinks to everywhere

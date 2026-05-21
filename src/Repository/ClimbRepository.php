@@ -154,6 +154,70 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt(?Category $category, ?Subcategory $subcategory, bool $approved)
+    {
+
+        $parameters = new ArrayCollection([
+            new Parameter('category', $category),
+            new Parameter('subcategory', $subcategory),
+            new Parameter('status', $approved),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.category = :category')
+            ->andWhere('c.subcategory = :subcategory')
+            ->andWhere('c.is_reviewed = :status')
+            ->setParameters($parameters)
+            ->orderBy('c.created_at', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getUnreviewedBreakdown(): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select([
+                'cat.id AS categoryId',
+                'cat.name AS categoryName',
+                'sc.id AS subcategoryId',
+                'sc.name AS subcategoryName',
+                'COUNT(c.id) AS total',
+            ])
+            ->join('c.category', 'cat')
+            ->join('c.subcategory', 'sc')
+            ->where('c.is_reviewed = FALSE')
+            ->groupBy('cat.id, sc.id')
+            ->orderBy('cat.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        $grouped = [];
+
+        foreach ($results as $row) {
+            $categoryId = $row['categoryId'];
+
+            if (!isset($grouped[$categoryId])) {
+                $grouped[$categoryId] = [
+                    'id' => $row['categoryId'],
+                    'category' => $row['categoryName'],
+                    'total' => 0,
+                    'subcategories' => [],
+                ];
+            }
+
+            $grouped[$categoryId]['subcategories'][] = [
+                'id' => $row['subcategoryId'],
+                'name' => $row['subcategoryName'],
+                'total' => (int) $row['total'],
+            ];
+
+            $grouped[$categoryId]['total'] += (int) $row['total'];
+        }
+
+        return $grouped;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
