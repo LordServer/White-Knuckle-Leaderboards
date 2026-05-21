@@ -5,6 +5,8 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use App\Entity\RankMethod;
 use App\Entity\Subcategory;
+use App\Factory\ClimbFactory;
+use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -217,5 +219,7 @@ class AppFixtures extends Fixture
 //        $manager->persist($category);
 //
 //        $manager->flush();
+        UserFactory::createMany(273);
+        ClimbFactory::createMany(1185);
     }
 }
