@@ -148,7 +148,7 @@ class ClimbRepository extends ServiceEntityRepository
             ->andWhere('c.subcategory = :subcategory')
             ->andWhere('c.rank IS NOT NULL')
             ->setParameters($parameters)
-            ->orderBy('c.rank', 'DESC')
+            ->orderBy('c.rank', 'ASC')
             ->getQuery()
             ->getResult()
         ;
