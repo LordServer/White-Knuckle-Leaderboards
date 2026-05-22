@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
+use App\Util\TimeFormatter;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
@@ -95,18 +96,7 @@ class Extensions extends AbstractExtension
 
     public function secondsToTime(float $seconds): string
     {
-        $msec = ($seconds * 100) % 100;
-        $secs = $seconds % 60;
-        $mins = floor($seconds / 60) % 60;
-        $hours = floor($seconds / 3600);
-
-        if (0 != $hours) {
-            return sprintf('%02d:%02d:%02d.%02d', $hours, $mins, $secs, $msec);
-        } elseif (0 != $mins) {
-            return sprintf('%02d:%02d.%02d', $mins, $secs, $msec);
-        }
-
-        return sprintf('%02d.%02d', $secs, $msec);
+        return TimeFormatter::secondsToTime($seconds);
     }
 
     public function getOrdinalSuffix(int $number): string
