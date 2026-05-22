@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Climb;
+use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -61,6 +62,12 @@ class ClimbType extends AbstractType
                 'attr' => [
                     'data-model' => 'on(change)|formValues.category',
                 ],
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->createQueryBuilder('c')
+                        ->where('c.is_archived = :archived')
+                        ->setParameter('archived', false)
+                        ->orderBy('c.id', 'ASC');
+                }
             ])
             ->add('approve', SubmitType::class, [
                 'label' => 'Approve',
