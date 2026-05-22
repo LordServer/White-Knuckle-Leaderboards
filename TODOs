@@ -8,7 +8,5 @@ TODO: setup API for Jay and the bot
 TODO: setup way to generate API token with scopes
 TODO: add way to ban users
 TODO: add red notification marker on profile picture for approvers
-TODO: Add links to Category pages on category_index
-TODO: All links to Subcategory pages on subcategory_index
 TODO: Add more information on the *_delete pages
 TODO: Style Timecode box better

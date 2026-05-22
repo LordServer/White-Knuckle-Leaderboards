@@ -23,7 +23,9 @@
                 <tbody>
                 {% for subcategory in subcategories %}
                     <tr class="hover:bg-gray-600">
-                        <td>{{ subcategory.name|escape }}</td>
+                        <td>
+                            <a href="{{ path('subcategory_read', {'subcategoryId': subcategory.id}) }}" class="block">{{ subcategory.name|escape }}</a>
+                        </td>
                         {% if is_granted('ROLE_DISCORD_ADMIN') %}
                             <td class="text-right">
                                 <a href="{{ path('subcategory_update', { 'subcategoryId': subcategory.id }) }}">
