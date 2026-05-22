@@ -16,14 +16,18 @@ final class LeaderboardController extends AbstractController
     public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(false);
-        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
-        if (!$category) {
-            $category = $categoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $categories))]);
-        }
-        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
-        if (!$category->getSubcategory()->contains($subcategory)) {
-            $subcategory = $subcategoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $category->getSubcategory()->toArray()))]);
-        }
+
+        $category = current(array_filter(
+            $categories,
+            fn ($category) => $category->getId() === $categoryId
+        ));
+        $category = $category ?: ($categories[0] ?? null);
+
+        $subcategory = current(array_filter(
+            $category->getSubcategory()->toArray(),
+            fn ($subcategory) => $subcategory->getId() === $subcategoryId
+        ));
+        $subcategory = $subcategory ?: ($category->getSubcategory()->toArray()[0] ?? null);
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndRankSortByRank($category, $subcategory);
 
@@ -54,14 +58,18 @@ final class LeaderboardController extends AbstractController
     public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(true);
-        $category = $categoryRepository->findOneBy(['id' => $categoryId]);
-        if (!$category) {
-            $category = $categoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $categories))]);
-        }
-        $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
-        if (!$category->getSubcategory()->contains($subcategory)) {
-            $subcategory = $subcategoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $category->getSubcategory()->toArray()))]);
-        }
+
+        $category = current(array_filter(
+            $categories,
+            fn ($category) => $category->getId() === $categoryId
+        ));
+        $category = $category ?: ($categories[0] ?? null);
+
+        $subcategory = current(array_filter(
+            $category->getSubcategory()->toArray(),
+            fn ($subcategory) => $subcategory->getId() === $subcategoryId
+        ));
+        $subcategory = $subcategory ?: ($category->getSubcategory()->toArray()[0] ?? null);
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndRankSortByRank($category, $subcategory);
 
