@@ -9,3 +9,7 @@ TODO: setup way to generate API token with scopes
 TODO: add way to ban users
 TODO: create function for automatic generation of red nav links at the top of each page
 TODO: add red notification marker on profile picture for approvers
+TODO: Add links to Category pages on category_index
+TODO: All links to Subcategory pages on subcategory_index
+TODO: Add more information on the *_delete pages
+TODO: Fix time box on climb_create and climb_update to use hour:seconds:minutes:milliseconds
