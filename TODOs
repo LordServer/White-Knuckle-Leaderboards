@@ -11,4 +11,4 @@ TODO: add red notification marker on profile picture for approvers
 TODO: Add links to Category pages on category_index
 TODO: All links to Subcategory pages on subcategory_index
 TODO: Add more information on the *_delete pages
-TODO: Fix time box on climb_create and climb_update to use hour:seconds:minutes:milliseconds
+TODO: Style Timecode box better

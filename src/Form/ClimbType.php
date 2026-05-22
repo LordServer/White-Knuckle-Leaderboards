@@ -38,7 +38,7 @@ class ClimbType extends AbstractType
             ->add('score', null, [
                 'disabled' => $locked,
             ])
-            ->add('time', null, [
+            ->add('time', TimecodeType::class, [
                 'disabled' => $locked,
             ])
             ->add('height', null, [
