@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use App\Entity\Climb;
 use App\Entity\Subcategory;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
@@ -156,7 +157,6 @@ class ClimbRepository extends ServiceEntityRepository
 
     public function findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt(?Category $category, ?Subcategory $subcategory, bool $approved)
     {
-
         $parameters = new ArrayCollection([
             new Parameter('category', $category),
             new Parameter('subcategory', $subcategory),
@@ -169,6 +169,25 @@ class ClimbRepository extends ServiceEntityRepository
             ->andWhere('c.is_reviewed = :status')
             ->setParameters($parameters)
             ->orderBy('c.created_at', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByUserAndCategoryAndSubcategoryOrderByNewestCreatedAt(?User $climber, Category $category, ?Subcategory $subcategory)
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('climber', $climber),
+            new Parameter('category', $category),
+            new Parameter('subcategory', $subcategory),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.climber = :climber')
+            ->andWhere('c.category = :category')
+            ->andWhere('c.subcategory = :subcategory')
+            ->setParameters($parameters)
+            ->orderBy('c.created_at', 'DESC')
             ->getQuery()
             ->getResult()
         ;
