@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LeaderboardController extends AbstractController
 {
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
-    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
+    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(false);
 
@@ -55,7 +55,7 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/archive/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_archive')]
-    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
+    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(true);
 
