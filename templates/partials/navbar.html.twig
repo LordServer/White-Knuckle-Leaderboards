@@ -37,7 +37,7 @@
                         <hr class="border-red-900">
                     {% endif %}
                     {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
-                        <a href="{{ path('approvals_index') }}" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
+                        <a href="{{ path('approval_index') }}" class="px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden flex">
                             Approvals
                             <span class="ml-auto w-9 min-w-max rounded-full bg-gray-900 px-2.5 py-0.5 text-center text-3/[5] font-medium whitespace-nowrap text-gray-100 outline-solid outline -outline-offset-1 outline-red-900">
                                 {% if approvals() < 100 %}
