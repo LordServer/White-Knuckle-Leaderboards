@@ -47,7 +47,7 @@
                         {% for climb in climbs %}
                             <tr class="hover:bg-gray-600">
                                 <td>
-                                    <a href="#" class="block">{{ climb.climber.displayName|escape }}</a>
+                                    <a href="{{ path('user_read', { 'userId': climb.climber.id }) }}" class="block">{{ climb.climber.displayName|escape }}</a>
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{% if climb.rank is null and climb.status == 'approved' %}Obsolete{% elseif climb.rank is not null %}{{ climb.rank|ordinalize|escape }}{% else %}{{ climb.status.value|capitalize|escape }}{% endif %}</a>
