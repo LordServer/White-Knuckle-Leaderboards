@@ -5,12 +5,45 @@
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <h1>Hello {{ controller_name }}! ✅</h1>
-
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code>/var/www/wklb/src/Controller/UserController.php</code></li>
-            <li>Your template at <code>/var/www/wklb/templates/user/index.html.twig</code></li>
-        </ul>
+        <h1 class="text-4xl font-bold mt-1">All Climbers</h1>
+        <div class="mt-2">
+            <table class="w-full border-collapse">
+                <thead>
+                <tr>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">First Submission</th>
+                    <th class="text-left">Latest Submission</th>
+                    <th>Joined</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for climber in climbers %}
+                        <tr class="hover:bg-gray-600">
+                            <td>
+                                <a href="{{ path('user_climbs', { 'userId': climber.id }) }}" class="block">{{ climber.displayName }}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('user_climbs', { 'userId': climber.id }) }}" class="block">Click Here</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('user_climbs', { 'userId': climber.id }) }}" class="block">Click Here</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('user_climbs', { 'userId': climber.id }) }}" class="block">
+                                    <div class="group relative inline-block">
+                                        <div>
+                                            {{ climber.createdAt|date('Y-m-d H:i:s')|ago|escape }}
+                                        </div>
+                                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                            {{ climber.createdAt|date('Y-m-d H:i:s')|escape }}
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

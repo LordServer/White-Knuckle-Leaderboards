@@ -14,7 +14,7 @@ final class UserController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(UserRepository $userRepository, Breadcrumbs $breadcrumbs): Response
     {
-        $users = $userRepository->findAll();
+        $climbers = $userRepository->findAll();
 
         $breadcrumbs
             ->addHome()
@@ -23,7 +23,7 @@ final class UserController extends AbstractController
 
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
-            'users' => $users,
+            'climbers' => $climbers,
             'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
