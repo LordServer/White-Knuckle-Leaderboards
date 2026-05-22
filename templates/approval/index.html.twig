@@ -4,16 +4,12 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <div class="text-xs text-red-900">
-            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
-            <a href="{{ path('climb_index') }}" class="hover:text-red-400 cursor-pointer">Climbs</a> /
-            {% if category is not null %}<a href="{{ path('climb_index', { 'categoryId': category.id, 'subcategoryId': subcategory.id}) }}" class="hover:text-red-400 cursor-pointer">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }}</a>{% endif %}
-        </div>
+        {% include 'partials/breadcrumbs.html.twig' %}
         {% if category is not null %}
-            <h1 class="text-4xl font-bold mt-1">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }} Climbs</h1>
+            <h1 class="text-4xl font-bold mt-1">{{ pageName }} Approvals</h1>
             <div class="flex items-center gap-2 flex-wrap mt-4">
                 {% for categoryLoop in approvalBreakdown %}
-                    <a href="{{ path('approvals_index', { 'categoryId': categoryLoop.id, 'subcategoryId': categoryLoop.subcategories[0].id }) }}">
+                    <a href="{{ path('approval_index', { 'categoryId': categoryLoop.id, 'subcategoryId': categoryLoop.subcategories[0].id }) }}">
                         <button class="{% if categoryLoop.id == category.id %}bg-red-900 {% else %}bg-black {% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400 relative">
                             {{ categoryLoop.category|escape }}
                             <span class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ed4245] px-1.5 text-xs font-bold text-white ring-2 ring-gray-900">
@@ -28,7 +24,7 @@
                     <label for="form-control" class="hidden">Mode</label>
                     <select name="route-selector" id="form-control" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
                         {% for subcategoryLoop in approvalBreakdown[category.id].subcategories %}
-                            <option {% if subcategory.id == subcategoryLoop.id %}selected="selected" {% endif %}value="{{ path('approvals_index', { 'categoryId': category.id, 'subcategoryId': subcategoryLoop.id }) }}">
+                            <option {% if subcategory.id == subcategoryLoop.id %}selected="selected" {% endif %}value="{{ path('approval_index', { 'categoryId': category.id, 'subcategoryId': subcategoryLoop.id }) }}">
                                 ({{ subcategoryLoop.total|escape }}) {{ subcategoryLoop.name|escape }}
                             </option>
                         {% endfor %}

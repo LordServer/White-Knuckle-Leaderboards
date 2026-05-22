@@ -10,8 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/approvals', name: 'approvals_')]
-final class ApprovalsController extends AbstractController
+#[Route('/approval', name: 'approval_')]
+final class ApprovalController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
     public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
@@ -36,14 +36,26 @@ final class ApprovalsController extends AbstractController
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt($category, $subcategory, false);
 
-        $approvalBreakdown = $climbRepository->getUnreviewedBreakdown();
+        if ('Normal' === $subcategory->getName()) {
+            $pageName = $category->getName();
+        } else {
+            $pageName = $subcategory->getName().' '.$category->getName();
+        }
 
-        return $this->render('approvals/index.html.twig', [
-            'controller_name' => 'ApprovalsController',
+        $breadcrumbs
+            ->addHome()
+            ->addApproval()
+            ->add($pageName, 'approval_index', ['categoryId' => $category->getId(), 'subcategoryId' => $subcategory->getId()])
+        ;
+
+        return $this->render('approval/index.html.twig', [
+            'controller_name' => 'ApprovalController',
             'category' => $category,
             'subcategory' => $subcategory,
             'climbs' => $climbs,
             'approvalBreakdown' => $approvalBreakdown,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 }
