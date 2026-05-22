@@ -4,11 +4,10 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <div class="text-xs text-red-900">
-            <a href="#" class="hover:text-red-400 cursor-pointer">Home</a> / <a href="#" class="hover:text-red-400 cursor-pointer">Leaderboards</a> /
-            <a href="#" class="hover:text-red-400 cursor-pointer">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }}</a>
-        </div>
-        <h1 class="text-4xl font-bold mt-1">{% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }} Leaderboard</h1>
+        {% include 'partials/breadcrumbs.html.twig' %}
+        <h1 class="text-4xl font-bold mt-1">
+            {{ pageName }} Leaderboard
+        </h1>
         <div class="flex items-center gap-2 flex-wrap mt-4">
             {% for categoryLoop in categories %}
                 <a href="{{ path('app_leaderboard', { 'categoryId': categoryLoop.id }) }}">

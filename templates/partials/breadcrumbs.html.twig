@@ -1,0 +1,15 @@
+<div class="text-xs text-red-900">
+    {% for breadcrumb in breadcrumbs %}
+        {% if breadcrumb.route %}
+            <a href="{{ path(breadcrumb.route, breadcrumb.params) }}" class="hover:text-red-400 cursor-pointer">
+                {{ breadcrumb.label|striptags }}
+            </a>
+        {% else %}
+            {{ breadcrumb.label }}
+        {% endif %}
+
+        {% if not loop.last %}
+            /
+        {% endif %}
+    {% endfor %}
+</div>

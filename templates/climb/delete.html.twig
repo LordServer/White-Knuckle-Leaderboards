@@ -4,29 +4,9 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <div class="text-xs text-red-900">
-            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
-            <a href="{{ path('climb_index') }}" class="hover:text-red-400 cursor-pointer">Climbs</a> /
-            <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">{% if climb.subcategory.name != 'Normal' %}{{ climb.subcategory.name|escape }} {% endif %}{{ climb.category.name|escape }} with a {{ climb.category.rankMethod.name|lower }} of {% if climb.category.rankMethod.name == 'Score' %}{{ climb.score }}{% elseif climb.category.rankMethod.name == 'Time' %}{{ climb.time }}{% elseif climb.category.rankMethod.name == 'Height' %}{{ climb.height }}{% elseif climb.category.rankMethod.name == 'Speed' %}{{ climb.speed }}{% endif %} by {{ climb.climber.username|escape }}</a> /
-            <a href="{{ path('climb_delete', { 'climbId': climb.id }) }}" class="hover:text-red-400 cursor-pointer">Delete</a>
-        </div>
+        {% include 'partials/breadcrumbs.html.twig' %}
         <h1 class="text-2xl font-bold mt-1">
-            {% if climb.subcategory.name != 'Normal' %}
-                {{ climb.subcategory.name|escape }}
-            {% endif %}
-            {{ climb.category.name|escape }}
-            <span class="font-normal text-gray-700">with a {{ climb.category.rankMethod.name|lower }} of</span>
-            {% if climb.category.rankMethod.name == 'Score' %}
-                {{ climb.score }}
-            {% elseif climb.category.rankMethod.name == 'Time' %}
-                {{ climb.time }}
-            {% elseif climb.category.rankMethod.name == 'Height' %}
-                {{ climb.height }}
-            {% elseif climb.category.rankMethod.name == 'Speed' %}
-                {{ climb.speed }}
-            {% endif %}
-            <span class="font-normal text-gray-700">by</span>
-            {{ climb.climber.username|escape }}
+            {{ pageName|raw }}
         </h1>
         {{ form_start(form) }}
         <div class="text-right pt-2">

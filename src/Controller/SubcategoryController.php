@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Subcategory;
 use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
+use App\Service\Breadcrumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,18 +16,24 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SubcategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(SubcategoryRepository $subcategoryRepository): Response
+    public function index(SubcategoryRepository $subcategoryRepository, Breadcrumbs $breadcrumbs): Response
     {
         $subcategories = $subcategoryRepository->findAll();
+
+        $breadcrumbs
+            ->addHome()
+            ->addSubcategory()
+        ;
 
         return $this->render('subcategory/index.html.twig', [
             'controller_name' => 'SubcategoryController',
             'subcategories' => $subcategories,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = new Subcategory();
@@ -43,14 +50,21 @@ final class SubcategoryController extends AbstractController
             return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
         }
 
+        $breadcrumbs
+            ->addHome()
+            ->addSubcategory()
+            ->add('Create', 'subcategory_create')
+        ;
+
         return $this->render('subcategory/create.html.twig', [
             'controller_name' => 'SubcategoryController',
             'form' => $form,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
     #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
-    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository): Response
+    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Breadcrumbs $breadcrumbs): Response
     {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
@@ -58,14 +72,21 @@ final class SubcategoryController extends AbstractController
             throw $this->createNotFoundException('Subcategory not found');
         }
 
+        $breadcrumbs
+            ->addHome()
+            ->addSubcategory()
+            ->add($subcategory->getName(), 'subcategory_read', ['subcategoryId' => $subcategoryId])
+        ;
+
         return $this->render('subcategory/read.html.twig', [
             'controller_name' => 'SubcategoryController',
             'subcategory' => $subcategory,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
     #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
-    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
@@ -86,15 +107,23 @@ final class SubcategoryController extends AbstractController
             return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
         }
 
+        $breadcrumbs
+            ->addHome()
+            ->addSubcategory()
+            ->add($subcategory->getName(), 'subcategory_read', ['subcategoryId' => $subcategoryId])
+            ->add('Update', 'subcategory_update', ['subcategoryId' => $subcategoryId])
+        ;
+
         return $this->render('subcategory/update.html.twig', [
             'controller_name' => 'SubcategoryController',
             'form' => $form,
             'subcategory' => $subcategory,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
     #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
-    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
@@ -113,10 +142,18 @@ final class SubcategoryController extends AbstractController
             return $this->redirectToRoute('subcategory_index');
         }
 
+        $breadcrumbs
+            ->addHome()
+            ->addSubcategory()
+            ->add($subcategory->getName(), 'subcategory_read', ['subcategoryId' => $subcategoryId])
+            ->add('Delete', 'subcategory_delete', ['subcategoryId' => $subcategoryId])
+        ;
+
         return $this->render('subcategory/delete.html.twig', [
             'controller_name' => 'SubcategoryController',
             'form' => $form,
             'subcategory' => $subcategory,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 }

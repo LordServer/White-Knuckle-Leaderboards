@@ -8,7 +8,9 @@ use App\Form\ClimbType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
+use App\Service\Breadcrumbs;
 use App\Service\UpdateClimbRanks;
+use App\Util\TimeFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ClimbController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
-    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository): Response
+    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
@@ -32,17 +34,31 @@ final class ClimbController extends AbstractController
         }
         $climbs = $climbRepository->findByCategoryAndSubcategorySortByCreateAt($category, $subcategory);
 
+        if ('Normal' === $subcategory->getName()) {
+            $pageName = $category->getName();
+        } else {
+            $pageName = $subcategory->getName().' '.$category->getName();
+        }
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add($pageName, 'climb_index', ['categoryId' => $category->getId(), 'subcategoryId' => $subcategory->getId()])
+        ;
+
         return $this->render('climb/index.html.twig', [
             'controller_name' => 'ClimbController',
             'categories' => $categories,
             'category' => $category,
             'subcategory' => $subcategory,
             'climbs' => $climbs,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -55,7 +71,7 @@ final class ClimbController extends AbstractController
             $climb = $form->getData();
             $climb->setClimber($user);
             $climb->setIsReviewed(false);
-            $climb->setStatus('unreviewed');
+            $climb->setStatus(Status::UNREVIEWED);
             $climb->setRank(null);
 
             $entityManager->persist($climb);
@@ -64,15 +80,22 @@ final class ClimbController extends AbstractController
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
 
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add('Create', 'climb_create')
+        ;
+
         return $this->render('climb/create.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
             'form' => $form,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
     #[Route('/read/{climbId<\d+>}', name: 'read')]
-    public function read(int $climbId, ClimbRepository $climbRepository): Response
+    public function read(int $climbId, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
@@ -80,14 +103,43 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
+        if ('Normal' === $climb->getSubcategory()->getName()) {
+            $pageName = $climb->getCategory()->getName();
+        } else {
+            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
+
+        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
+        if (str_contains($rankMethod, 'Score')) {
+            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
+        } elseif (str_contains($rankMethod, 'Time')) {
+            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
+        } elseif (str_contains($rankMethod, 'Height')) {
+            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
+        } elseif (str_contains($rankMethod, 'Speed')) {
+            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add($pageName, 'climb_read', ['climbId' => $climbId])
+        ;
+
         return $this->render('climb/read.html.twig', [
             'controller_name' => 'ClimbController',
             'climb' => $climb,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 
     #[Route('/update/{climbId<\d+>}', name: 'update')]
-    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks): Response
+    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -136,16 +188,46 @@ final class ClimbController extends AbstractController
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
 
+        if ('Normal' === $climb->getSubcategory()->getName()) {
+            $pageName = $climb->getCategory()->getName();
+        } else {
+            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
+
+        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
+        if (str_contains($rankMethod, 'Score')) {
+            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
+        } elseif (str_contains($rankMethod, 'Time')) {
+            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
+        } elseif (str_contains($rankMethod, 'Height')) {
+            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
+        } elseif (str_contains($rankMethod, 'Speed')) {
+            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add($pageName, 'climb_read', ['climbId' => $climbId])
+            ->add('Update', 'climb_update', ['climbId' => $climbId])
+        ;
+
         return $this->render('climb/update.html.twig', [
             'controller_name' => 'ClimbController',
             'user' => $user,
             'form' => $form,
             'climb' => $climb,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 
     #[Route('/delete/{climbId<\d+>}', name: 'delete')]
-    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks): Response
+    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanks $updateClimbRanks, Breadcrumbs $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -155,7 +237,7 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        if (($climb->getClimber()->getId() !== $user->getId()) || !$this->isGranted('ROLE_DISCORD_MODERATOR')) {
+        if (($climb->getClimber()->getId() !== $user->getId()) && !$this->isGranted('ROLE_DISCORD_MODERATOR')) {
             throw $this->createAccessDeniedException('You can not delete this climb');
         }
 
@@ -179,10 +261,40 @@ final class ClimbController extends AbstractController
             return $this->redirectToRoute('climb_index');
         }
 
+        if ('Normal' === $climb->getSubcategory()->getName()) {
+            $pageName = $climb->getCategory()->getName();
+        } else {
+            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
+
+        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
+        if (str_contains($rankMethod, 'Score')) {
+            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
+        } elseif (str_contains($rankMethod, 'Time')) {
+            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
+        } elseif (str_contains($rankMethod, 'Height')) {
+            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
+        } elseif (str_contains($rankMethod, 'Speed')) {
+            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add($pageName, 'climb_read', ['climbId' => $climbId])
+            ->add('Delete', 'climb_delete', ['climbId' => $climbId])
+        ;
+
         return $this->render('climb/delete.html.twig', [
             'controller_name' => 'ClimbController',
             'form' => $form,
             'climb' => $climb,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 }

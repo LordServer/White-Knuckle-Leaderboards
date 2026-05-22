@@ -4,10 +4,7 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <div class="text-xs text-red-900">
-            <a href="" class="hover:text-red-400 cursor-pointer">Home</a> /
-            <a href="#" class="hover:text-red-400 cursor-pointer">Rank Methods</a>
-        </div>
+        {% include 'partials/breadcrumbs.html.twig' %}
         <div class="flex justify-between">
             <h1 class="text-4xl font-bold mt-1">Rank Methods</h1>
             {% if is_granted('ROLE_DISCORD_ADMIN') %}

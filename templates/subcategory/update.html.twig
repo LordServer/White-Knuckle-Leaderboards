@@ -4,12 +4,7 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <div class="text-xs text-red-900">
-            <a href="{{ path('app_index') }}" class="hover:text-red-400 cursor-pointer">Home</a> /
-            <a href="{{ path('subcategory_index') }}" class="hover:text-red-400 cursor-pointer">Subcategory</a> /
-            <a href="{{ path('subcategory_read', { 'subcategoryId': subcategory.id }) }}" class="hover:text-red-400 cursor-pointer">{{ subcategory.name|escape }}</a> /
-            <a href="{{ path('subcategory_update', { 'subcategoryId': subcategory.id }) }}" class="hover:text-red-400 cursor-pointer">Edit</a>
-        </div>
+        {% include 'partials/breadcrumbs.html.twig' %}
         <div class="flex justify-between">
             <h1 class="text-4xl font-bold mt-1">Editing {{ subcategory.name|escape }}</h1>
         </div>
