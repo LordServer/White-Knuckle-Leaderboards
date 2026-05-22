@@ -15,7 +15,7 @@ final class LeaderboardController extends AbstractController
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
     public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
-        $categories = $categoryRepository->findAll();
+        $categories = $categoryRepository->findByArchived(false);
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
         if (!$category) {
             $category = $categoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $categories))]);

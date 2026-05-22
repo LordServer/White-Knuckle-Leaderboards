@@ -16,6 +16,17 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findByArchived(bool $archived): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.is_archived = :archived')
+            ->setParameter('archived', $archived)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */
