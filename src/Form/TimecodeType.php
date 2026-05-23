@@ -16,18 +16,30 @@ class TimecodeType extends AbstractType
         $builder
             ->add('hours', IntegerType::class, [
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'HH',
+                ],
                 'empty_data' => 0,
             ])
             ->add('minutes', IntegerType::class, [
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'MM',
+                ],
                 'empty_data' => 0,
             ])
             ->add('seconds', IntegerType::class, [
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'SS',
+                ],
                 'empty_data' => 0,
             ])
             ->add('milliseconds', IntegerType::class, [
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'MS',
+                ],
                 'empty_data' => 0,
             ])
         ;
