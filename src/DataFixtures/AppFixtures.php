@@ -97,7 +97,7 @@ class AppFixtures extends Fixture
 //        $subcategory = new Subcategory();
 //        $subcategory->setName('Parasite Hardmode');
 //        $manager->persist($subcategory);
-//
+
 //        $category = new Category();
 //        $category->setName('Campaign');
 //        $category->setRules('Complete the game.');
@@ -217,9 +217,9 @@ class AppFixtures extends Fixture
 //        $category->setRankMethod($manager->getReference(RankMethod::class, 5));
 //        $category->addSubcategory($manager->getReference(Subcategory::class, 1));
 //        $manager->persist($category);
-//
+
 //        $manager->flush();
-        UserFactory::createMany(273);
-        ClimbFactory::createMany(1185);
+//        UserFactory::createMany(273);
+//        ClimbFactory::createMany(1185);
     }
 }
