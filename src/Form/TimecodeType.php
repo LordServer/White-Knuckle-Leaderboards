@@ -45,7 +45,7 @@ class TimecodeType extends AbstractType
             $hours = floor($seconds / 3600);
             $minutes = floor(($seconds % 3600) / 60);
             $wholeSeconds = $seconds % 60;
-            $milliseconds = round($seconds - floor($seconds)) * 1000;
+            $milliseconds = round(($seconds - floor($seconds)) * 1000);
 
             $event->setData([
                 'hours' => $hours,
