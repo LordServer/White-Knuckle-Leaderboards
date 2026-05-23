@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\Status;
+use App\Enum\ClimbStatus;
 use App\Repository\ClimbRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,8 +46,8 @@ class Climb
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
-    #[ORM\Column(type: 'string', enumType: Status::class)]
-    private Status $status = Status::UNREVIEWED;
+    #[ORM\Column(type: 'string', enumType: ClimbStatus::class)]
+    private ClimbStatus $status = ClimbStatus::UNREVIEWED;
 
     #[ORM\Column]
     private ?bool $is_reviewed = null;
@@ -214,12 +214,12 @@ class Climb
         return $this;
     }
 
-    public function getStatus(): ?Status
+    public function getStatus(): ?ClimbStatus
     {
         return $this->status;
     }
 
-    public function setStatus(Status $status): static
+    public function setStatus(ClimbStatus $status): static
     {
 //        if ($this->isReviewed()) {
 //            throw new \LogicException('This entry is locked.');

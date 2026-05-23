@@ -5,7 +5,7 @@ namespace App\Factory;
 use App\Entity\Category;
 use App\Entity\Climb;
 use App\Entity\Subcategory;
-use App\Enum\Status;
+use App\Enum\ClimbStatus;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
@@ -65,10 +65,10 @@ final class ClimbFactory extends PersistentObjectFactory
             'is_reviewed' => $isReviewed,
             'status' => $isReviewed
                 ? self::faker()->randomElement([
-                    Status::APPROVED,
-                    Status::REJECTED,
+                    ClimbStatus::APPROVED,
+                    ClimbStatus::REJECTED,
                 ])
-                : Status::UNREVIEWED,
+                : ClimbStatus::UNREVIEWED,
             'created_at' => $createdAt,
             'updated_at' => $updatedAt,
             'media_url' => self::faker()->text(),

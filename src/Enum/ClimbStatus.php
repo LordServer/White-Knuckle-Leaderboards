@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum Status: string
+enum ClimbStatus: string
 {
     case UNREVIEWED = 'unreviewed';
     case APPROVED = 'approved';

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Climb;
-use App\Enum\Status;
+use App\Enum\ClimbStatus;
 use App\Form\ClimbType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
@@ -71,7 +71,7 @@ final class ClimbController extends AbstractController
             $climb = $form->getData();
             $climb->setClimber($user);
             $climb->setIsReviewed(false);
-            $climb->setStatus(Status::UNREVIEWED);
+            $climb->setStatus(ClimbStatus::UNREVIEWED);
             $climb->setRank(null);
 
             $entityManager->persist($climb);
@@ -168,12 +168,12 @@ final class ClimbController extends AbstractController
                 if ($climb->getClimber()->getId() === $user->getId()) {
                     throw $this->createAccessDeniedException('You can not approve your own submissions');
                 }
-                $climb->setStatus(Status::APPROVED);
+                $climb->setStatus(ClimbStatus::APPROVED);
                 $climb->setVerifier($user);
                 $climb->setIsReviewed(true);
                 $approved = true;
             } elseif ($form->get('reject')->isClicked()) {
-                $climb->setStatus(Status::REJECTED);
+                $climb->setStatus(ClimbStatus::REJECTED);
                 $climb->setVerifier($user);
                 $climb->setIsReviewed(true);
             }
