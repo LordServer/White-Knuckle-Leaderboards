@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\UserStatus;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -55,11 +56,18 @@ class User implements UserInterface
     #[ORM\Column(length: 255)]
     private ?string $display_name = null;
 
+    #[ORM\Column(enumType: UserStatus::class)]
+    private ?UserStatus $status = UserStatus::ACTIVE;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $bannedUntil = null;
+
     public function __construct()
     {
         $this->climbs = new ArrayCollection();
         $this->climbsVerified = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
+        $this->status = UserStatus::ACTIVE;
     }
 
     public function getId(): ?int
@@ -242,6 +250,30 @@ class User implements UserInterface
     public function setDisplayName(string $display_name): static
     {
         $this->display_name = $display_name;
+
+        return $this;
+    }
+
+    public function getStatus(): ?UserStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(UserStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBannedUntil(): ?\DateTime
+    {
+        return $this->bannedUntil;
+    }
+
+    public function setBannedUntil(?\DateTime $bannedUntil): static
+    {
+        $this->bannedUntil = $bannedUntil;
 
         return $this;
     }
