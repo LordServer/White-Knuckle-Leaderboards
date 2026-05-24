@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Subcategory;
 use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
+use App\Security\SubcategoryVoter;
 use App\Service\BreadcrumbsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,8 +36,9 @@ final class SubcategoryController extends AbstractController
     #[Route('/create', name: 'create')]
     public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = new Subcategory();
+
+        $this->denyAccessUnlessGranted(SubcategoryVoter::CREATE, $subcategory);
 
         $form = $this->createForm(SubcategoryType::class, $subcategory);
 
@@ -68,6 +70,8 @@ final class SubcategoryController extends AbstractController
     {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
+        $this->denyAccessUnlessGranted(SubcategoryVoter::READ, $subcategory);
+
         if (!$subcategory) {
             throw $this->createNotFoundException('Subcategory not found');
         }
@@ -88,8 +92,9 @@ final class SubcategoryController extends AbstractController
     #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
     public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+
+        $this->denyAccessUnlessGranted(SubcategoryVoter::UPDATE, $subcategory);
 
         if (!$subcategory) {
             throw $this->createNotFoundException('Subcategory not found');
@@ -125,8 +130,9 @@ final class SubcategoryController extends AbstractController
     #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
     public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
+
+        $this->denyAccessUnlessGranted(SubcategoryVoter::DELETE, $subcategory);
 
         if (!$subcategory) {
             throw $this->createNotFoundException('Subcategory not found');
