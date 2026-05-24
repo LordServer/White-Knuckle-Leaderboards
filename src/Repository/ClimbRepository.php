@@ -237,6 +237,20 @@ class ClimbRepository extends ServiceEntityRepository
         return $grouped;
     }
 
+    public function findGroupedByClimber(User $user)
+    {
+        return $this->createQueryBuilder('cl')
+            ->innerJoin('cl.category', 'cat')
+            ->innerJoin('cl.subcategory', 'sc')
+            ->where('cl.climber = :climber')
+            ->setParameter('climber', $user)
+            ->addOrderBy('cat.id', 'ASC')
+            ->addOrderBy('sc.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */
