@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-class Breadcrumbs
+class BreadcrumbsService
 {
     private array $items = [];
 

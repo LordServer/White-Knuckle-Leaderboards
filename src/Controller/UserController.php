@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
-use App\Service\Breadcrumbs;
+use App\Service\BreadcrumbsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository, Breadcrumbs $breadcrumbs): Response
+    public function index(UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climbers = $userRepository->findAll();
 
@@ -30,7 +30,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Breadcrumbs $breadcrumbs): Response
+    public function create(BreadcrumbsService $breadcrumbs): Response
     {
         $breadcrumbs
             ->addHome()
@@ -45,7 +45,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}', name: 'read')]
-    public function read(int $userId, UserRepository $userRepository, Breadcrumbs $breadcrumbs): Response
+    public function read(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
@@ -67,7 +67,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}/climbs/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'climbs')]
-    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
+    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
@@ -139,7 +139,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/update/{userId<\d+>}', name: 'update')]
-    public function update(int $userId, UserRepository $userRepository, Breadcrumbs $breadcrumbs): Response
+    public function update(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
@@ -162,7 +162,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/delete/{userId<\d+>}', name: 'delete')]
-    public function delete(int $userId, UserRepository $userRepository, Breadcrumbs $breadcrumbs): Response
+    public function delete(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 

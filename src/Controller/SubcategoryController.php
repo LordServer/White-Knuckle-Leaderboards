@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Subcategory;
 use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
-use App\Service\Breadcrumbs;
+use App\Service\BreadcrumbsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SubcategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(SubcategoryRepository $subcategoryRepository, Breadcrumbs $breadcrumbs): Response
+    public function index(SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $subcategories = $subcategoryRepository->findAll();
 
@@ -33,7 +33,7 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = new Subcategory();
@@ -64,7 +64,7 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
-    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Breadcrumbs $breadcrumbs): Response
+    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
@@ -86,7 +86,7 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
-    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
+    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
@@ -123,7 +123,7 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
-    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, Breadcrumbs $breadcrumbs): Response
+    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
         $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);

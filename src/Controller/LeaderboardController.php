@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
-use App\Service\Breadcrumbs;
+use App\Service\BreadcrumbsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LeaderboardController extends AbstractController
 {
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
-    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
+    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(false);
 
@@ -55,7 +55,7 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/archive/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_archive')]
-    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
+    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(true);
 

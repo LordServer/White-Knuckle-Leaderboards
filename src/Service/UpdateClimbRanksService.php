@@ -7,7 +7,7 @@ use App\Entity\Subcategory;
 use App\Repository\ClimbRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UpdateClimbRanks
+class UpdateClimbRanksService
 {
     public function __construct(
         private readonly ClimbRepository $climbRepository,
