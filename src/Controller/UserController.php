@@ -67,7 +67,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}/climbs/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'climbs')]
-    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository): Response
+    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository, Breadcrumbs $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
@@ -112,7 +112,18 @@ final class UserController extends AbstractController
 
         $climbs = $subcategoryData['climbs'];
 
-        // TODO: add breadcrumbs
+        if ('Normal' !== $subcategory->getName()) {
+            $pageName = $subcategory->getName().' '.$category->getName();
+        } else {
+            $pageName = $category->getName();
+        }
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            ->add($climber->getDisplayName(), 'user_read', ['userId' => $userId])
+            ->add($pageName, 'user_climbs', ['userId' => $userId, 'categoryId' => $categoryId, 'subcategoryId' => $subcategoryId])
+        ;
 
         return $this->render('user/climbs.html.twig', [
             'controller_name' => 'UserController',
@@ -122,6 +133,8 @@ final class UserController extends AbstractController
             'subcategory' => $subcategory,
             'climbs' => $climbs,
             'grouped' => $grouped,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
         ]);
     }
 
