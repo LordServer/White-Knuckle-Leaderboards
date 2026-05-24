@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_row(form.roles) }}
+    {{ form_row(form.status) }}
+
+    <button class="btn btn-primary">
+        Save
+    </button>
+    {{ form_end(form) }}
+{% endblock %}
