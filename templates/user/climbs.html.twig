@@ -4,20 +4,25 @@
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
-        <h1 class="text-4xl font-bold mt-1">{{ climber.displayName }}'s Climbs</h1>
+        <h1 class="text-4xl font-bold mt-1">{{ climber.displayName }}'s {% if subcategory.name != 'Normal' %}{{ subcategory.name|escape }} {% endif %}{{ category.name|escape }} Climbs</h1>
         <div class="flex items-center gap-2 flex-wrap mt-4">
             {% for categoryLoop in categories %}
-                <a href="{{ path('user_climbs', { 'userId': climber.id, 'categoryId': categoryLoop.id, 'subcategoryId': categoryLoop.subcategory[0].id }) }}">
+                {% set firstSubcategory = grouped[categoryLoop.id].subcategories|first %}
+                <a href="{{ path('user_climbs', {'userId': climber.id, 'categoryId': categoryLoop.id, 'subcategoryId': firstSubcategory.subcategory.id}) }}">
                     <button class="{% if categoryLoop.id == category.id %}bg-red-900 {% else %}bg-black {% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">{{ categoryLoop.name|escape }}</button>
                 </a>
             {% endfor %}
         </div>
         <div class="mt-2">
-            {% if category.subcategory|length > 1 %}
+            {% set currentSubcategories = grouped[category.id].subcategories %}
+            {% if currentSubcategories|length > 1 %}
                 <label for="form-control" class="hidden">Mode</label>
                 <select name="route-selector" id="form-control" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
-                    {% for subcategoryLoop in category.subcategory %}
-                        <option {% if subcategory.id == subcategoryLoop.id %}selected="selected" {% endif %}value="{{ path('user_climbs', { 'userId': climber.id, 'categoryId': category.id, 'subcategoryId': subcategoryLoop.id }) }}">{{ subcategoryLoop.name|escape }}</option>
+                    {% for subcategoryData in currentSubcategories %}
+                        {% set subcategoryLoop = subcategoryData.subcategory %}
+                        <option {% if subcategory.id == subcategoryLoop.id %}selected="selected" {% endif %}value="{{ path('user_climbs', {'userId': climber.id, 'categoryId': category.id, 'subcategoryId': subcategoryLoop.id}) }}">
+                            {{ subcategoryLoop.name|escape }}
+                        </option>
                     {% endfor %}
                 </select>
             {% endif %}

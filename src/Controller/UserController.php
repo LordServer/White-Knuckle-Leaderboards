@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
 use App\Service\Breadcrumbs;
@@ -68,7 +67,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}/climbs/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'climbs')]
-    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, CategoryRepository $categoryRepository, ClimbRepository $climbRepository): Response
+    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
@@ -76,21 +75,42 @@ final class UserController extends AbstractController
             throw $this->createNotFoundException('Climber not found');
         }
 
-        $categories = $categoryRepository->findAll();
+        $climbs = $climbRepository->findGroupedByClimber($climber);
 
-        $category = current(array_filter(
-            $categories,
-            fn ($category) => $category->getId() === $categoryId
-        ));
-        $category = $category ?: ($categories[0] ?? null);
+        $grouped = [];
 
-        $subcategory = current(array_filter(
-            $category->getSubcategory()->toArray(),
-            fn ($subcategory) => $subcategory->getId() === $subcategoryId
-        ));
-        $subcategory = $subcategory ?: ($category->getSubcategory()->toArray()[0] ?? null);
+        foreach ($climbs as $climb) {
+            $category = $climb->getCategory();
+            $subcategory = $climb->getSubcategory();
 
-        $climbs = $climbRepository->findByUserAndCategoryAndSubcategoryOrderByNewestCreatedAt($climber, $category, $subcategory);
+            $grouped[$category->getId()]['category'] = $category;
+            $grouped[$category->getId()]['subcategories'][$subcategory->getId()]['subcategory'] = $subcategory;
+            $grouped[$category->getId()]['subcategories'][$subcategory->getId()]['climbs'][] = $climb;
+        }
+
+        $categories = array_map(
+            fn ($data) => $data['category'],
+            $grouped
+        );
+
+        $categoryData = $grouped[$categoryId] ?? reset($grouped);
+
+        if (!$categoryData) {
+            throw $this->createNotFoundException('No categories found');
+        }
+
+        $category = $categoryData['category'];
+
+        $subcategoryData = $categoryData['subcategories'][$subcategoryId]
+            ?? reset($categoryData['subcategories']);
+
+        if (!$subcategoryData) {
+            throw $this->createNotFoundException('No subcategories found');
+        }
+
+        $subcategory = $subcategoryData['subcategory'];
+
+        $climbs = $subcategoryData['climbs'];
 
         // TODO: add breadcrumbs
 
@@ -101,6 +121,7 @@ final class UserController extends AbstractController
             'category' => $category,
             'subcategory' => $subcategory,
             'climbs' => $climbs,
+            'grouped' => $grouped,
         ]);
     }
 
