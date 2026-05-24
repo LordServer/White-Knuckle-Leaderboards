@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\RankMethod;
 use App\Form\RankMethodType;
 use App\Repository\RankMethodRepository;
+use App\Security\RankMethodVoter;
 use App\Service\BreadcrumbsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,8 +36,9 @@ final class RankMethodController extends AbstractController
     #[Route('/create', name: 'create')]
     public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $rankMethod = new RankMethod();
+
+        $this->denyAccessUnlessGranted(RankMethodVoter::CREATE, $rankMethod);
 
         $form = $this->createForm(RankMethodType::class, $rankMethod);
 
@@ -68,6 +70,8 @@ final class RankMethodController extends AbstractController
     {
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
+        $this->denyAccessUnlessGranted(RankMethodVoter::READ, $rankMethod);
+
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
         }
@@ -88,8 +92,9 @@ final class RankMethodController extends AbstractController
     #[Route('/update/{rankMethodId<\d+>}', name: 'update')]
     public function update(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
+
+        $this->denyAccessUnlessGranted(RankMethodVoter::UPDATE, $rankMethod);
 
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
@@ -125,8 +130,9 @@ final class RankMethodController extends AbstractController
     #[Route('/delete/{rankMethodId<\d+>}', name: 'delete')]
     public function delete(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
+
+        $this->denyAccessUnlessGranted(RankMethodVoter::DELETE, $rankMethod);
 
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
