@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LeaderboardController!{% endblock %}
+{% block title %}{{ pageName|escape }}{% endblock %}
 
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
         <h1 class="text-4xl font-bold mt-1">
-            {{ pageName }} Leaderboard
+            {{ pageName|escape }} Leaderboard
         </h1>
         <div class="flex items-center gap-2 flex-wrap mt-4">
             {% for categoryLoop in categories %}
