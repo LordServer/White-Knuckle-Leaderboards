@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}{{ user.DisplayName|escape }} Moderation{% endblock %}
 
 {% block body %}
     {{ form_start(form) }}

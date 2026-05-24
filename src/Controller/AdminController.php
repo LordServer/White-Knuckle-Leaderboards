@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\AdminType;
 use App\Repository\UserRepository;
+use App\Service\RolePermissionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class AdminController extends AbstractController
 {
     #[Route('/admin/climber/{climberId<\d+>}/moderate', name: 'admin_user_moderate')]
-    public function moderate(int $climberId, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function moderate(int $climberId, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, RolePermissionService $roleManager): Response
     {
         $user = $userRepository->findOneBy(['id' => $climberId]);
 
@@ -23,6 +23,13 @@ final class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $roleManager->updateRoles(
+                $user,
+                $form->get('roles')->getData()
+            );
+            $date = new \DateTime('now');
+            $date->modify("+{$form->get('banDays')->getData()} days");
+            $user->setBannedUntil($date);
             $entityManager->persist($user);
             $entityManager->flush();
         }
@@ -30,6 +37,7 @@ final class AdminController extends AbstractController
         return $this->render('admin/moderate.html.twig', [
             'controller_name' => 'AdminController',
             'form' => $form,
+            'user' => $user,
         ]);
     }
 }
