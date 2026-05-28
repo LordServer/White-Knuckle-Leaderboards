@@ -35,7 +35,22 @@ class ClimbVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        // TODO: Implement voteOnAttribute() method.
+        $user = $token->getUser();
+
+        if (!$user instanceof User) {
+            $vote?->addReason('The user is not logged in.');
+
+            return false;
+        }
+
+        return match ($attribute) {
+            self::CREATE => $this->canCreate($token, $vote),
+            self::READ => $this->canRead(),
+            self::UPDATE => $this->canUpdate($token, $vote),
+            self::AUTHORIZE => $this->canAuthorize($token, $vote),
+            self::DELETE => $this->canDelete($token, $vote),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canCreate(): bool
