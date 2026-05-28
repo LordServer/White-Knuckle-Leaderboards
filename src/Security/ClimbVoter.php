@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Entity\Climb;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -63,9 +65,15 @@ class ClimbVoter extends Voter
         return true;
     }
 
-    private function canUpdate(): bool
+    private function canUpdate(Climb $climb, User $user, ?Vote $vote): bool
     {
-        // TODO: Implement canUpdate() method.
+        if ($user === $climb->getClimber() && false === $climb->isReviewed()) {
+            return true;
+        }
+
+        // TODO: Implement Authorizer ability to update non-owned climbs.
+
+        return false;
     }
 
     private function canAuthorize(): bool
