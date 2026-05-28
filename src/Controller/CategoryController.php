@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Security\CategoryVoter;
 use App\Service\BreadcrumbsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,8 +36,9 @@ final class CategoryController extends AbstractController
     #[Route('/create', name: 'create')]
     public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $category = new Category();
+
+        $this->isGranted(CategoryVoter::CREATE, $category);
 
         $form = $this->createForm(CategoryType::class, $category);
 
@@ -68,6 +70,8 @@ final class CategoryController extends AbstractController
     {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
+        $this->isGranted(CategoryVoter::READ, $category);
+
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
         }
@@ -88,8 +92,9 @@ final class CategoryController extends AbstractController
     #[Route('/update/{categoryId<\d+>}', name: 'update')]
     public function update(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+
+        $this->isGranted(CategoryVoter::UPDATE, $category);
 
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
@@ -125,8 +130,9 @@ final class CategoryController extends AbstractController
     #[Route('/delete/{categoryId<\d+>}', name: 'delete')]
     public function delete(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_ADMIN');
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
+
+        $this->isGranted(CategoryVoter::DELETE, $category);
 
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
