@@ -22,7 +22,15 @@ class ClimbVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // TODO: Implement supports() method.
+        if (!in_array($attribute, [self::CREATE, self::READ, self::UPDATE, self::AUTHORIZE, self::DELETE])) {
+            return false;
+        }
+
+        if (!$subject instanceof Climb) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
