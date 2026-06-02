@@ -45,12 +45,14 @@ class ClimbVoter extends Voter
             return false;
         }
 
+        $climb = $subject;
+
         return match ($attribute) {
             self::CREATE => $this->canCreate($token, $vote),
             self::READ => $this->canRead(),
-            self::UPDATE => $this->canUpdate($token, $vote),
-            self::AUTHORIZE => $this->canAuthorize($token, $vote),
-            self::DELETE => $this->canDelete($token, $vote),
+            self::UPDATE => $this->canUpdate($climb, $token, $vote),
+            self::AUTHORIZE => $this->canAuthorize($subject, $token, $vote),
+            self::DELETE => $this->canDelete($climb, $token, $vote),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
