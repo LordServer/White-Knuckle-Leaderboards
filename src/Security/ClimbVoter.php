@@ -102,8 +102,17 @@ class ClimbVoter extends Voter
 
     private function canAuthorize(Climb $climb, TokenInterface $token, ?Vote $vote): bool
     {
-        if ($user === $climb->getClimber() && false === $climb->isReviewed()) {
+        if ($token->getUser() !== $climb->getClimber() && $this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER']) && false === $climb->isReviewed()) {
             return true;
+        } elseif ($token->getUser() === $climb->getClimber()) {
+            $vote?->addReason('You cannot approve your own submissions.');
+        } elseif (!$this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER'])) {
+            $vote?->addReason(sprintf(
+                'The logged in user (username: %s) is not an authorizer.',
+                $token->getUser()->getUsername()
+            ));
+        } elseif (true === $climb->isReviewed()) {
+            $vote?->addReason('This climb has already been reviewed and can no longer be edited.');
         }
 
         // TODO: Implement Authorizer ability to update non-owned climbs.
