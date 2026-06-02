@@ -8,6 +8,7 @@ use App\Form\ClimbType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
+use App\Security\ClimbVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\UpdateClimbRanksService;
 use App\Util\TimeFormatter;
@@ -99,6 +100,8 @@ final class ClimbController extends AbstractController
     {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
+        $this->denyAccessUnlessGranted(ClimbVoter::READ, $climb);
+
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
         }
@@ -141,21 +144,12 @@ final class ClimbController extends AbstractController
     #[Route('/update/{climbId<\d+>}', name: 'update')]
     public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
-        $approved = false;
+
+        $this->denyAccessUnlessGranted(ClimbVoter::UPDATE, $climb);
 
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
-        }
-
-        if ($climb->isReviewed() && !$this->isGranted('ROLE_DISCORD_ADMIN')) {
-            throw $this->createAccessDeniedException('Climb has already been reviewed and can no longer be updated');
-        }
-
-        if (($climb->getClimber()->getId() !== $user->getId()) && !$this->isGranted('ROLE_DISCORD_AUTHORIZER')) {
-            throw $this->createAccessDeniedException('You do not have permission to edit this climb');
         }
 
         $form = $this->createForm(ClimbType::class, $climb);
@@ -164,26 +158,12 @@ final class ClimbController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $climb = $form->getData();
 
-            if ($form->get('approve')->isClicked()) {
-                if ($climb->getClimber()->getId() === $user->getId()) {
-                    throw $this->createAccessDeniedException('You can not approve your own submissions');
-                }
-                $climb->setStatus(ClimbStatus::APPROVED);
-                $climb->setVerifier($user);
-                $climb->setIsReviewed(true);
-                $approved = true;
-            } elseif ($form->get('reject')->isClicked()) {
-                $climb->setStatus(ClimbStatus::REJECTED);
-                $climb->setVerifier($user);
-                $climb->setIsReviewed(true);
-            }
-
             $entityManager->persist($climb);
             $entityManager->flush();
 
-            if ($approved) {
-                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
-            }
+//            if ($approved) {
+//                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
+//            }
 
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
@@ -218,7 +198,6 @@ final class ClimbController extends AbstractController
 
         return $this->render('climb/update.html.twig', [
             'controller_name' => 'ClimbController',
-            'user' => $user,
             'form' => $form,
             'climb' => $climb,
             'breadcrumbs' => $breadcrumbs->all(),
@@ -229,16 +208,12 @@ final class ClimbController extends AbstractController
     #[Route('/delete/{climbId<\d+>}', name: 'delete')]
     public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $this->getUser();
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
+
+        $this->denyAccessUnlessGranted(ClimbVoter::DELETE, $climb);
 
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
-        }
-
-        if (($climb->getClimber()->getId() !== $user->getId()) && !$this->isGranted('ROLE_DISCORD_MODERATOR')) {
-            throw $this->createAccessDeniedException('You can not delete this climb');
         }
 
         $form = $this->createForm(ClimbType::class, $climb);
