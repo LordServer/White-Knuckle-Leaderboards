@@ -115,18 +115,29 @@ class ClimbVoter extends Voter
             $vote?->addReason('This climb has already been reviewed and can no longer be edited.');
         }
 
-        // TODO: Implement Authorizer ability to update non-owned climbs.
+        // TODO: Add moderator ability to edit already approved climbs.
 
         return false;
     }
 
-    private function canAuthorize(): bool
+    private function canDelete(Climb $climb, TokenInterface $token, ?Vote $vote): bool
     {
-        // TODO: Implement canAuthorize() method.
-    }
+        if ($token->getUser() === $climb->getClimber()) {
+            return true;
+        }
+        $vote?->addReason(sprintf(
+            'The logged in user (username: %s) does not own this climb.',
+            $token->getUser()->getUsername()
+        ));
 
-    private function canDelete(): bool
-    {
-        // TODO: Implement canDelete() method.
+        if ($this->accessDecisionManager->decide($token, ['ROLE_MODERATOR'])) {
+            return true;
+        }
+        $vote?->addReason(sprintf(
+            'The logged in user (username: %s) is not a moderator.',
+            $token->getUser()->getUsername()
+        ));
+
+        return false;
     }
 }
