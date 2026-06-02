@@ -65,7 +65,42 @@ class ClimbVoter extends Voter
         return true;
     }
 
-    private function canUpdate(Climb $climb, User $user, ?Vote $vote): bool
+    private function canUpdate(Climb $climb, TokenInterface $token, ?Vote $vote): bool
+    {
+        if ($token->getUser() === $climb->getClimber() && false === $climb->isReviewed()) {
+            return true;
+        } elseif ($token->getUser() !== $climb->getClimber()) {
+            $vote?->addReason(sprintf(
+                'The logged in user (username: %s) does not own this climb.',
+                $token->getUser()->getUsername()
+            ));
+        } else {
+            $vote?->addReason('The climb has already been approved and can no longer be edited.');
+        }
+
+        if ($this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER']) && false === $climb->isReviewed()) {
+            return true;
+        } elseif (!$this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER'])) {
+            $vote?->addReason(sprintf(
+                'The logged in user (username: %s) is not an authorizer.',
+                $token->getUser()->getUsername()
+            ));
+        } else {
+            $vote?->addReason('The climb has already been approved and can no longer be edited.');
+        }
+
+        if ($this->accessDecisionManager->decide($token, ['ROLE_MODERATOR'])) {
+            return true;
+        }
+        $vote?->addReason(sprintf(
+            'The logged in user (username: %s) is not a moderator.',
+            $token->getUser()->getUsername()
+        ));
+
+        return false;
+    }
+
+    private function canAuthorize(Climb $climb, TokenInterface $token, ?Vote $vote): bool
     {
         if ($user === $climb->getClimber() && false === $climb->isReviewed()) {
             return true;
