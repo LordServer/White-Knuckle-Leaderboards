@@ -117,7 +117,9 @@ class ClimbVoter extends Voter
             $vote?->addReason('This climb has already been reviewed and can no longer be edited.');
         }
 
-        // TODO: Add moderator ability to edit already approved climbs.
+        if ($this->accessDecisionManager->decide($token, ['ROLE_MODERATOR'])) {
+            return true;
+        }
 
         return false;
     }
