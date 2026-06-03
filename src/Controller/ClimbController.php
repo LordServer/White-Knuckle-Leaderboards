@@ -100,8 +100,6 @@ final class ClimbController extends AbstractController
     {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
-        $this->denyAccessUnlessGranted(ClimbVoter::READ, $climb);
-
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
         }

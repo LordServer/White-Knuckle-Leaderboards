@@ -70,8 +70,6 @@ final class SubcategoryController extends AbstractController
     {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
-        $this->denyAccessUnlessGranted(SubcategoryVoter::READ, $subcategory);
-
         if (!$subcategory) {
             throw $this->createNotFoundException('Subcategory not found');
         }

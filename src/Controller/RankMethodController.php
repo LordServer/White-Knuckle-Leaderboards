@@ -70,8 +70,6 @@ final class RankMethodController extends AbstractController
     {
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
-        $this->denyAccessUnlessGranted(RankMethodVoter::READ, $rankMethod);
-
         if (!$rankMethod) {
             throw $this->createNotFoundException('Rank Method not found');
         }

@@ -70,8 +70,6 @@ final class CategoryController extends AbstractController
     {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
-        $this->isGranted(CategoryVoter::READ, $category);
-
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
         }
