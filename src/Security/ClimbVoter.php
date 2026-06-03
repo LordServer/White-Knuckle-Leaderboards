@@ -59,7 +59,7 @@ class ClimbVoter extends Voter
 
     private function canCreate(): bool
     {
-        // TODO: Implement canCreate() method.
+        return true;
     }
 
     private function canRead(): bool
