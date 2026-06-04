@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
 use Symfonycasts\DynamicForms\DynamicFormBuilder;
 
-class ClimbType extends AbstractType
+class ApprovalType extends AbstractType
 {
     private Security $security;
 
@@ -68,6 +68,14 @@ class ClimbType extends AbstractType
                         ->setParameter('archived', false)
                         ->orderBy('c.id', 'ASC');
                 },
+            ])
+            ->add('approve', SubmitType::class, [
+                'label' => 'Approve',
+                'disabled' => $locked,
+            ])
+            ->add('reject', SubmitType::class, [
+                'label' => 'Reject',
+                'disabled' => $locked,
             ])
         ;
 

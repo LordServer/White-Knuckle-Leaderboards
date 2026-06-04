@@ -159,10 +159,6 @@ final class ClimbController extends AbstractController
             $entityManager->persist($climb);
             $entityManager->flush();
 
-//            if ($approved) {
-//                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
-//            }
-
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
 

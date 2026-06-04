@@ -53,19 +53,19 @@
                                 <a href="#" class="block">{{ climb.climber.displayName|escape }}</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.score|number_format()|escape }}</a>
+                                <a href="{{ path('approval_review', { 'climbId': climb.id }) }}" class="block">{{ climb.score|number_format()|escape }}</a>
                             </td>
                             <td class="text-center">
-                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.time|seconds_to_time|escape }}</a>
+                                <a href="{{ path('approval_review', { 'climbId': climb.id }) }}" class="block">{{ climb.time|seconds_to_time|escape }}</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.height|number_format(2)|escape }} m</a>
+                                <a href="{{ path('approval_review', { 'climbId': climb.id }) }}" class="block">{{ climb.height|number_format(2)|escape }} m</a>
                             </td>
                             <td class="text-center hidden sm:table-cell">
-                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">{{ climb.speed|number_format(2)|escape }} m/s</a>
+                                <a href="{{ path('approval_review', { 'climbId': climb.id }) }}" class="block">{{ climb.speed|number_format(2)|escape }} m/s</a>
                             </td>
                             <td class="text-center">
-                                <a href="{{ path('climb_read', { 'climbId': climb.id }) }}" class="block">
+                                <a href="{{ path('approval_review', { 'climbId': climb.id }) }}" class="block">
                                     <div class="group relative inline-block">
                                         <div>
                                             {{ climb.createdAt|date('Y-m-d H:i:s')|ago|escape }}

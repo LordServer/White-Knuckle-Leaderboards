@@ -2,11 +2,18 @@
 
 namespace App\Controller;
 
+use App\Enum\ClimbStatus;
+use App\Form\ApprovalType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
+use App\Security\ClimbVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\UpdateClimbRanksService;
+use App\Util\TimeFormatter;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -54,6 +61,86 @@ final class ApprovalController extends AbstractController
             'subcategory' => $subcategory,
             'climbs' => $climbs,
             'approvalBreakdown' => $approvalBreakdown,
+            'breadcrumbs' => $breadcrumbs->all(),
+            'pageName' => $pageName,
+        ]);
+    }
+
+    #[Route('/review/{climbId<\d+>}', name: 'review')]
+    public function review(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
+    {
+        $climb = $climbRepository->findOneBy(['id' => $climbId]);
+
+        $this->denyAccessUnlessGranted(ClimbVoter::AUTHORIZE, $climb);
+        $user = $this->getUser();
+
+        if (!$climb) {
+            throw $this->createNotFoundException('Climb not found');
+        }
+
+        $form = $this->createForm(ApprovalType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $climb = $form->getData();
+
+            if ($form->get('approve')->isClicked()) {
+                if ($climb->getClimber()->getId() === $user->getId()) {
+                    throw $this->createAccessDeniedException('You can not approve your own submissions');
+                }
+                $climb->setStatus(ClimbStatus::APPROVED);
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+                $approved = true;
+            } elseif ($form->get('reject')->isClicked()) {
+                $climb->setStatus(ClimbStatus::REJECTED);
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+                $approved = false;
+            }
+
+            $entityManager->persist($climb);
+            $entityManager->flush();
+
+            if ($approved) {
+                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
+            }
+
+            return $this->redirectToRoute('approval_index');
+        }
+
+        if ('Normal' === $climb->getSubcategory()->getName()) {
+            $pageName = $climb->getCategory()->getName();
+        } else {
+            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
+
+        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
+        if (str_contains($rankMethod, 'Score')) {
+            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
+        } elseif (str_contains($rankMethod, 'Time')) {
+            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
+        } elseif (str_contains($rankMethod, 'Height')) {
+            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
+        } elseif (str_contains($rankMethod, 'Speed')) {
+            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
+        }
+
+        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimb()
+            ->add($pageName, 'climb_read', ['climbId' => $climbId])
+            ->add('Update', 'climb_update', ['climbId' => $climbId])
+        ;
+
+        return $this->render('approval/approval.html.twig', [
+            'controller_name' => 'ClimbController',
+            'form' => $form,
+            'climb' => $climb,
             'breadcrumbs' => $breadcrumbs->all(),
             'pageName' => $pageName,
         ]);
