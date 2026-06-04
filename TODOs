@@ -1,7 +1,6 @@
 TODO: Setup climber pages
 TODO: Find a way to add the approve and reject button to the main climb/read page
 TODO: Fix hyperlinks to everywhere (ongoing)
-TODO: figure out how to add custom css for markdown
 TODO: setup API for Jay and the bot
 TODO: setup way to generate API token with scopes
 TODO: Consider moving API Token stuff into its own controller

@@ -76,7 +76,9 @@
         <div>
             <div class="text-sm text-gray-700 pl-1">Notes</div>
             <div class="border-gray-700 border mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
-                {{ climb.notes|markdown_to_html }}
+                <article class="prose prose-invert max-w-none">
+                    {{ climb.notes|markdown_to_html }}
+                </article>
             </div>
         </div>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
