@@ -52,6 +52,7 @@
                     <a href="{{ path('user_climbs', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your climbs</a>
                     <a href="{{ path('user_read', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Your profile</a>
                     <a href="{{ path('user_update', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Settings</a>
+                    <a href="{{ path('user_tokens', { 'userId': current_user().id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">API Tokens</a>
                     <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Log out</a>
                 </el-menu>
             </el-dropdown>

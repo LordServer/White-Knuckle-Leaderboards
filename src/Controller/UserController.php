@@ -161,6 +161,12 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/tokens', name: 'tokens')]
+    public function tokens(): Response
+    {
+        return $this->render('tokens.html.twig', []);
+    }
+
     #[Route('/delete/{userId<\d+>}', name: 'delete')]
     public function delete(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
