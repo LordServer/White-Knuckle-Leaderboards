@@ -86,6 +86,11 @@
                         <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
                     </a>
                 {% endif %}
+                {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
+                    <a href="{{ path('approval_review', { 'climbId': climb.id }) }}">
+                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Review</button>
+                    </a>
+                {% endif %}
                 {% if (climb.climber.id is same as(current_user().id)) or (is_granted('ROLE_DISCORD_AUTHORIZER')) %}
                     <a href="{{ path('climb_delete', { 'climbId': climb.id }) }}">
                         <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
