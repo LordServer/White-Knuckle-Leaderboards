@@ -4,6 +4,7 @@ namespace App\Service;
 
 use ApiPlatform\Symfony\Security\Exception\AccessDeniedException;
 use App\Entity\User;
+use App\Enum\UserRole;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -30,12 +31,12 @@ readonly class RolePermissionService
         $roles = [];
 
         if ($this->security->isGranted('ROLE_ADMIN')) {
-            $roles['Moderator'] = 'ROLE_MODERATOR';
+            $roles['Moderator'] = UserRole::MODERATOR->value;
         }
 
         if ($this->security->isGranted('ROLE_MODERATOR')) {
-            $roles['Authorizer'] = 'ROLE_AUTHORIZER';
-            $roles['User'] = 'ROLE_USER';
+            $roles['Authorizer'] = UserRole::AUTHORIZER->value;
+            $roles['User'] = UserRole::USER->value;
         }
 
         return $roles;
