@@ -277,4 +277,18 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function isBanned(): bool
+    {
+        if (UserStatus::BANNED === $this->status) {
+            return true;
+        }
+
+        if (UserStatus::SUSPENDED === $this->status) {
+            return null !== $this->bannedUntil
+                && $this->bannedUntil > new \DateTimeImmutable();
+        }
+
+        return false;
+    }
 }

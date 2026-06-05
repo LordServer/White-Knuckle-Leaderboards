@@ -18,14 +18,15 @@ class UserChecker implements UserCheckerInterface
         }
 
         switch ($user->getStatus()) {
-            case UserStatus::SUSPENDED:
             case UserStatus::ACTIVE:
                 break;
-            case UserStatus::BANNED:
-                if (null !== $user->getBannedUntil()) {
-                    throw new CustomUserMessageAccountStatusException('You have been banned until '.$user->getBannedUntil());
+            case UserStatus::SUSPENDED:
+                if (!$user->isBanned()) {
+                    break;
                 }
-                throw new CustomUserMessageAccountStatusException('You have been permanently banned');
+                throw new CustomUserMessageAccountStatusException('You have been suspended until '.$user->getBannedUntil()?->format('Y-m-d H:i:s').'.');
+            case UserStatus::BANNED:
+                throw new CustomUserMessageAccountStatusException('You have been permanently banned.');
         }
     }
 
