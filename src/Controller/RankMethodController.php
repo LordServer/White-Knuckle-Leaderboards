@@ -74,6 +74,8 @@ final class RankMethodController extends AbstractController
             throw $this->createNotFoundException('Rank Method not found');
         }
 
+        // TODO: Add categories that use this rank method
+
         $breadcrumbs
             ->addHome()
             ->addRankMethod()
