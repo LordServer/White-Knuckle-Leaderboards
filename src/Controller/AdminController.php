@@ -38,7 +38,7 @@ final class AdminController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
         }
-
+        // TODO: Add actual user information to page, like username and display name
         return $this->render('admin/moderate.html.twig', [
             'controller_name' => 'AdminController',
             'form' => $form,
