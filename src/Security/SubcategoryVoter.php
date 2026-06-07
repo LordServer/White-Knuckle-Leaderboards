@@ -11,10 +11,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class SubcategoryVoter extends Voter
 {
-    public const string CREATE = 'create';
-    public const string READ = 'read';
-    public const string UPDATE = 'update';
-    public const string DELETE = 'delete';
+    public const string CREATE = 'subcategory_create';
+    public const string READ = 'subcategory_read';
+    public const string UPDATE = 'subcategory_update';
+    public const string DELETE = 'subcategory_delete';
 
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,

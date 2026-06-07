@@ -10,11 +10,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class UserVoter extends Voter
 {
-    public const string CREATE = 'create';
-    public const string READ = 'read';
-    public const string UPDATE = 'update';
-    public const string MODERATE = 'moderate';
-    public const string DELETE = 'delete';
+    public const string CREATE = 'user_create';
+    public const string READ = 'user_read';
+    public const string UPDATE = 'user_update';
+    public const string MODERATE = 'user_moderate';
+    public const string DELETE = 'user_delete';
 
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,

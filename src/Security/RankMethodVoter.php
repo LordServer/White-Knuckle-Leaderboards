@@ -11,10 +11,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RankMethodVoter extends Voter
 {
-    public const string CREATE = 'create';
-    public const string READ = 'read';
-    public const string UPDATE = 'update';
-    public const string DELETE = 'delete';
+    public const string CREATE = 'rank_method_create';
+    public const string READ = 'rank_method_read';
+    public const string UPDATE = 'rank_method_update';
+    public const string DELETE = 'rank_method_delete';
 
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,

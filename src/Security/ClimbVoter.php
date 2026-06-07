@@ -11,11 +11,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ClimbVoter extends Voter
 {
-    public const string CREATE = 'create';
-    public const string READ = 'read';
-    public const string UPDATE = 'update';
-    public const string AUTHORIZE = 'authorize';
-    public const string DELETE = 'delete';
+    public const string CREATE = 'climb_create';
+    public const string READ = 'climb_read';
+    public const string UPDATE = 'climb_update';
+    public const string AUTHORIZE = 'climb_authorize';
+    public const string DELETE = 'climb_delete';
 
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,
