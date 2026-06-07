@@ -12,12 +12,16 @@
     </div>
     {% if is_granted('ROLE_DISCORD_ADMIN') %}
         <div class="text-right pt-2">
-            <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
-                <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
-            </a>
-            <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
-                <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
-            </a>
+            {% if is_granted('rank_method_update', rankMethod) %}
+                <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Edit</button>
+                </a>
+            {% endif %}
+            {% if is_granted('rank_method_delete', rankMethod) %}
+                <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
+                    <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
+                </a>
+            {% endif %}
         </div>
     {% endif %}
 </div>

@@ -7,7 +7,7 @@
         {% include 'partials/breadcrumbs.html.twig' %}
         <div class="flex justify-between">
             <h1 class="text-4xl font-bold mt-1">Rank Methods</h1>
-            {% if is_granted('ROLE_DISCORD_ADMIN') %}
+            {% if is_granted('rank_method_create', rankMethods[0]) %}
                 <a href="{{ path('rank_method_create') }}">
                     <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">New</button>
                 </a>
@@ -26,16 +26,18 @@
                             <td>
                                 <a class="block" href="{{ path('rank_method_read', { 'rankMethodId': rankMethod.id }) }}">{{ rankMethod.name|escape }}</a>
                             </td>
-                            {% if is_granted('ROLE_DISCORD_ADMIN') %}
                                 <td class="text-right">
-                                    <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
-                                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
-                                    </a>
-                                    <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
-                                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
-                                    </a>
+                                    {% if is_granted('rank_method_update', rankMethod) %}
+                                        <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">
+                                            <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('rank_method_delete', rankMethod) %}
+                                        <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}">
+                                            <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
+                                        </a>
+                                    {% endif %}
                                 </td>
-                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>

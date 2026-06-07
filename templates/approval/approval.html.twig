@@ -57,7 +57,7 @@
                 <a href="{{ path('approval_index') }}">
                     <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
                 </a>
-                {% if is_granted('ROLE_DISCORD_AUTHORIZER') %}
+                {% if is_granted('climb_authorize', climb) %}
                     {{ form_widget(form.reject, {'attr': {'class': 'bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600'}}) }}
                     {{ form_widget(form.approve, {'attr': {'class': 'bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600'}}) }}
                 {% endif %}
