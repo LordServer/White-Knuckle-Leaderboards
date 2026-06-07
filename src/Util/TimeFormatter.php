@@ -12,9 +12,9 @@ class TimeFormatter
         $hours = floor($seconds / 3600);
 
         if (0 != $hours) {
-            return sprintf('%02d:%02d:%02d.%02d', $hours, $mins, $secs, $msec);
+            return sprintf('%02d:%02d:%02d.%03d', $hours, $mins, $secs, $msec);
         } elseif (0 != $mins) {
-            return sprintf('%02d:%02d.%02d', $mins, $secs, $msec);
+            return sprintf('%02d:%02d.%03d', $mins, $secs, $msec);
         }
 
         return sprintf('%02d.%02d', $secs, $msec);
