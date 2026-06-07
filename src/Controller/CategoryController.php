@@ -38,7 +38,7 @@ final class CategoryController extends AbstractController
     {
         $category = new Category();
 
-        $this->isGranted(CategoryVoter::CREATE, $category);
+        $this->denyAccessUnlessGranted(CategoryVoter::CREATE, $category);
 
         $form = $this->createForm(CategoryType::class, $category);
 
@@ -92,7 +92,7 @@ final class CategoryController extends AbstractController
     {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
-        $this->isGranted(CategoryVoter::UPDATE, $category);
+        $this->denyAccessUnlessGranted(CategoryVoter::UPDATE, $category);
 
         if (!$category) {
             throw $this->createNotFoundException('Category not found');
@@ -130,7 +130,7 @@ final class CategoryController extends AbstractController
     {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
-        $this->isGranted(CategoryVoter::DELETE, $category);
+        $this->denyAccessUnlessGranted(CategoryVoter::DELETE, $category);
 
         if (!$category) {
             throw $this->createNotFoundException('Category not found');

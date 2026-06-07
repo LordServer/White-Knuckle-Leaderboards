@@ -23,7 +23,7 @@ final class ApprovalController extends AbstractController
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
     public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_DISCORD_AUTHORIZER');
+        $this->denyAccessUnlessGranted('ROLE_AUTHORIZER');
 
         $approvalBreakdown = $climbRepository->getUnreviewedBreakdown();
 
