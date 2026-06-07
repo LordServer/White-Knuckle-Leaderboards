@@ -133,8 +133,6 @@ final class ClimbController extends AbstractController
             ->add($pageName, 'climb_read', ['climbId' => $climbId])
         ;
 
-        // TODO: Remove Review button from approved/rejected climb pages
-
         return $this->render('climb/read.html.twig', [
             'controller_name' => 'ClimbController',
             'climb' => $climb,
