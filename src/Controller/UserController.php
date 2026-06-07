@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
+use App\Security\UserVoter;
 use App\Service\BreadcrumbsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +33,10 @@ final class UserController extends AbstractController
     #[Route('/create', name: 'create')]
     public function create(BreadcrumbsService $breadcrumbs): Response
     {
+        $this->denyAccessUnlessGranted(UserVoter::CREATE);
+
+        // TODO: Setup user registration form if/when non-discord allowed
+
         $breadcrumbs
             ->addHome()
             ->addClimber()
@@ -142,6 +147,7 @@ final class UserController extends AbstractController
     public function update(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
+        $this->denyAccessUnlessGranted(UserVoter::UPDATE, $climber);
 
         if (!$climber) {
             throw $this->createNotFoundException();
@@ -171,6 +177,7 @@ final class UserController extends AbstractController
     public function delete(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
+        $this->denyAccessUnlessGranted(UserVoter::DELETE, $climber);
 
         if (!$climber) {
             throw $this->createNotFoundException();

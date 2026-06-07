@@ -44,12 +44,14 @@ class UserVoter extends Voter
             return false;
         }
 
+        $climber = $subject;
+
         return match ($attribute) {
             self::CREATE => $this->canCreate($token, $vote),
             self::READ => $this->canRead(),
-            self::UPDATE => $this->canUpdate($token, $vote),
+            self::UPDATE => $this->canUpdate($climber, $token, $vote),
             self::MODERATE => $this->canModerate($token, $vote),
-            self::DELETE => $this->canDelete($token, $vote),
+            self::DELETE => $this->canDelete($climber, $token, $vote),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
@@ -57,6 +59,7 @@ class UserVoter extends Voter
     private function canCreate(): bool
     {
         // TODO: Implement canCreate() method.
+        return false;
     }
 
     private function canRead(): bool
@@ -64,18 +67,38 @@ class UserVoter extends Voter
         return true;
     }
 
-    private function canUpdate(): bool
+    private function canUpdate(User $climber, TokenInterface $token, ?Vote $vote): bool
     {
-        // TODO: Implement canUpdate() method.
+        if ($token->getUser() === $climber) {
+            return true;
+        }
+        $vote?->addReason('You may not edit other users');
+
+        if ($this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER'])) {
+            return true;
+        }
+        $vote?->addReason('You are not an authorizer');
+
+        return false;
     }
 
-    private function canModerate(): bool
+    private function canModerate(TokenInterface $token, ?Vote $vote): bool
     {
-        // TODO: Implement canModerate() method.
+        if ($this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER'])) {
+            return true;
+        }
+        $vote?->addReason('You are not an authorizer');
+
+        return false;
     }
 
-    private function canDelete(): bool
+    private function canDelete(User $climber, TokenInterface $token, ?Vote $vote): bool
     {
-        // TODO: Implement canDelete() method.
+        if ($token->getUser() === $climber) {
+            return true;
+        }
+        $vote?->addReason('You may not delete other users');
+
+        return false;
     }
 }
