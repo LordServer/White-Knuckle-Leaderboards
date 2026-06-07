@@ -117,7 +117,7 @@ class ClimbVoter extends Voter
             $vote?->addReason('This climb has already been reviewed and can no longer be edited.');
         }
 
-        if ($this->accessDecisionManager->decide($token, ['ROLE_MODERATOR'])) {
+        if ($this->accessDecisionManager->decide($token, ['ROLE_ADMIN'])) {
             return true;
         }
 
