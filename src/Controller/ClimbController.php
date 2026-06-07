@@ -112,6 +112,8 @@ final class ClimbController extends AbstractController
 
         $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
 
+        // TODO: Make milliseconds show 3 decimals instead of 2
+
         $rankMethod = $climb->getCategory()->getRankMethod()->getName();
         if (str_contains($rankMethod, 'Score')) {
             $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
@@ -130,6 +132,8 @@ final class ClimbController extends AbstractController
             ->addClimb()
             ->add($pageName, 'climb_read', ['climbId' => $climbId])
         ;
+
+        // TODO: Remove Review button from approved/rejected climb pages
 
         return $this->render('climb/read.html.twig', [
             'controller_name' => 'ClimbController',
@@ -257,6 +261,8 @@ final class ClimbController extends AbstractController
             ->add($pageName, 'climb_read', ['climbId' => $climbId])
             ->add('Delete', 'climb_delete', ['climbId' => $climbId])
         ;
+
+        // TODO: Add more info to delete page
 
         return $this->render('climb/delete.html.twig', [
             'controller_name' => 'ClimbController',
