@@ -5,11 +5,10 @@
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <div class="flex justify-between">
-            <h1 class="text-4xl font-bold mt-1">{{ subcategory.name|escape }}</h1>
+        <h1 class="text-4xl font-bold mt-1">{{ subcategory.name|escape }}</h1>
+        <div class="mt-2">
+            {{ subcategory.name|escape }} is used by {{ subcategory.categories|length }} categories; {% for category in subcategory.categories %}<a href="{{ path('category_read', {'categoryId': category.id}) }}">{{ category.name|escape }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.
         </div>
-        <div class="w-full py-2 text-white text-xl font-medium">Name</div>
-        {{ subcategory.name|escape }}
         {% if is_granted('ROLE_DISCORD_ADMIN') %}
             <div class="text-right pt-2">
                 <a href="{{ path('subcategory_update', { 'subcategoryId': subcategory.id }) }}">

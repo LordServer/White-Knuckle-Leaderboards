@@ -80,8 +80,6 @@ final class SubcategoryController extends AbstractController
             ->add($subcategory->getName(), 'subcategory_read', ['subcategoryId' => $subcategoryId])
         ;
 
-        // TODO: add list of categories using this subcategory
-
         return $this->render('subcategory/read.html.twig', [
             'controller_name' => 'SubcategoryController',
             'subcategory' => $subcategory,
