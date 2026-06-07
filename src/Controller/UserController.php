@@ -54,6 +54,8 @@ final class UserController extends AbstractController
     {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
+        // TODO: Setup user profile page, include best ranked run from each category?
+
         if (!$climber) {
             throw $this->createNotFoundException('Climber not found');
         }
