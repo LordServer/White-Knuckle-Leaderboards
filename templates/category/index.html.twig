@@ -31,29 +31,51 @@
                             </td>
                             <td>
                                 <a href="{{ path('category_read', {'categoryId': category.id}) }}" class="block">
-                                    {% for subcategory in category.subcategory %}
+                                    {% set visible = 1 %}
+                                    {% for subcategory in category.subcategory|slice(0, visible) %}
                                         {{ subcategory.name|escape }}{% if not loop.last %}, {% endif %}
                                     {% endfor %}
+                                    {% if category.subcategory|length > visible %}
+                                        +{{ category.subcategory|length - visible }} more
+                                    {% endif %}
                                 </a>
                             </td>
                             <td>
                                 <a href="{{ path('category_read', {'categoryId': category.id}) }}" class="block">{{ category.rankMethod.name|escape }}</a>
                             </td>
                             <td>
-                                <a href="{{ path('category_read', {'categoryId': category.id}) }}" class="block">{% if category.isArchived is true %}Yes{% endif %}</a>
+                                <a href="{{ path('category_read', {'categoryId': category.id}) }}" class="block">
+                                    {% if category.isArchived is true %}
+                                        <i class="text-red-900 mdi mdi-check-bold"></i>
+                                    {% else %}
+                                        <i class="mdi mdi-close-thick"></i>
+                                    {% endif %}</a>
                             </td>
-                            <td>
-                                {% if is_granted('category_update', category) %}
-                                    <a href="{{ path('category_update', { 'categoryId': category.id }) }}">
-                                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
-                                    </a>
-                                {% endif %}
-                                {% if is_granted('category_delete', category) %}
-                                    <a href="{{ path('category_delete', { 'categoryId': category.id }) }}">
-                                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
-                                    </a>
-                                {% endif %}
-                            </td>
+                            {% if is_granted('category_delete', category) or is_granted('category_delete', category) %}
+                                <td>
+                                    <span class="inline-flex align-middle bg-black rounded-sm border border-gray-600 border-solid text-white font-bold cursor-pointer">
+                                        {% if is_granted('category_update', category) %}
+                                            <a href="{{ path('category_update', { 'categoryId': category.id }) }}" class="hover:bg-gray-600 p-1">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if is_granted('category_delete', category) %}
+                                            <el-dropdown>
+                                                <button class="hover:bg-gray-600 p-1">
+                                                    <span class="sr-only">Open additional options menu</span>
+                                                    <i class="mdi mdi-chevron-down"></i>
+                                                </button>
+                                                <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-gray-900 text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                                                    <a href="{{ path('category_delete', { 'categoryId': category.id }) }}" class="px-4 py-2 focus:bg-white/5 focus:outline-hidden">
+                                                        <i class="mdi mdi-trash-can"></i>
+                                                        Delete
+                                                    </a>
+                                                </el-menu>
+                                            </el-dropdown>
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
