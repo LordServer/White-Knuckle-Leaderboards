@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ApiTokenRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
 use App\Security\UserVoter;
@@ -169,12 +170,6 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/tokens', name: 'tokens')]
-    public function tokens(): Response
-    {
-        return $this->render('tokens.html.twig', []);
-    }
-
     #[Route('/delete/{userId<\d+>}', name: 'delete')]
     public function delete(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
     {
@@ -195,6 +190,24 @@ final class UserController extends AbstractController
         return $this->render('user/delete.html.twig', [
             'controller_name' => 'UserController',
             'climber' => $climber,
+            'breadcrumbs' => $breadcrumbs->all(),
+        ]);
+    }
+
+    #[Route('/api-tokens', name: 'api_tokens')]
+    public function apiTokens(ApiTokenRepository $apiTokenRepository, BreadcrumbsService $breadcrumbs): Response
+    {
+        $apiTokens = $apiTokenRepository->findBy(['ownedBy' => $this->getUser()]);
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            // TODO: Finish API Token Breadcrumb
+        ;
+
+        return $this->render('user/api-tokens/index.html.twig', [
+            'controller_name' => 'UserController',
+            'apiTokens' => $apiTokens,
             'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
