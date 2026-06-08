@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use App\Entity\RankMethod;
 use App\Entity\Subcategory;
+use App\Factory\ApiTokenFactory;
 use App\Factory\ClimbFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -221,5 +222,7 @@ class AppFixtures extends Fixture
 //        $manager->flush();
 //        UserFactory::createMany(273);
 //        ClimbFactory::createMany(1185);
+
+//        ApiTokenFactory::createMany(30);
     }
 }
