@@ -9,6 +9,7 @@ import './stimulus_bootstrap.js';
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
 import '@tailwindplus/elements';
+import '@mdi/font/css/materialdesignicons.min.css'
 
 document.addEventListener('turbo:load', function() {
     const selector = document.getElementById('form-control');

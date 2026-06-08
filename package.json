@@ -24,6 +24,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@mdi/font": "^7.4.47",
         "@tailwindcss/postcss": "^4.2.4",
         "postcss": "^8.5.14",
         "postcss-loader": "^8.2.1",
