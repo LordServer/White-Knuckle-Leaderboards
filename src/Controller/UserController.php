@@ -17,9 +17,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
+    public function index(UserRepository $userRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
-        $climbers = $userRepository->findAll();
+        $climbers = $userRepository->findAllOrderByDisplayName();
+        $climbers->setMaxPerPage($request->query->get('perPage', 50));
+        $climbers->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $climbers->getNbPages(),
+            totalResults: $climbers->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         $breadcrumbs
             ->addHome()
@@ -30,6 +39,7 @@ final class UserController extends AbstractController
             'controller_name' => 'UserController',
             'climbers' => $climbers,
             'breadcrumbs' => $breadcrumbs->all(),
+            'pagination' => $pagination,
         ]);
     }
 

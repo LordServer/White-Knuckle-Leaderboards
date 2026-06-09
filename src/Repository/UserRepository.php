@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -23,6 +25,15 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult()
         ;
+    }
+
+    public function findAllOrderByDisplayName(): Pagerfanta
+    {
+        $query = $this->createQueryBuilder('u')
+            ->orderBy('u.display_name', 'ASC')
+            ->getQuery();
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     //    /**
