@@ -1,0 +1,62 @@
+<div class="flex justify-between items-center border-t border-gray-700">
+    {% set max_per_page = pagination.maxPerPage %}
+    {% set current_page = pagination.current %}
+    {% set last_page = pagination.total %}
+    {% set total_results = pagination.totalResults %}
+
+    {% set start_item = ((current_page - 1) * max_per_page) + 1 %}
+    {% set end_item = min(current_page * max_per_page, total_results) %}
+    <span>Showing {{ start_item }}-{{ end_item }} of {{ total_results }}</span>
+    {% if last_page > 1 %}
+        <span>
+            {% if current_page > 1 %}
+                {% set params = app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({ page: pagination.previousPage }) %}
+                <a href="{{ path(app.request.attributes.get('_route'), params) }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">
+                            <
+                    </button>
+                </a>
+            {% endif %}
+            {% for item in pagination.items %}
+                {% if item != '...' %}
+                    {% set params = app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({ page: item }) %}
+                    <a href="{{ path(app.request.attributes.get('_route'), params) }}">
+                        <button class="{% if current_page == item %}bg-red-900{% else %}bg-black{% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">
+                                {{ item }}
+                        </button>
+                    </a>
+                {% else %}
+                    <button class="{% if current_page == item %}bg-red-900{% else %}bg-black{% endif %} rounded-sm border border-gray-600 border-solid text-white font-bold p-2 hover:bg-red-400">
+                        {{ item }}
+                    </button>
+                {% endif %}
+            {% endfor %}
+            {% if current_page < last_page %}
+                {% set params = app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({ page: pagination.nextPage }) %}
+                <a href="{{ path(app.request.attributes.get('_route'), params) }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">
+                        >
+                    </button>
+                </a>
+            {% endif %}
+        </span>
+    {% endif %}
+    <span>
+        <el-dropdown>
+            <button>
+                <span class="bg-black rounded-sm border border-gray-600 border-solid text-white p-2 cursor-pointer hover:bg-red-400">
+                    Per Page
+                    <i class="mdi mdi-chevron-down"></i>
+                </span>
+            </button>
+            <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-black text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 25}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">25</a>
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 50}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">50</a>
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 100}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">100</a>
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 250}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">250</a>
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 500}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">500</a>
+                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 1000}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">1000</a>
+            </el-menu>
+        </el-dropdown>
+    </span>
+</div>

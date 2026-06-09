@@ -6,14 +6,16 @@ use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class LeaderboardController extends AbstractController
 {
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
-    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
+    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Request $request, PaginationService $paginationService, BreadcrumbsService $breadcrumbs): Response
     {
         $categories = $categoryRepository->findByArchived(false);
 
@@ -30,6 +32,10 @@ final class LeaderboardController extends AbstractController
         $subcategory = $subcategory ?: ($category->getSubcategory()->toArray()[0] ?? null);
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndRankSortByRank($category, $subcategory);
+        $climbs->setMaxPerPage($request->query->get('perPage', 50));
+        $climbs->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(currentPage: $request->query->get('page', 1), totalPages: $climbs->getNbPages(), totalResults: $climbs->getNbResults(), maxPerPage: $request->query->get('perPage', 50));
 
         if ('Normal' === $subcategory->getName()) {
             $pageName = $category->getName();
@@ -51,6 +57,7 @@ final class LeaderboardController extends AbstractController
             'climbs' => $climbs,
             'breadcrumbs' => $breadcrumbs->all(),
             'pageName' => $pageName,
+            'pagination' => $pagination,
         ]);
     }
 
