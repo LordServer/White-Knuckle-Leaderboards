@@ -10,6 +10,7 @@ use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
 use App\Security\ClimbVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use App\Service\UpdateClimbRanksService;
 use App\Util\TimeFormatter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +23,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ClimbController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
-    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
+    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
@@ -33,7 +34,17 @@ final class ClimbController extends AbstractController
         if (!$category->getSubcategory()->contains($subcategory)) {
             $subcategory = $subcategoryRepository->findOneBy(['id' => min(array_map(fn ($item) => $item->getId(), $category->getSubcategory()->toArray()))]);
         }
+
         $climbs = $climbRepository->findByCategoryAndSubcategorySortByCreateAt($category, $subcategory);
+        $climbs->setMaxPerPage($request->query->get('perPage', 50));
+        $climbs->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $climbs->getNbPages(),
+            totalResults: $climbs->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         if ('Normal' === $subcategory->getName()) {
             $pageName = $category->getName();
@@ -55,6 +66,7 @@ final class ClimbController extends AbstractController
             'climbs' => $climbs,
             'breadcrumbs' => $breadcrumbs->all(),
             'pageName' => $pageName,
+            'pagination' => $pagination,
         ]);
     }
 

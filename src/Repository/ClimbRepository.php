@@ -122,21 +122,22 @@ class ClimbRepository extends ServiceEntityRepository
         return $qb->setParameters($parameters)->getQuery()->getResult();
     }
 
-    public function findByCategoryAndSubcategorySortByCreateAt(?Category $category, ?Subcategory $subcategory)
+    public function findByCategoryAndSubcategorySortByCreateAt(?Category $category, ?Subcategory $subcategory): Pagerfanta
     {
         $parameters = new ArrayCollection([
             new Parameter('category', $category),
             new Parameter('subcategory', $subcategory),
         ]);
 
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->andWhere('c.category = :category')
             ->andWhere('c.subcategory = :subcategory')
             ->setParameters($parameters)
             ->orderBy('c.created_at', 'DESC')
             ->getQuery()
-            ->getResult()
         ;
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     public function findByCategoryAndSubcategoryAndRankSortByRank(?Category $category, ?Subcategory $subcategory): Pagerfanta
