@@ -21,26 +21,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for subcategory in subcategories %}
-                    <tr class="hover:bg-gray-600">
-                        <td>
-                            <a href="{{ path('subcategory_read', {'subcategoryId': subcategory.id}) }}" class="block">{{ subcategory.name|escape }}</a>
-                        </td>
-                        <td class="text-right">
-                            {% if is_granted('subcategory_update', subcategory) %}
-                                <a href="{{ path('subcategory_update', { 'subcategoryId': subcategory.id }) }}">
-                                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
-                                </a>
-                            {% endif %}
-                            {% if is_granted('subcategory_delete', subcategory) %}
-                                <a href="{{ path('subcategory_delete', { 'subcategoryId': subcategory.id }) }}">
-                                    <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
-                                </a>
-                            {% endif %}
-                            TODO: Add buttons like in categories index
-                        </td>
-                    </tr>
-                {% endfor %}
+                    {% for subcategory in subcategories %}
+                        <tr class="hover:bg-gray-600">
+                            <td>
+                                <a href="{{ path('subcategory_read', {'subcategoryId': subcategory.id}) }}" class="block">{{ subcategory.name|escape }}</a>
+                            </td>
+                            <td class="text-right">
+                                {% if is_granted('subcategory_update', subcategory) %}
+                                    <a href="{{ path('subcategory_update', { 'subcategoryId': subcategory.id }) }}">
+                                        <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-gray-600">Edit</button>
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('subcategory_delete', subcategory) %}
+                                    <a href="{{ path('subcategory_delete', { 'subcategoryId': subcategory.id }) }}">
+                                        <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-1 cursor-pointer hover:bg-red-400">Delete</button>
+                                    </a>
+                                {% endif %}
+                                <!-- TODO: Add buttons like in categories index -->
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
