@@ -35,7 +35,12 @@ final class LeaderboardController extends AbstractController
         $climbs->setMaxPerPage($request->query->get('perPage', 50));
         $climbs->setCurrentPage($request->query->get('page', 1));
 
-        $pagination = $paginationService->build(currentPage: $request->query->get('page', 1), totalPages: $climbs->getNbPages(), totalResults: $climbs->getNbResults(), maxPerPage: $request->query->get('perPage', 50));
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $climbs->getNbPages(),
+            totalResults: $climbs->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         if ('Normal' === $subcategory->getName()) {
             $pageName = $category->getName();
@@ -62,7 +67,7 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/archive/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_archive')]
-    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
+    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
         $categories = $categoryRepository->findByArchived(true);
 
@@ -79,6 +84,15 @@ final class LeaderboardController extends AbstractController
         $subcategory = $subcategory ?: ($category->getSubcategory()->toArray()[0] ?? null);
 
         $climbs = $climbRepository->findByCategoryAndSubcategoryAndRankSortByRank($category, $subcategory);
+        $climbs->setMaxPerPage($request->query->get('perPage', 50));
+        $climbs->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $climbs->getNbPages(),
+            totalResults: $climbs->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         if ('Normal' === $subcategory->getName()) {
             $pageName = $category->getName();
@@ -100,6 +114,7 @@ final class LeaderboardController extends AbstractController
             'climbs' => $climbs,
             'breadcrumbs' => $breadcrumbs->all(),
             'pageName' => $pageName,
+            'pagination' => $pagination,
         ]);
     }
 }
