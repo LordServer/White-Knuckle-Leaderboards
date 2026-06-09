@@ -7,6 +7,7 @@ use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
 use App\Security\SubcategoryVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SubcategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs): Response
+    public function index(SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
-        $subcategories = $subcategoryRepository->findAll();
+        $subcategories = $subcategoryRepository->findAllOrderedByIndex();
+        $subcategories->setMaxPerPage($request->query->get('perPage', 50));
+        $subcategories->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $subcategories->getNbPages(),
+            totalResults: $subcategories->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         $breadcrumbs
             ->addHome()
@@ -30,6 +40,7 @@ final class SubcategoryController extends AbstractController
             'controller_name' => 'SubcategoryController',
             'subcategories' => $subcategories,
             'breadcrumbs' => $breadcrumbs->all(),
+            'pagination' => $pagination,
         ]);
     }
 

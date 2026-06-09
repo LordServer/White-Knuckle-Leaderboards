@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Subcategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @extends ServiceEntityRepository<Subcategory>
@@ -14,6 +16,15 @@ class SubcategoryRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Subcategory::class);
+    }
+
+    public function findAllOrderedByIndex(): Pagerfanta
+    {
+        $query = $this->createQueryBuilder('sc')
+            ->orderBy('sc.id', 'ASC')
+            ->getQuery();
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     //    /**
