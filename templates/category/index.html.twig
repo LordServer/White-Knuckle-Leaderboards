@@ -52,9 +52,9 @@
                                         <i class="mdi mdi-close-thick"></i>
                                     {% endif %}</a>
                             </td>
-                            {% if is_granted('category_delete', category) or is_granted('category_delete', category) %}
-                                <td>
-                                    <span class="inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
+                            {% if is_granted('category_update', category) or is_granted('category_delete', category) %}
+                                <td class="text-right">
+                                    <span class="text-center inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
                                         {% if is_granted('category_update', category) %}
                                             <a href="{{ path('category_update', { 'categoryId': category.id }) }}" class="hover:bg-gray-600 p-1">
                                                 <i class="mdi mdi-pencil"></i>
