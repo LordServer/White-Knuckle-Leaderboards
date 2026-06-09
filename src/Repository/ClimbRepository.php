@@ -158,7 +158,7 @@ class ClimbRepository extends ServiceEntityRepository
         return new Pagerfanta(new QueryAdapter($query));
     }
 
-    public function findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt(?Category $category, ?Subcategory $subcategory, bool $approved)
+    public function findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt(?Category $category, ?Subcategory $subcategory, bool $approved): Pagerfanta
     {
         $parameters = new ArrayCollection([
             new Parameter('category', $category),
@@ -166,15 +166,16 @@ class ClimbRepository extends ServiceEntityRepository
             new Parameter('status', $approved),
         ]);
 
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->andWhere('c.category = :category')
             ->andWhere('c.subcategory = :subcategory')
             ->andWhere('c.is_reviewed = :status')
             ->setParameters($parameters)
             ->orderBy('c.created_at', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     public function findByUserAndCategoryAndSubcategoryOrderByNewestCreatedAt(?User $climber, Category $category, ?Subcategory $subcategory)
