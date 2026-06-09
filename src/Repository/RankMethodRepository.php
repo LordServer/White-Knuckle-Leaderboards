@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\RankMethod;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @extends ServiceEntityRepository<RankMethod>
@@ -14,6 +16,15 @@ class RankMethodRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, RankMethod::class);
+    }
+
+    public function findAllOrderedByIndex(): Pagerfanta
+    {
+        $query = $this->createQueryBuilder('r')
+            ->orderBy('r.id', 'ASC')
+            ->getQuery();
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     //    /**

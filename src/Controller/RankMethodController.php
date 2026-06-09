@@ -7,6 +7,7 @@ use App\Form\RankMethodType;
 use App\Repository\RankMethodRepository;
 use App\Security\RankMethodVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RankMethodController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(RankMethodRepository $rankMethodRepository, BreadcrumbsService $breadcrumbs): Response
+    public function index(RankMethodRepository $rankMethodRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
-        $rankMethods = $rankMethodRepository->findAll();
+        $rankMethods = $rankMethodRepository->findAllOrderedByIndex();
+        $rankMethods->setMaxPerPage($request->query->get('perPage', 50));
+        $rankMethods->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $rankMethods->getNbPages(),
+            totalResults: $rankMethods->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         $breadcrumbs
             ->addHome()
@@ -30,6 +40,7 @@ final class RankMethodController extends AbstractController
             'controller_name' => 'RankMethodController',
             'rankMethods' => $rankMethods,
             'breadcrumbs' => $breadcrumbs->all(),
+            'pagination' => $pagination,
         ]);
     }
 
