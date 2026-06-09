@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Climbers{% endblock %}
+
+{% block body %}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        {% include 'partials/breadcrumbs.html.twig' %}
+        <h1 class="text-4xl font-bold mt-1">My API Tokens</h1>
+        <div>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th class="text-left">Token</th>
+                        <th class="text-left">Expires</th>
+                        <th class="text-left">Enabled</th>
+                        <th class="text-left">Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apiToken in apiTokens %}
+                        <tr class="hover:bg-gray-600">
+                            <td>{{ apiToken.token|u.truncate(32, '********************')|escape }}</td>
+                            <td>
+                                {% if apiToken.expiresAt is null %}
+                                    Never
+                                {% else %}
+                                    {{ apiToken.expiresAt|date('Y-m-d H:i:s')|escape }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if apiToken.isEnabled %}
+                                    <i class="text-green-600 mdi mdi-check-bold"></i>
+                                {% else %}
+                                    <i class="text-red-900 mdi mdi-close-thick"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if apiToken.description is null %}
+                                    —
+                                {% else %}
+                                    {{ apiToken.description|escape }}
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                <span class="text-left inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
+                                    <a href="{{ path('api_tokens_update', { 'apiTokenId': apiToken.id }) }}" class="hover:bg-gray-600 p-1">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                    <el-dropdown>
+                                        <button class="hover:bg-gray-600 p-1">
+                                            <span class="sr-only">Open additional options menu</span>
+                                            <i class="mdi mdi-chevron-down"></i>
+                                        </button>
+                                        <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-black text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                                            <a href="{{ path('api_tokens_read', { 'apiTokenId': apiToken.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
+                                                <i class="mdi mdi-eye"></i>
+                                                View
+                                            </a>
+                                            <a href="{{ path('api_tokens_update', { 'apiTokenId': apiToken.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
+                                                <i class="mdi mdi-pencil"></i>
+                                                Edit
+                                            </a>
+                                            <a href="{{ path('api_tokens_delete', { 'apiTokenId': apiToken.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
+                                                <i class="mdi mdi-trash-can"></i>
+                                                Delete
+                                            </a>
+                                        </el-menu>
+                                    </el-dropdown>
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'partials/pagination.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
