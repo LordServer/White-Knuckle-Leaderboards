@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\ApiTokenRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
 use App\Security\UserVoter;
@@ -206,31 +205,5 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/api-tokens', name: 'api_tokens')]
-    public function apiTokens(ApiTokenRepository $apiTokenRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService, UserRepository $userRepository): Response
-    {
-        $apiTokens = $apiTokenRepository->findByOwnerOrderByIndex($this->getUser());
-        $apiTokens->setMaxPerPage($request->query->get('perPage', 50));
-        $apiTokens->setCurrentPage($request->query->get('page', 1));
 
-        $pagination = $paginationService->build(
-            currentPage: $request->query->get('page', 1),
-            totalPages: $apiTokens->getNbPages(),
-            totalResults: $apiTokens->getNbResults(),
-            maxPerPage: $request->query->get('perPage', 50)
-        );
-
-        $breadcrumbs
-            ->addHome()
-            ->addClimber()
-            // TODO: Finish API Token Breadcrumb
-        ;
-
-        return $this->render('user/api-tokens/index.html.twig', [
-            'controller_name' => 'UserController',
-            'apiTokens' => $apiTokens,
-            'breadcrumbs' => $breadcrumbs->all(),
-            'pagination' => $pagination,
-        ]);
-    }
 }
