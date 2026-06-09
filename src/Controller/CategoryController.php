@@ -7,6 +7,7 @@ use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
 use App\Security\CategoryVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CategoryRepository $categoryRepository, BreadcrumbsService $breadcrumbs): Response
+    public function index(CategoryRepository $categoryRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
     {
-        $categories = $categoryRepository->findAll();
+        $categories = $categoryRepository->findAllOrderByIndex();
+        $categories->setMaxPerPage($request->query->get('perPage', 50));
+        $categories->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(currentPage: $request->query->get('page', 1), totalPages: $categories->getNbPages(), totalResults: $categories->getNbResults(), maxPerPage: $request->query->get('perPage', 50));
 
         $breadcrumbs
             ->addHome()
@@ -30,6 +35,7 @@ final class CategoryController extends AbstractController
             'controller_name' => 'CategoryController',
             'categories' => $categories,
             'breadcrumbs' => $breadcrumbs->all(),
+            'pagination' => $pagination,
         ]);
     }
 
