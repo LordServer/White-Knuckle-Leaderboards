@@ -14,9 +14,9 @@
             {% endif %}
         </div>
         <div class="mt-2">
-            <table class="w-full border-collapse">
+            <table class="w-full border-collapse [&_td]:py-2">
                 <thead>
-                    <tr>
+                    <tr class="p-4">
                         <th class="text-left">Name</th>
                         <th class="text-left">Subcategories</th>
                         <th class="text-left">Rank Method</th>
@@ -25,7 +25,7 @@
                 </thead>
                 <tbody>
                     {% for category in categories %}
-                        <tr class="hover:bg-gray-600">
+                        <tr class="hover:bg-gray-900 border-t border-gray-700">
                             <td>
                                 <a href="{{ path('category_read', {'categoryId': category.id}) }}" class="block">{{ category.name }}</a>
                             </td>
@@ -53,7 +53,7 @@
                             </td>
                             {% if is_granted('category_delete', category) or is_granted('category_delete', category) %}
                                 <td>
-                                    <span class="inline-flex align-middle bg-black rounded-sm border border-gray-600 border-solid text-white font-bold cursor-pointer">
+                                    <span class="inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
                                         {% if is_granted('category_update', category) %}
                                             <a href="{{ path('category_update', { 'categoryId': category.id }) }}" class="hover:bg-gray-600 p-1">
                                                 <i class="mdi mdi-pencil"></i>
