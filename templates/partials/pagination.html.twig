@@ -50,12 +50,13 @@
                 </span>
             </button>
             <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-black text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 25}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">25</a>
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 50}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">50</a>
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 100}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">100</a>
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 250}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">250</a>
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 500}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">500</a>
-                <a href="{{ path('app_leaderboard', {'categoryId': category.id, 'subcategoryId': subcategory.id, 'perPage': 1000}) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">1000</a>
+                {% set params = app.request.attributes.get('_route_params')|merge(app.request.query.all) %}
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 25 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">25</a>
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 50 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">50</a>
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 100 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">100</a>
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 250 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">250</a>
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 500 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">500</a>
+                <a href="{{ path(app.request.attributes.get('_route'), params|merge({ perPage: 1000 })) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">1000</a>
             </el-menu>
         </el-dropdown>
     </span>
