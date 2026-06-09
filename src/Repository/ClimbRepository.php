@@ -10,6 +10,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @extends ServiceEntityRepository<Climb>
@@ -137,22 +139,23 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByCategoryAndSubcategoryAndRankSortByRank(?Category $category, ?Subcategory $subcategory)
+    public function findByCategoryAndSubcategoryAndRankSortByRank(?Category $category, ?Subcategory $subcategory): Pagerfanta
     {
         $parameters = new ArrayCollection([
             new Parameter('category', $category),
             new Parameter('subcategory', $subcategory),
         ]);
 
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->andWhere('c.category = :category')
             ->andWhere('c.subcategory = :subcategory')
             ->andWhere('c.rank IS NOT NULL')
             ->setParameters($parameters)
             ->orderBy('c.rank', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
+
+        return new Pagerfanta(new QueryAdapter($query));
     }
 
     public function findByCategoryAndSubcategoryAndApprovalStatusSortByOldestCreatedAt(?Category $category, ?Subcategory $subcategory, bool $approved)
