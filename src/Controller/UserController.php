@@ -7,7 +7,9 @@ use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
 use App\Security\UserVoter;
 use App\Service\BreadcrumbsService;
+use App\Service\PaginationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -195,9 +197,18 @@ final class UserController extends AbstractController
     }
 
     #[Route('/api-tokens', name: 'api_tokens')]
-    public function apiTokens(ApiTokenRepository $apiTokenRepository, BreadcrumbsService $breadcrumbs): Response
+    public function apiTokens(ApiTokenRepository $apiTokenRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService, UserRepository $userRepository): Response
     {
-        $apiTokens = $apiTokenRepository->findBy(['ownedBy' => $this->getUser()]);
+        $apiTokens = $apiTokenRepository->findByOwnerOrderByIndex($this->getUser());
+        $apiTokens->setMaxPerPage($request->query->get('perPage', 50));
+        $apiTokens->setCurrentPage($request->query->get('page', 1));
+
+        $pagination = $paginationService->build(
+            currentPage: $request->query->get('page', 1),
+            totalPages: $apiTokens->getNbPages(),
+            totalResults: $apiTokens->getNbResults(),
+            maxPerPage: $request->query->get('perPage', 50)
+        );
 
         $breadcrumbs
             ->addHome()
@@ -209,6 +220,7 @@ final class UserController extends AbstractController
             'controller_name' => 'UserController',
             'apiTokens' => $apiTokens,
             'breadcrumbs' => $breadcrumbs->all(),
+            'pagination' => $pagination,
         ]);
     }
 }
