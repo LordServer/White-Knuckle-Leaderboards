@@ -12,8 +12,6 @@ final class CategoryFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
      */
     public function __construct()
     {
@@ -27,8 +25,6 @@ final class CategoryFactory extends PersistentObjectFactory
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
      */
     #[\Override]
     protected function defaults(): array|callable
@@ -36,7 +32,7 @@ final class CategoryFactory extends PersistentObjectFactory
         return [
             'is_archived' => self::faker()->boolean(),
             'name' => self::faker()->text(255),
-            'rank_method' => null, // TODO add App\Entity\RankMethod type manually
+            'rank_method' => null,
             'rules' => self::faker()->text(),
         ];
     }

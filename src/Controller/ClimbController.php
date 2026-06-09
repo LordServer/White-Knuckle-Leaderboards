@@ -124,8 +124,6 @@ final class ClimbController extends AbstractController
 
         $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
 
-        // TODO: Make milliseconds show 3 decimals instead of 2
-
         $rankMethod = $climb->getCategory()->getRankMethod()->getName();
         if (str_contains($rankMethod, 'Score')) {
             $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
