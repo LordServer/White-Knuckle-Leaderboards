@@ -14,7 +14,7 @@
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
-        "jolicode/automapper": "^10.2",
+        "jolicode/automapper": "*",
         "knplabs/knp-time-bundle": "^2.5",
         "knpuniversity/oauth2-client-bundle": "^2.20",
         "league/commonmark": "^2.8",
