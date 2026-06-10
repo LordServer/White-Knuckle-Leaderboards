@@ -9,7 +9,7 @@ use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\Pagination\TraversablePaginator;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\UserApi;
+use AutoMapper\AutoMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class EntityToDtoStateProvider implements ProviderInterface
@@ -17,18 +17,21 @@ class EntityToDtoStateProvider implements ProviderInterface
     public function __construct(
         #[Autowire(service: CollectionProvider::class)] private ProviderInterface $collectionProvider,
         #[Autowire(service: ItemProvider::class)] private ProviderInterface $itemProvider,
+        private AutoMapperInterface $autoMapper,
     ) {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
+        $resourceClass = $operation->getClass();
+
         if ($operation instanceof CollectionOperationInterface) {
             $entities = $this->collectionProvider->provide($operation, $uriVariables, $context);
             assert($entities instanceof Paginator);
 
             $dtos = [];
             foreach ($entities as $entity) {
-                $dtos[] = $this->mapEntityToDto($entity);
+                $dtos[] = $this->mapEntityToDto($entity, $resourceClass);
             }
 
             return new TraversablePaginator(
@@ -45,25 +48,11 @@ class EntityToDtoStateProvider implements ProviderInterface
             return null;
         }
 
-        return $this->mapEntityToDto($entity);
+        return $this->mapEntityToDto($entity, $resourceClass);
     }
 
-    private function mapEntityToDto(object $entity): object
+    private function mapEntityToDto(object $entity, string $resourceClass): object
     {
-        $dto = new UserApi();
-        $dto->id = $entity->getId();
-        $dto->username = $entity->getUsername();
-        $dto->roles = $entity->getRoles();
-        $dto->discord_id = $entity->getDiscordId();
-        $dto->avatar = $entity->getAvatar();
-        $dto->createdAt = $entity->getCreatedAt();
-        $dto->updatedAt = $entity->getUpdatedAt();
-//        $dto->climbs = $entity->getClimbs()->toArray();
-//        $dto->climbsVerified = $entity->getClimbsVerified()->toArray();
-        $dto->display_name = $entity->getDisplayName();
-        $dto->status = $entity->getStatus();
-        $dto->bannedUntil = $entity->getBannedUntil();
-
-        return $dto;
+        return $this->autoMapper->map($entity, $resourceClass);
     }
 }
