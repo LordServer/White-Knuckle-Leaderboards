@@ -72,19 +72,19 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
                     // Setup initial Roles
                     if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
-                        $user->addRole('ROLE_DISCORD_ADMIN');
+                        $user->addRole('ROLE_ADMIN');
                     } else {
-                        $user->removeRole('ROLE_DISCORD_ADMIN');
+                        $user->removeRole('ROLE_ADMIN');
                     }
                     if (in_array($_ENV['DISCORD_MODERATOR_ROLE_ID'], $discord_roles)) {
-                        $user->addRole('ROLE_DISCORD_MODERATOR');
+                        $user->addRole('ROLE_MODERATOR');
                     } else {
-                        $user->removeRole('ROLE_DISCORD_MODERATOR');
+                        $user->removeRole('ROLE_MODERATOR');
                     }
                     if (in_array($_ENV['DISCORD_AUTHORIZER_ROLE_ID'], $discord_roles)) {
-                        $user->addRole('ROLE_DISCORD_AUTHORIZER');
+                        $user->addRole('ROLE_AUTHORIZER');
                     } else {
-                        $user->removeRole('ROLE_DISCORD_AUTHORIZER');
+                        $user->removeRole('ROLE_AUTHORIZER');
                     }
 
                     $this->entityManager->persist($user);
@@ -101,42 +101,42 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                     }
 
                     if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
-                        if (!in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
-                            $user->addRole('ROLE_DISCORD_ADMIN');
+                        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                            $user->addRole('ROLE_ADMIN');
 
                             $this->entityManager->persist($user);
                         }
                     } else {
-                        if (in_array('ROLE_DISCORD_ADMIN', $user->getRoles())) {
-                            $user->removeRole('ROLE_DISCORD_ADMIN');
+                        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                            $user->removeRole('ROLE_ADMIN');
 
                             $this->entityManager->persist($user);
                         }
                     }
 
                     if (in_array($_ENV['DISCORD_MODERATOR_ROLE_ID'], $discord_roles)) {
-                        if (!in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
-                            $user->addRole('ROLE_DISCORD_MODERATOR');
+                        if (!in_array('ROLE_MODERATOR', $user->getRoles())) {
+                            $user->addRole('ROLE_MODERATOR');
 
                             $this->entityManager->persist($user);
                         }
                     } else {
-                        if (in_array('ROLE_DISCORD_MODERATOR', $user->getRoles())) {
-                            $user->removeRole('ROLE_DISCORD_MODERATOR');
+                        if (in_array('ROLE_MODERATOR', $user->getRoles())) {
+                            $user->removeRole('ROLE_MODERATOR');
 
                             $this->entityManager->persist($user);
                         }
                     }
 
                     if (in_array($_ENV['DISCORD_AUTHORIZER_ROLE_ID'], $discord_roles)) {
-                        if (!in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
-                            $user->addRole('ROLE_DISCORD_AUTHORIZER');
+                        if (!in_array('ROLE_AUTHORIZER', $user->getRoles())) {
+                            $user->addRole('ROLE_AUTHORIZER');
 
                             $this->entityManager->persist($user);
                         }
                     } else {
-                        if (in_array('ROLE_DISCORD_AUTHORIZER', $user->getRoles())) {
-                            $user->removeRole('ROLE_DISCORD_AUTHORIZER');
+                        if (in_array('ROLE_AUTHORIZER', $user->getRoles())) {
+                            $user->removeRole('ROLE_AUTHORIZER');
 
                             $this->entityManager->persist($user);
                         }

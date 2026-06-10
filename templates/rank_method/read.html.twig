@@ -10,7 +10,7 @@
     <div class="mt-2">
         {{ rankMethod.name|escape }} is used by {{ rankMethod.categories|length }} categories; {% for category in rankMethod.categories %}<a href="{{ path('category_read', {'categoryId': category.id}) }}">{{ category.name|escape }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.
     </div>
-    {% if is_granted('ROLE_DISCORD_ADMIN') %}
+    {% if is_granted('ROLE_ADMIN') %}
         <div class="text-right pt-2">
             {% if is_granted('rank_method_update', rankMethod) %}
                 <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}">

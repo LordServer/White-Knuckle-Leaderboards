@@ -28,7 +28,7 @@ class ApprovalType extends AbstractType
     {
         if (isset($options['data'])) {
             $entry = $options['data'];
-            $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_DISCORD_ADMIN');
+            $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_ADMIN');
         } else {
             $locked = false;
         }

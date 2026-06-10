@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
@@ -28,7 +27,7 @@ class ClimbType extends AbstractType
     {
         if (isset($options['data'])) {
             $entry = $options['data'];
-            $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_DISCORD_ADMIN');
+            $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_ADMIN');
         } else {
             $locked = false;
         }
