@@ -3,5 +3,54 @@
 {% block title %}Hello ApiController!{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        {% include 'partials/breadcrumbs.html.twig' %}
+        <div class="flex justify-between items-center">
+            <h1 class="text-4xl font-bold mt-1">Edit Token {{ apiToken.token|slice(4)|u.truncate(12)|escape }}</h1>
+            {% if apiToken.expiresAt is null %}
+                Never Expires
+            {% else %}
+                <div class="group relative inline-block">
+                    <div>
+                        Expires {{ apiToken.expiresAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ apiToken.expiresAt|date('Y-m-d H:i:s')|escape }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div data-controller="token-expiry">
+            {{ form_start(form) }}
+            {{ apiToken.token }}
+            <div class="flex gap-2">
+                <div class="flex-1">
+                    <div class="w-full py-2 text-white text-xl font-medium">
+                        Enabled?
+                    </div>
+                    {{ form_widget(form.isEnabled) }}
+                </div>
+                <div class="flex-4">
+                    <div class="w-full py-2 text-white text-xl font-medium">
+                        Scopes
+                    </div>
+                    {% for scope in apiToken.scopes %}
+                        <div>{{ scope }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="w-full py-2 text-white text-xl font-medium">
+                {{ form_label(form.description) }}
+            </div>
+            {{ form_widget(form.description, {'attr': {'class': 'w-full h-27 py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+            <div class="text-right pt-2">
+                <a href="{{ path('api_tokens_read', { 'apiTokenId': apiToken.id }) }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
+                </a>
+                <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Update</button>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

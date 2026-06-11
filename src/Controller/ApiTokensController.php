@@ -129,17 +129,40 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/{apiTokenId<\d+>}/update', name: 'update')]
-    public function apiTokensUpdate(int $apiTokenId, ApiTokenRepository $apiTokenRepository): Response
-    {
+    public function apiTokensUpdate(
+        int $apiTokenId,
+        ApiTokenRepository $apiTokenRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        EntityManagerInterface $entityManager,
+    ): Response {
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
         $this->denyAccessUnlessGranted(ApiTokenVoter::UPDATE, $apiToken);
 
         $form = $this->createForm(ApiTokenType::class, $apiToken);
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $apiToken = $form->getData();
+
+            $entityManager->persist($apiToken);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
+        }
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            // TODO: Finish API Token Breadcrumb
+        ;
+
         return $this->render('api_tokens/update.html.twig', [
             'controller_name' => 'ApiTokensController',
+            'apiToken' => $apiToken,
             'form' => $form,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
@@ -148,7 +171,7 @@ final class ApiTokensController extends AbstractController
     {
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
-        $this->denyAccessUnlessGranted(ApiTokenVoter::UPDATE, $apiToken);
+        $this->denyAccessUnlessGranted(ApiTokenVoter::DELETE, $apiToken);
 
         return $this->render('api_tokens/delete.html.twig', [
             'controller_name' => 'ApiTokensController',
