@@ -33,6 +33,8 @@ readonly class ApiTokenHandler implements AccessTokenHandlerInterface
 
         $token->getOwnedBy()->markAsTokenAuthenticated($token->getScopes());
 
+        $token->setLastUsed(new \DateTime());
+
         return new UserBadge($token->getOwnedBy()->getUserIdentifier());
     }
 }
