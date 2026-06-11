@@ -1,6 +1,6 @@
 api_platform:
-    title: Hello API Platform
-    version: 1.0.0
+    title: White Knuckle Leaderboard API
+    version: 2.0.0-Pre1
     defaults:
         stateless: true
         cache_headers:
