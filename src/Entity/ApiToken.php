@@ -43,7 +43,6 @@ class ApiToken
         $this->token = $tokenType.bin2hex(random_bytes(32));
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -131,5 +130,10 @@ class ApiToken
         $this->lastUsed = $lastUsed;
 
         return $this;
+    }
+
+    public function isValid(): bool
+    {
+        return null === $this->expiresAt || $this->expiresAt > new \DateTimeImmutable();
     }
 }
