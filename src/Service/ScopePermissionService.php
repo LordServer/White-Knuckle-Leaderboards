@@ -4,12 +4,24 @@ namespace App\Service;
 
 use App\Enum\ApiScopes;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 readonly class ScopePermissionService
 {
     public function __construct(
         private Security $security,
     ) {
+    }
+
+    public function assignScopes(array $scopes)
+    {
+        $allowedScopes = $this->getAssignableScopes();
+
+        foreach ($scopes as $scope) {
+            if (!in_array($scope, $allowedScopes, true)) {
+                throw new AccessDeniedException(sprintf('You cannot assign scope "%s".', $scope));
+            }
+        }
     }
 
     public function getAssignableScopes(): array
