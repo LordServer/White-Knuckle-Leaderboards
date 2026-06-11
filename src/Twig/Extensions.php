@@ -6,6 +6,7 @@ use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
 use App\Util\TimeFormatter;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -17,6 +18,7 @@ class Extensions extends AbstractExtension
         private readonly ClimbRepository $climbRepository,
         private readonly Security $security,
         private readonly UserRepository $userRepository,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -60,6 +62,10 @@ class Extensions extends AbstractExtension
             new TwigFilter(
                 'ordinalize',
                 [$this, 'getOrdinalSuffix']
+            ),
+            new TwigFilter(
+                'local_datetime',
+                [$this, 'localDateTime']
             ),
         ];
     }
@@ -113,5 +119,25 @@ class Extensions extends AbstractExtension
                 default => $number.'th',
             },
         };
+    }
+
+    public function localDateTime(
+        ?\DateTimeInterface $date,
+        string $format = 'Y-m-d H:i:s',
+    ): string {
+        if (!$date) {
+            return '';
+        }
+
+        $timezone = $this->requestStack
+            ->getCurrentRequest()
+            ?->cookies
+            ->get('timezone', 'UTC');
+
+        $localDate = $date->setTimezone(
+            new \DateTimeZone($timezone)
+        );
+
+        return $localDate->format($format);
     }
 }
