@@ -20,8 +20,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ApiTokensController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function apiTokens(ApiTokenRepository $apiTokenRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService, UserRepository $userRepository): Response
-    {
+    public function apiTokens(
+        ApiTokenRepository $apiTokenRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+        UserRepository $userRepository,
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $apiTokens = $apiTokenRepository->findByOwnerOrderByIndex($this->getUser());
@@ -97,15 +102,29 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/{apiTokenId<\d+>}', name: 'read')]
-    public function apiTokensRead(int $apiTokenId, ApiTokenRepository $apiTokenRepository): Response
-    {
+    public function apiTokensRead(
+        int $apiTokenId,
+        ApiTokenRepository $apiTokenRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
+        if (!$apiToken) {
+            throw $this->createNotFoundException('API Token not found');
+        }
+
         $this->denyAccessUnlessGranted(ApiTokenVoter::READ, $apiToken);
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            // TODO: Finish API Token Breadcrumb
+        ;
 
         return $this->render('api_tokens/read.html.twig', [
             'controller_name' => 'ApiTokensController',
             'apiToken' => $apiToken,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 
