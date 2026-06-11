@@ -4,4 +4,7 @@
 
 {% block body %}
     {{ dump(apiScopes) }}
+    <div data-controller="token-expiry">
+        {{ form(form) }}
+    </div>
 {% endblock %}
