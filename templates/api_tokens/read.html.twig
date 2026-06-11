@@ -66,7 +66,14 @@
                     {% if apiToken.lastUsed is null %}
                         —
                     {% else %}
-                        {{ apiToken.lastUsed|escape }}
+                        <div class="group relative inline-block">
+                            <div>
+                                {{ apiToken.lastUsed|date('Y-m-d H:i:s')|ago|escape }}
+                            </div>
+                            <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                {{ apiToken.lastUsed|date('Y-m-d H:i:s')|escape }}
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
