@@ -3,6 +3,7 @@
 {% block title %}Climbers{% endblock %}
 
 {% block body %}
+{#    TODO: Add scopes to page#}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
         <div class="flex justify-between">
@@ -31,7 +32,7 @@
                         <tr class="hover:bg-gray-900 border-t border-gray-700">
                             <td>
                                 <a href="{{ path('api_tokens_read', { 'apiTokenId': apiToken.id }) }}" class="block">
-                                    {{ apiToken.token|u.truncate(32, '********************')|escape }}
+                                    {{ apiToken.token|slice(4)|u.truncate(12)|escape }}
                                 </a>
                             </td>
                             <td>
