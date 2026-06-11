@@ -69,7 +69,7 @@
                     <div class="font-bold">Date</div>
                     <div class="group relative inline-block">
                         <div>{{ climb.createdAt|date('Y-m-d H:i:s')|ago }}</div>
-                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">{{ climb.createdAt|date('Y-m-d H:i:s') }}</div>
+                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">{{ climb.createdAt|local_datetime|escape }}</div>
                     </div>
                 </div>
             </div>

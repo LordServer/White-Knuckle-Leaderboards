@@ -15,7 +15,7 @@
                         Expires {{ apiToken.expiresAt|date('Y-m-d H:i:s')|ago|escape }}
                     </div>
                     <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                        {{ apiToken.expiresAt|date('Y-m-d H:i:s')|escape }}
+                        {{ apiToken.expiresAt|local_datetime|escape }}
                     </div>
                 </div>
             {% endif %}
