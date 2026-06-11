@@ -10,6 +10,7 @@ use App\Security\Voter\ApiTokenVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use App\Service\ScopePermissionService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,20 +50,49 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function apiTokensCreate(ScopePermissionService $scopesManager): Response
-    {
+    public function apiTokensCreate(
+        ScopePermissionService $scopesManager,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        EntityManagerInterface $entityManager,
+    ): Response {
         $apiToken = new ApiToken();
 
         $this->denyAccessUnlessGranted(ApiTokenVoter::CREATE, $apiToken);
 
+        $user = $this->getUser();
         $apiScopes = $scopesManager->getAssignableScopes();
 
         $form = $this->createForm(ApiTokenType::class, $apiToken);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $scopesManager->assignScopes(
+                $form->get('scopes')->getData(),
+            );
+            if ($form->get('neverExpires')->getData()) {
+                $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            }
+            $apiToken = $form->getData();
+            $apiToken->setOwnedBy($user);
+
+            $entityManager->persist($apiToken);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
+        }
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            // TODO: Finish API Token Breadcrumb
+        ;
 
         return $this->render('api_tokens/create.html.twig', [
             'controller_name' => 'ApiTokensController',
             'apiScopes' => $apiScopes,
             'form' => $form,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 

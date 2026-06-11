@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\ApiToken;
 use App\Service\ScopePermissionService;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,6 +18,7 @@ class ApiTokenType extends AbstractType
 {
     public function __construct(
         private readonly ScopePermissionService $scopePermissionService,
+        private readonly Security $security,
     ) {
     }
 
@@ -44,15 +46,18 @@ class ApiTokenType extends AbstractType
                         'attr' => [
                             'data-token-expiry-target' => 'expiresAt',
                         ],
-                    ])
-                    ->add('neverExpires', CheckboxType::class, [
-                        'mapped' => false,
-                        'required' => false,
-                        'attr' => [
-                            'data-token-expiry-target' => 'checkbox',
-                            'data-action' => 'change->token-expiry#toggle',
-                        ],
                     ]);
+                if ($this->security->isGranted('ROLE_ADMIN')) {
+                    $event->getForm()
+                        ->add('neverExpires', CheckboxType::class, [
+                            'mapped' => false,
+                            'required' => false,
+                            'attr' => [
+                                'data-token-expiry-target' => 'checkbox',
+                                'data-action' => 'change->token-expiry#toggle',
+                            ],
+                        ]);
+                }
             }
         });
     }

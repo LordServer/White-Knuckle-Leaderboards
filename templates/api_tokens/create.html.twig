@@ -3,8 +3,58 @@
 {% block title %}Hello ApiController!{% endblock %}
 
 {% block body %}
-    {{ dump(apiScopes) }}
-    <div data-controller="token-expiry">
-        {{ form(form) }}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        {% include 'partials/breadcrumbs.html.twig' %}
+        <h1 class="text-4xl font-bold mt-1">New API Token</h1>
+        <div data-controller="token-expiry">
+            {{ form_start(form) }}
+            <div class="w-full py-2 text-white text-xl font-medium">
+                {{ form_label(form.token) }}
+            </div>
+            {{ form_widget(form.token, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+            <div class="flex gap-2">
+                <div class="flex-1">
+                    <div class="w-full py-2 text-white text-xl font-medium">
+                        Enabled?
+                    </div>
+                    {{ form_widget(form.isEnabled) }}
+                </div>
+                <div class="flex-4">
+                    <div class="w-full py-2 text-white text-xl font-medium">
+                        {{ form_label(form.scopes) }}
+                    </div>
+                    {{ form_widget(form.scopes, {'attr': {'class': 'w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+                </div>
+                <div class="flex-3">
+                    <div>
+                        <div class="w-full py-2 text-white text-xl font-medium">
+                            {{ form_label(form.expiresAt) }}
+                        </div>
+                        {{ form_widget(form.expiresAt) }}
+                        {{ form_errors(form.expiresAt) }}
+                    </div>
+                    {% if form.neverExpires is defined %}
+                        <div>
+                            <div class="w-full py-2 text-white text-xl font-medium">
+                                Never Expires?
+                            </div>
+                            {{ form_widget(form.neverExpires) }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="w-full py-2 text-white text-xl font-medium">
+                {{ form_label(form.description) }}
+            </div>
+            {{ form_widget(form.description, {'attr': {'class': 'w-full h-27 py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
+            <div class="text-right pt-2">
+                <a href="{{ path('api_tokens_index') }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
+                </a>
+                <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Add</button>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
     </div>
 {% endblock %}
