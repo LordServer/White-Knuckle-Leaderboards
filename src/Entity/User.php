@@ -68,6 +68,9 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'ownedBy')]
     private Collection $apiTokens;
 
+    /* Scopes given during API authentication */
+    private ?array $accessTokenScopes = null;
+
     public function __construct()
     {
         $this->climbs = new ArrayCollection();
@@ -109,7 +112,14 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        if (null === $this->accessTokenScopes) {
+            // logged in as a full, normal user
+            $roles = $this->roles;
+            $roles[] = 'ROLE_FULL_USER';
+        } else {
+            $roles = $this->accessTokenScopes;
+        }
+
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
@@ -327,5 +337,10 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function markAsTokenAuthenticated(array $scopes): void
+    {
+        $this->accessTokenScopes = $scopes;
     }
 }

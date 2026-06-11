@@ -12,7 +12,6 @@ security:
                 property: username
 
     role_hierarchy:
-#        ROLE_AUTHORIZER: [ROLE_AUTHORIZER]
         ROLE_MODERATOR: [ROLE_AUTHORIZER]
         ROLE_ADMIN: [ROLE_MODERATOR]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN]

@@ -31,6 +31,8 @@ readonly class ApiTokenHandler implements AccessTokenHandlerInterface
             throw new CustomUserMessageAuthenticationException('Token not enabled.');
         }
 
+        $token->getOwnedBy()->markAsTokenAuthenticated($token->getScopes());
+
         return new UserBadge($token->getOwnedBy()->getUserIdentifier());
     }
 }
