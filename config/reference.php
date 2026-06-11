@@ -1865,6 +1865,38 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         not_valid_current_page?: "to_http_not_found"|"custom"|Param, // Default: "to_http_not_found"
  *     },
  * }
+ * @psalm-type AutomapperConfig = array{
+ *     class_prefix?: scalar|Param|null, // Default: "Symfony_Mapper_"
+ *     constructor_strategy?: "always"|"auto"|"never"|Param, // Default: "auto"
+ *     date_time_format?: scalar|Param|null, // Default: "Y-m-d\\TH:i:sP"
+ *     check_attributes?: bool|Param, // Default: true
+ *     auto_register?: bool|Param, // Default: true
+ *     map_private_properties?: bool|Param, // Default: false
+ *     allow_readonly_target_to_populate?: bool|Param, // Default: false
+ *     normalizer?: array{
+ *         enabled?: bool|Param, // Default: false
+ *         only_registered_mapping?: bool|Param, // Default: false
+ *         priority?: int|Param, // Default: 1000
+ *     },
+ *     serializer_attributes?: bool|Param, // Default: true
+ *     api_platform?: bool|Param, // Default: false
+ *     object_mapper?: bool|Param, // Default: false
+ *     doctrine?: bool|Param, // Default: false
+ *     name_converter?: scalar|Param|null, // Default: null
+ *     loader?: array{
+ *         eval?: bool|Param, // Default: false
+ *         cache_dir?: scalar|Param|null, // Default: "%kernel.cache_dir%/automapper"
+ *         reload_strategy?: "always"|"never"|"on_change"|Param, // Default: null
+ *     },
+ *     mapping?: array{
+ *         paths?: list<scalar|Param|null>,
+ *         mappers?: list<array{ // Default: []
+ *             source?: scalar|Param|null, // Default: "array"
+ *             target?: scalar|Param|null, // Default: "array"
+ *             reverse?: bool|Param, // Default: false
+ *         }>,
+ *     },
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1885,6 +1917,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     nelmio_cors?: NelmioCorsConfig,
  *     api_platform?: ApiPlatformConfig,
  *     babdev_pagerfanta?: BabdevPagerfantaConfig,
+ *     automapper?: AutomapperConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1909,6 +1942,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         api_platform?: ApiPlatformConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
+ *         automapper?: AutomapperConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1930,6 +1964,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
+ *         automapper?: AutomapperConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1953,6 +1988,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         api_platform?: ApiPlatformConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
+ *         automapper?: AutomapperConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
