@@ -30,7 +30,7 @@ class ApiToken
     private array $scopes = [];
 
     #[ORM\Column]
-    private ?bool $isEnabled = null;
+    private ?bool $isEnabled = true;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
