@@ -6,6 +6,7 @@ use App\Repository\ApiTokenRepository;
 use App\Repository\UserRepository;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
+use App\Service\ScopePermissionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,10 +44,13 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function apiTokensCreate(): Response
+    public function apiTokensCreate(ScopePermissionService $scopes): Response
     {
+        $apiScopes = $scopes->getAssignableScopes();
+
         return $this->render('api_tokens/create.html.twig', [
             'controller_name' => 'ApiTokensController',
+            'apiScopes' => $apiScopes,
         ]);
     }
 
