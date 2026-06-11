@@ -20,7 +20,7 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
     </head>
-    <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white">
+    <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white" data-controller="timezone">
         <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
             {% include 'partials/navbar.html.twig' %}
         </div>
