@@ -18,6 +18,11 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_ADMIN]
 
     firewalls:
+        api:
+            pattern: ^/api
+            stateless: true
+            access_token:
+                token_handler: App\Security\ApiTokenHandler
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
