@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ApiTokenRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ApiTokenRepository::class)]
 class ApiToken
@@ -135,5 +137,21 @@ class ApiToken
     public function isValid(): bool
     {
         return null === $this->expiresAt || $this->expiresAt > new \DateTimeImmutable();
+    }
+
+    #[Assert\Callback]
+    public function validateExpirationDate(ExecutionContextInterface $context): void
+    {
+        if (null === $this->expiresAt) {
+            return;
+        }
+
+        $maxDate = new \DateTimeImmutable('+1 year');
+
+        if ($this->expiresAt > $maxDate) {
+            $context->buildViolation('API tokens cannot expire more than 1 year in the future.')
+                ->atPath('expiresAt')
+                ->addViolation();
+        }
     }
 }
