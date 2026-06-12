@@ -57,6 +57,11 @@ class BreadcrumbsService
         return $this->add('Climber', 'user_index');
     }
 
+    public function addApiTokens(): self
+    {
+        return $this->add('API Tokens', 'api_tokens_index');
+    }
+
     public function all(): array
     {
         return $this->items;
