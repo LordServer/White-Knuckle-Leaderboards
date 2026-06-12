@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/climber/api-tokens', name: 'api_tokens_')]
 final class ApiTokensController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('', name: 'index')]
     public function apiTokens(
         ApiTokenRepository $apiTokenRepository,
         BreadcrumbsService $breadcrumbs,
@@ -54,7 +54,7 @@ final class ApiTokensController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create')]
+    #[Route('/new', name: 'create')]
     public function apiTokensCreate(
         ScopePermissionService $scopesManager,
         BreadcrumbsService $breadcrumbs,
@@ -109,11 +109,11 @@ final class ApiTokensController extends AbstractController
     ): Response {
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
+        $this->denyAccessUnlessGranted(ApiTokenVoter::READ, $apiToken);
+
         if (!$apiToken) {
             throw $this->createNotFoundException('API Token not found');
         }
-
-        $this->denyAccessUnlessGranted(ApiTokenVoter::READ, $apiToken);
 
         $breadcrumbs
             ->addHome()
@@ -128,7 +128,7 @@ final class ApiTokensController extends AbstractController
         ]);
     }
 
-    #[Route('/{apiTokenId<\d+>}/update', name: 'update')]
+    #[Route('/{apiTokenId<\d+>}/edit', name: 'update')]
     public function apiTokensUpdate(
         int $apiTokenId,
         ApiTokenRepository $apiTokenRepository,
@@ -139,6 +139,10 @@ final class ApiTokensController extends AbstractController
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
         $this->denyAccessUnlessGranted(ApiTokenVoter::UPDATE, $apiToken);
+
+        if (!$apiToken) {
+            throw $this->createNotFoundException('API Token not found');
+        }
 
         $form = $this->createForm(ApiTokenType::class, $apiToken);
 
@@ -167,14 +171,42 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/{apiTokenId<\d+>}/delete', name: 'delete')]
-    public function apiTokensDelete(int $apiTokenId, ApiTokenRepository $apiTokenRepository): Response
-    {
+    public function apiTokensDelete(
+        int $apiTokenId,
+        ApiTokenRepository $apiTokenRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $apiToken = $apiTokenRepository->findOneBy(['id' => $apiTokenId]);
 
         $this->denyAccessUnlessGranted(ApiTokenVoter::DELETE, $apiToken);
 
+        if (!$apiToken) {
+            throw $this->createNotFoundException('API Token not found');
+        }
+
+        $form = $this->createForm(ApiTokenType::class, $apiToken, ['delete' => true]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->remove($apiToken);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('api_tokens_index');
+        }
+
+        $breadcrumbs
+            ->addHome()
+            ->addClimber()
+            // TODO: Finish API Token Breadcrumb
+        ;
+
         return $this->render('api_tokens/delete.html.twig', [
             'controller_name' => 'ApiTokensController',
+            'apiToken' => $apiToken,
+            'form' => $form,
+            'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
 }

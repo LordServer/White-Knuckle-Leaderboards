@@ -3,18 +3,89 @@
 {% block title %}Hello ApiController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/wklb/src/Controller/ApiController.php</code></li>
-        <li>Your template at <code>/var/www/wklb/templates/api/index.html.twig</code></li>
-    </ul>
-</div>
+    {% set boxCss = 'bg-gray-900 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm' %}
+    <div class="pt-2 pr-4 pb-2 pl-4">
+        {% include 'partials/breadcrumbs.html.twig' %}
+        <div class="flex justify-between items-center">
+            <h1 class="text-4xl font-bold mt-1">Delete Token {{ apiToken.token|slice(4)|u.truncate(12)|escape }}?</h1>
+            {% if apiToken.expiresAt is null %}
+                Never Expires
+            {% else %}
+                <div class="group relative inline-block">
+                    <div>
+                        Expires {{ apiToken.expiresAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ apiToken.expiresAt|local_datetime|escape }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="flex gap-2">
+            <div class="flex-1 flex flex-col">
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Token</div>
+                    {{ apiToken.token }}
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <div class="flex-1 flex flex-col">
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Description</div>
+                    {% if apiToken.description is null %}
+                        —
+                    {% else %}
+                        {{ apiToken.description|escape }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <div class="flex-1 flex flex-col">
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Enabled</div>
+                    {% if apiToken.isEnabled is true %}
+                        <i class="text-green-600 mdi mdi-check-bold"></i>
+                    {% else %}
+                        <i class="text-red-900 mdi mdi-close-thick"></i>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col">
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Scopes</div>
+                    {% for scope in apiToken.scopes %}
+                        <div>{{ scope }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col">
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Last Used</div>
+                    {% if apiToken.lastUsed is null %}
+                        —
+                    {% else %}
+                        <div class="group relative inline-block">
+                            <div>
+                                {{ apiToken.lastUsed|date('Y-m-d H:i:s')|ago|escape }}
+                            </div>
+                            <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                                {{ apiToken.lastUsed|local_datetime|escape }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="text-right pt-2">
+            {{ form_start(form) }}
+                <a href="{{ path('api_tokens_read', { 'apiTokenId': apiToken.id }) }}">
+                    <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
+                </a>
+                {{ form_widget(form.delete, {'attr': {'class': 'bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400'}}) }}
+                {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
