@@ -25,7 +25,6 @@ final class ApiTokensController extends AbstractController
         BreadcrumbsService $breadcrumbs,
         Request $request,
         PaginationService $paginationService,
-        UserRepository $userRepository,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
