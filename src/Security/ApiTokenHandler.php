@@ -31,6 +31,12 @@ readonly class ApiTokenHandler implements AccessTokenHandlerInterface
             throw new CustomUserMessageAuthenticationException('Token not enabled.');
         }
 
+        $user = $token->getOwnedBy();
+
+        if ($user->isBanned()) {
+            throw new CustomUserMessageAuthenticationException('Account is banned.');
+        }
+
         $token->getOwnedBy()->markAsTokenAuthenticated($token->getScopes());
 
         $token->setLastUsed(new \DateTime());
