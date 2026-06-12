@@ -43,7 +43,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
-            // TODO: Finish API Token Breadcrumb
+            ->addApiTokens()
         ;
 
         return $this->render('api_tokens/index.html.twig', [
@@ -90,7 +90,8 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
-            // TODO: Finish API Token Breadcrumb
+            ->addApiTokens()
+            ->add('New', 'api_tokens_create')
         ;
 
         return $this->render('api_tokens/create.html.twig', [
@@ -115,10 +116,13 @@ final class ApiTokensController extends AbstractController
             throw $this->createNotFoundException('API Token not found');
         }
 
+        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+
         $breadcrumbs
             ->addHome()
             ->addClimber()
-            // TODO: Finish API Token Breadcrumb
+            ->addApiTokens()
+            ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
         ;
 
         return $this->render('api_tokens/read.html.twig', [
@@ -156,10 +160,14 @@ final class ApiTokensController extends AbstractController
             return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
         }
 
+        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+
         $breadcrumbs
             ->addHome()
             ->addClimber()
-            // TODO: Finish API Token Breadcrumb
+            ->addApiTokens()
+            ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
+            ->add('Update', 'api_tokens_update', ['apiTokenId' => $apiTokenId])
         ;
 
         return $this->render('api_tokens/update.html.twig', [
@@ -196,10 +204,14 @@ final class ApiTokensController extends AbstractController
             return $this->redirectToRoute('api_tokens_index');
         }
 
+        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+
         $breadcrumbs
             ->addHome()
             ->addClimber()
-            // TODO: Finish API Token Breadcrumb
+            ->addApiTokens()
+            ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
+            ->add('Delete', 'api_tokens_delete', ['apiTokenId' => $apiTokenId])
         ;
 
         return $this->render('api_tokens/delete.html.twig', [
