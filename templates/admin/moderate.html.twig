@@ -22,6 +22,15 @@
                     {{ form_widget(form.banDays, {'attr': {'class': 'text-right w-full py-2 bg-neutral-950 hover:bg-neutral-600 focus:bg-neutral-600 border-4 border-solid border-neutral-600 focus:border-red-950 rounded text-white text-xl font-medium outline-none'}}) }}
                 </div>
             </div>
+            <div>
+                Active: User can sign in and submit climbs.
+            </div>
+            <div>
+                Suspended: User cannot sign in, but will be able to after X days (default 30).
+            </div>
+            <div>
+                Banned: User is permanently banned.
+            </div>
             <div class="text-right pt-2">
                 <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">
                     Save
