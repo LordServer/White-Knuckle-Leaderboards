@@ -23,8 +23,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ClimbController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
-    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        int $categoryId,
+        int $subcategoryId,
+        CategoryRepository $categoryRepository,
+        SubcategoryRepository $subcategoryRepository,
+        ClimbRepository $climbRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $categories = $categoryRepository->findAll();
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
         if (!$category) {
@@ -71,8 +79,11 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $climb = new Climb();
@@ -108,8 +119,11 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/read/{climbId<\d+>}', name: 'read')]
-    public function read(int $climbId, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function read(
+        int $climbId,
+        ClimbRepository $climbRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         if (!$climb) {
@@ -152,8 +166,13 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/update/{climbId<\d+>}', name: 'update')]
-    public function update(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function update(
+        int $climbId,
+        ClimbRepository $climbRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         $this->denyAccessUnlessGranted(ClimbVoter::UPDATE, $climb);
@@ -212,8 +231,14 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/delete/{climbId<\d+>}', name: 'delete')]
-    public function delete(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function delete(
+        int $climbId,
+        ClimbRepository $climbRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UpdateClimbRanksService $updateClimbRanks,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         $this->denyAccessUnlessGranted(ClimbVoter::DELETE, $climb);

@@ -15,8 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LeaderboardController extends AbstractController
 {
     #[Route('/leaderboard/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_leaderboard')]
-    public function leaderboard(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, Request $request, PaginationService $paginationService, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function leaderboard(
+        int $categoryId,
+        int $subcategoryId,
+        CategoryRepository $categoryRepository,
+        ClimbRepository $climbRepository,
+        Request $request,
+        PaginationService $paginationService,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $categories = $categoryRepository->findByArchived(false);
 
         $category = current(array_filter(
@@ -67,8 +74,15 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/archive/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'app_archive')]
-    public function archive(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function archive(
+        int $categoryId,
+        int $subcategoryId,
+        CategoryRepository $categoryRepository,
+        ClimbRepository $climbRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $categories = $categoryRepository->findByArchived(true);
 
         $category = current(array_filter(

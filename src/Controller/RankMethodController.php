@@ -18,8 +18,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RankMethodController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(RankMethodRepository $rankMethodRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        RankMethodRepository $rankMethodRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $rankMethods = $rankMethodRepository->findAllOrderedByIndex();
         $rankMethods->setMaxPerPage($request->query->get('perPage', 50));
         $rankMethods->setCurrentPage($request->query->get('page', 1));
@@ -45,8 +49,11 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $rankMethod = new RankMethod();
 
         $this->denyAccessUnlessGranted(RankMethodVoter::CREATE, $rankMethod);
@@ -77,8 +84,11 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/read/{rankMethodId<\d+>}', name: 'read')]
-    public function read(int $rankMethodId, RankMethodRepository $rankMethodRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function read(
+        int $rankMethodId,
+        RankMethodRepository $rankMethodRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         if (!$rankMethod) {
@@ -99,8 +109,13 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/update/{rankMethodId<\d+>}', name: 'update')]
-    public function update(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function update(
+        int $rankMethodId,
+        RankMethodRepository $rankMethodRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         $this->denyAccessUnlessGranted(RankMethodVoter::UPDATE, $rankMethod);
@@ -137,8 +152,13 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/delete/{rankMethodId<\d+>}', name: 'delete')]
-    public function delete(int $rankMethodId, RankMethodRepository $rankMethodRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function delete(
+        int $rankMethodId,
+        RankMethodRepository $rankMethodRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $rankMethod = $rankMethodRepository->findOneBy(['id' => $rankMethodId]);
 
         $this->denyAccessUnlessGranted(RankMethodVoter::DELETE, $rankMethod);

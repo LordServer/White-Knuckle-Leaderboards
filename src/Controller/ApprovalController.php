@@ -22,8 +22,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ApprovalController extends AbstractController
 {
     #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
-    public function index(int $categoryId, int $subcategoryId, CategoryRepository $categoryRepository, SubcategoryRepository $subcategoryRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        int $categoryId,
+        int $subcategoryId,
+        CategoryRepository $categoryRepository,
+        SubcategoryRepository $subcategoryRepository,
+        ClimbRepository $climbRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_AUTHORIZER');
 
         $approvalBreakdown = $climbRepository->getUnreviewedBreakdown();
@@ -73,8 +81,14 @@ final class ApprovalController extends AbstractController
     }
 
     #[Route('/review/{climbId<\d+>}', name: 'review')]
-    public function review(int $climbId, ClimbRepository $climbRepository, Request $request, EntityManagerInterface $entityManager, UpdateClimbRanksService $updateClimbRanks, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function review(
+        int $climbId,
+        ClimbRepository $climbRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UpdateClimbRanksService $updateClimbRanks,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         $this->denyAccessUnlessGranted(ClimbVoter::AUTHORIZE, $climb);

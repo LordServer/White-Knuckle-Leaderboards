@@ -16,8 +16,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        UserRepository $userRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $climbers = $userRepository->findAllOrderByDisplayName();
         $climbers->setMaxPerPage($request->query->get('perPage', 50));
         $climbers->setCurrentPage($request->query->get('page', 1));
@@ -43,8 +47,9 @@ final class UserController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(BreadcrumbsService $breadcrumbs): Response
-    {
+    public function create(
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $this->denyAccessUnlessGranted(UserVoter::CREATE);
 
         // TODO: Setup user registration form if/when non-discord allowed
@@ -62,8 +67,11 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}', name: 'read')]
-    public function read(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function read(
+        int $userId,
+        UserRepository $userRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
         // TODO: Setup user profile page, include best ranked run from each category?
@@ -86,8 +94,14 @@ final class UserController extends AbstractController
     }
 
     #[Route('/read/{userId<\d+>}/climbs/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'climbs')]
-    public function climbs(int $userId, int $categoryId, int $subcategoryId, UserRepository $userRepository, ClimbRepository $climbRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function climbs(
+        int $userId,
+        int $categoryId,
+        int $subcategoryId,
+        UserRepository $userRepository,
+        ClimbRepository $climbRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climber = $userRepository->findOneBy(['id' => $userId]);
 
         if (!$climber) {
@@ -158,8 +172,11 @@ final class UserController extends AbstractController
     }
 
     #[Route('/update/{userId<\d+>}', name: 'update')]
-    public function update(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function update(
+        int $userId,
+        UserRepository $userRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climber = $userRepository->findOneBy(['id' => $userId]);
         $this->denyAccessUnlessGranted(UserVoter::UPDATE, $climber);
 
@@ -182,8 +199,11 @@ final class UserController extends AbstractController
     }
 
     #[Route('/delete/{userId<\d+>}', name: 'delete')]
-    public function delete(int $userId, UserRepository $userRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function delete(
+        int $userId,
+        UserRepository $userRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $climber = $userRepository->findOneBy(['id' => $userId]);
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $climber);
 

@@ -18,8 +18,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CategoryRepository $categoryRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        CategoryRepository $categoryRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $categories = $categoryRepository->findAllOrderByIndex();
         $categories->setMaxPerPage($request->query->get('perPage', 50));
         $categories->setCurrentPage($request->query->get('page', 1));
@@ -40,8 +44,11 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $category = new Category();
 
         $this->denyAccessUnlessGranted(CategoryVoter::CREATE, $category);
@@ -72,8 +79,11 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/read/{categoryId<\d+>}', name: 'read')]
-    public function read(int $categoryId, CategoryRepository $categoryRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function read(
+        int $categoryId,
+        CategoryRepository $categoryRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         if (!$category) {
@@ -94,8 +104,13 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/update/{categoryId<\d+>}', name: 'update')]
-    public function update(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function update(
+        int $categoryId,
+        CategoryRepository $categoryRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         $this->denyAccessUnlessGranted(CategoryVoter::UPDATE, $category);
@@ -132,8 +147,13 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/delete/{categoryId<\d+>}', name: 'delete')]
-    public function delete(int $categoryId, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function delete(
+        int $categoryId,
+        CategoryRepository $categoryRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $category = $categoryRepository->findOneBy(['id' => $categoryId]);
 
         $this->denyAccessUnlessGranted(CategoryVoter::DELETE, $category);

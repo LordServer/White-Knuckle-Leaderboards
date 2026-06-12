@@ -13,13 +13,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class DiscordController
 {
     #[Route('/login', name: 'login')]
-    public function login(Request $request, ClientRegistry $clientRegistry)
-    {
+    public function login(
+        Request $request,
+        ClientRegistry $clientRegistry,
+    ) {
     }
 
     #[Route('/start', name: 'start')]
-    public function start(ClientRegistry $clientRegistry): RedirectResponse
-    {
+    public function start(
+        ClientRegistry $clientRegistry,
+    ): RedirectResponse {
         return $clientRegistry->getClient('discord')->redirect(['identify', 'guilds', 'guilds.members.read']);
     }
 }

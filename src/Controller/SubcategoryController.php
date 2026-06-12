@@ -18,8 +18,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SubcategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs, Request $request, PaginationService $paginationService): Response
-    {
+    public function index(
+        SubcategoryRepository $subcategoryRepository,
+        BreadcrumbsService $breadcrumbs,
+        Request $request,
+        PaginationService $paginationService,
+    ): Response {
         $subcategories = $subcategoryRepository->findAllOrderedByIndex();
         $subcategories->setMaxPerPage($request->query->get('perPage', 50));
         $subcategories->setCurrentPage($request->query->get('page', 1));
@@ -45,8 +49,11 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $subcategory = new Subcategory();
 
         $this->denyAccessUnlessGranted(SubcategoryVoter::CREATE, $subcategory);
@@ -77,8 +84,11 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
-    public function read(int $subcategoryId, SubcategoryRepository $subcategoryRepository, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function read(
+        int $subcategoryId,
+        SubcategoryRepository $subcategoryRepository,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         if (!$subcategory) {
@@ -99,8 +109,13 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
-    public function update(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function update(
+        int $subcategoryId,
+        SubcategoryRepository $subcategoryRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         $this->denyAccessUnlessGranted(SubcategoryVoter::UPDATE, $subcategory);
@@ -137,8 +152,13 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
-    public function delete(int $subcategoryId, SubcategoryRepository $subcategoryRepository, Request $request, EntityManagerInterface $entityManager, BreadcrumbsService $breadcrumbs): Response
-    {
+    public function delete(
+        int $subcategoryId,
+        SubcategoryRepository $subcategoryRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BreadcrumbsService $breadcrumbs,
+    ): Response {
         $subcategory = $subcategoryRepository->findOneBy(['id' => $subcategoryId]);
 
         $this->denyAccessUnlessGranted(SubcategoryVoter::DELETE, $subcategory);
