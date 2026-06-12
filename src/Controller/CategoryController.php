@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
-use App\Security\CategoryVoter;
+use App\Security\Voter\CategoryVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;

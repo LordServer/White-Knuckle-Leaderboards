@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Security;
+namespace App\Security\Voter;
 
 use App\Entity\Climb;
 use App\Entity\User;

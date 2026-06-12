@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Security;
+namespace App\Security\Voter;
 
-use App\Entity\RankMethod;
+use App\Entity\Category;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class RankMethodVoter extends Voter
+class CategoryVoter extends Voter
 {
-    public const string CREATE = 'rank_method_create';
-    public const string READ = 'rank_method_read';
-    public const string UPDATE = 'rank_method_update';
-    public const string DELETE = 'rank_method_delete';
+    public const string CREATE = 'category_create';
+    public const string READ = 'category_read';
+    public const string UPDATE = 'category_update';
+    public const string DELETE = 'category_delete';
 
     public function __construct(
         private readonly AccessDecisionManagerInterface $accessDecisionManager,
@@ -27,7 +27,7 @@ class RankMethodVoter extends Voter
             return false;
         }
 
-        if (!$subject instanceof RankMethod) {
+        if (!$subject instanceof Category) {
             return false;
         }
 

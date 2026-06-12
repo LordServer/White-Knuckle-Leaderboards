@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\RankMethod;
 use App\Form\RankMethodType;
 use App\Repository\RankMethodRepository;
-use App\Security\RankMethodVoter;
+use App\Security\Voter\RankMethodVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;

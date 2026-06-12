@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Subcategory;
 use App\Form\SubcategoryType;
 use App\Repository\SubcategoryRepository;
-use App\Security\SubcategoryVoter;
+use App\Security\Voter\SubcategoryVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;

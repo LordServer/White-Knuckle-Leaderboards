@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ClimbRepository;
 use App\Repository\UserRepository;
-use App\Security\UserVoter;
+use App\Security\Voter\UserVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

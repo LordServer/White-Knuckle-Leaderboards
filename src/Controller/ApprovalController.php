@@ -7,7 +7,7 @@ use App\Form\ApprovalType;
 use App\Repository\CategoryRepository;
 use App\Repository\ClimbRepository;
 use App\Repository\SubcategoryRepository;
-use App\Security\ClimbVoter;
+use App\Security\Voter\ClimbVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use App\Service\UpdateClimbRanksService;
