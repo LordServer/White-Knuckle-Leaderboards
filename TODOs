@@ -1,9 +1,6 @@
 TODO: Setup climber pages
-TODO: prettify admin pages
 TODO: Fix hyperlinks to everywhere (ongoing)
 TODO: setup API for Jay and the bot
-TODO: setup way to generate API token with scopes
-TODO: add red notification marker on profile picture for approvers
 TODO: Add more information on the *_delete pages
 TODO: Fix proof link on climb_read
 TODO: Add graphs on climber page (chart.js)
