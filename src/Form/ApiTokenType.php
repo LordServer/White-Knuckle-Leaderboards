@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -24,6 +25,15 @@ class ApiTokenType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['delete']) {
+            $builder
+                ->add('delete', SubmitType::class, [
+                    'label' => 'Delete API token',
+                ]);
+
+            return;
+        }
+
         $builder
             ->add('isEnabled', CheckboxType::class, [
                 'required' => false,
@@ -66,6 +76,9 @@ class ApiTokenType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ApiToken::class,
+            'delete' => false,
         ]);
+
+        $resolver->setAllowedTypes('delete', 'bool');
     }
 }
