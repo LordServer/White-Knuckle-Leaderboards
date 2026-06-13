@@ -167,7 +167,7 @@ final class RankMethodController extends AbstractController
             throw $this->createNotFoundException('Rank Method not found');
         }
 
-        $form = $this->createForm(RankMethodType::class, $rankMethod);
+        $form = $this->createForm(RankMethodType::class, $rankMethod, ['delete' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

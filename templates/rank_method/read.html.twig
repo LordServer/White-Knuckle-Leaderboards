@@ -5,7 +5,28 @@
 {% block body %}
 <div class="pt-2 pr-4 pb-2 pl-4">
     {% include 'partials/breadcrumbs.html.twig' %}
-    <h1 class="text-4xl font-bold mt-1">{{ rankMethod.name|escape }}</h1>
+    <div class="flex justify-between items-center">
+        <h1 class="text-4xl font-bold mt-1">{{ rankMethod.name|escape }}</h1>
+        <div class="text-right">
+            <div class="group relative inline-block">
+                <div class="text-xs text-gray-400">
+                    Created {{ rankMethod.createdAt|date('Y-m-d H:i:s')|ago|escape }}
+                </div>
+                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                    {{ rankMethod.createdAt|local_datetime|escape }}
+                </div>
+            </div>
+            <br>
+            <div class="group relative inline-block">
+                <div class="text-sm text-gray-300">
+                    Updated {{ rankMethod.updatedAt|date('Y-m-d H:i:s')|ago|escape }}
+                </div>
+                <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                    {{ rankMethod.updatedAt|local_datetime|escape }}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="w-full py-2 text-white text-xl font-medium">Name</div>
     <div class="mt-2">
         {{ rankMethod.name|escape }} is used by {{ rankMethod.categories|length }} categories; {% for category in rankMethod.categories %}<a href="{{ path('category_read', {'categoryId': category.id}) }}">{{ category.name|escape }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.
