@@ -53,7 +53,6 @@ final class AdminController extends AbstractController
             ->add('Moderate', 'admin_user_moderate', ['climberId' => $climberId])
         ;
 
-        // TODO: Add actual user information to page, like username and display name
         return $this->render('admin/moderate.html.twig', [
             'controller_name' => 'AdminController',
             'form' => $form,
