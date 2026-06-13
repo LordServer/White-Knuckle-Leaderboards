@@ -3,11 +3,11 @@
 namespace App\Security\Voter;
 
 use App\Entity\Category;
-use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class CategoryVoter extends Voter
 {
@@ -37,8 +37,8 @@ class CategoryVoter extends Voter
     {
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
-            $vote?->addReason('The user is not logged in.');
+        if (!$user instanceof UserInterface) {
+            $vote?->addReason('You must be logged in to access this resource.');
 
             return false;
         }
