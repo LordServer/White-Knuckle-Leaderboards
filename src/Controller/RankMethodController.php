@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/rank_method', name: 'rank_method_')]
 final class RankMethodController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('', name: 'index')]
     public function index(
         RankMethodRepository $rankMethodRepository,
         BreadcrumbsService $breadcrumbs,
@@ -49,7 +49,7 @@ final class RankMethodController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create')]
+    #[Route('/new', name: 'create')]
     #[IsGranted(RankMethodVoter::CREATE)]
     public function create(
         Request $request,
@@ -83,7 +83,7 @@ final class RankMethodController extends AbstractController
         ]);
     }
 
-    #[Route('/read/{rankMethodId<\d+>}', name: 'read')]
+    #[Route('/{rankMethodId<\d+>}', name: 'read')]
     public function read(
         int $rankMethodId,
         RankMethodRepository $rankMethodRepository,
@@ -108,7 +108,7 @@ final class RankMethodController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{rankMethodId<\d+>}', name: 'update')]
+    #[Route('/{rankMethodId<\d+>}/edit', name: 'update')]
     public function update(
         int $rankMethodId,
         RankMethodRepository $rankMethodRepository,
@@ -151,7 +151,7 @@ final class RankMethodController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{rankMethodId<\d+>}', name: 'delete')]
+    #[Route('/{rankMethodId<\d+>}/delete', name: 'delete')]
     public function delete(
         int $rankMethodId,
         RankMethodRepository $rankMethodRepository,
