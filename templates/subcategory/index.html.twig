@@ -7,7 +7,6 @@
         {% include 'partials/breadcrumbs.html.twig' %}
         <div class="flex justify-between">
             <h1 class="text-4xl font-bold mt-1">Subcategories</h1>
-            <!-- TODO: fix is granted -->
             {% if is_granted('subcategory_create') %}
                 <a href="{{ path('subcategory_create') }}">
                     <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">New</button>
