@@ -8,6 +8,7 @@ use App\Entity\Subcategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,6 +16,15 @@ class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['delete']) {
+            $builder
+                ->add('delete', SubmitType::class, [
+                    'label' => 'Delete Category',
+                ]);
+
+            return;
+        }
+
         $builder
             ->add('name')
             ->add('rules')
@@ -37,6 +47,9 @@ class CategoryType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Category::class,
+            'delete' => false,
         ]);
+
+        $resolver->setAllowedTypes('delete', 'bool');
     }
 }

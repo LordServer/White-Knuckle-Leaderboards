@@ -162,7 +162,7 @@ final class CategoryController extends AbstractController
             throw $this->createNotFoundException('Category not found');
         }
 
-        $form = $this->createForm(CategoryType::class, $category);
+        $form = $this->createForm(CategoryType::class, $category, ['delete' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
