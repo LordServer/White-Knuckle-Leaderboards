@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/subcategory', name: 'subcategory_')]
 final class SubcategoryController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('', name: 'index')]
     public function index(
         SubcategoryRepository $subcategoryRepository,
         BreadcrumbsService $breadcrumbs,
@@ -49,7 +49,7 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create')]
+    #[Route('/new', name: 'create')]
     #[IsGranted(SubcategoryVoter::CREATE)]
     public function create(
         Request $request,
@@ -83,7 +83,7 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/read/{subcategoryId<\d+>}', name: 'read')]
+    #[Route('/{subcategoryId<\d+>}', name: 'read')]
     public function read(
         int $subcategoryId,
         SubcategoryRepository $subcategoryRepository,
@@ -108,7 +108,7 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{subcategoryId<\d+>}', name: 'update')]
+    #[Route('/{subcategoryId<\d+>}/edit', name: 'update')]
     public function update(
         int $subcategoryId,
         SubcategoryRepository $subcategoryRepository,
@@ -151,7 +151,7 @@ final class SubcategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{subcategoryId<\d+>}', name: 'delete')]
+    #[Route('/{subcategoryId<\d+>}/delete', name: 'delete')]
     public function delete(
         int $subcategoryId,
         SubcategoryRepository $subcategoryRepository,
