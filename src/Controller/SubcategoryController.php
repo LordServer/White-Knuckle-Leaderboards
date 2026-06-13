@@ -167,7 +167,7 @@ final class SubcategoryController extends AbstractController
             throw $this->createNotFoundException('Subcategory not found');
         }
 
-        $form = $this->createForm(SubcategoryType::class, $subcategory);
+        $form = $this->createForm(SubcategoryType::class, $subcategory, ['delete' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
