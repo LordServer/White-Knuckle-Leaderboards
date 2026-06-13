@@ -6,7 +6,7 @@ class TimeFormatter
 {
     public static function secondsToTime(float $seconds): string
     {
-        $msec = ($seconds * 100) % 100;
+        $msec = ($seconds * 1000) % 1000;
         $secs = $seconds % 60;
         $mins = floor($seconds / 60) % 60;
         $hours = floor($seconds / 3600);
@@ -17,6 +17,6 @@ class TimeFormatter
             return sprintf('%02d:%02d.%03d', $mins, $secs, $msec);
         }
 
-        return sprintf('%02d.%02d', $secs, $msec);
+        return sprintf('%02d.%03d', $secs, $msec);
     }
 }
