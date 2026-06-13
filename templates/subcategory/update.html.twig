@@ -5,8 +5,27 @@
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <div class="flex justify-between">
-            <h1 class="text-4xl font-bold mt-1">Editing {{ subcategory.name|escape }}</h1>
+        <div class="flex justify-between items-center">
+            <h1 class="text-4xl font-bold mt-1">Edit {{ subcategory.name|escape }}</h1>
+            <div class="text-right">
+                <div class="group relative inline-block">
+                    <div class="text-xs text-gray-400">
+                        Created {{ subcategory.createdAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ subcategory.createdAt|local_datetime|escape }}
+                    </div>
+                </div>
+                <br>
+                <div class="group relative inline-block">
+                    <div class="text-sm text-gray-300">
+                        Updated {{ subcategory.updatedAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ subcategory.updatedAt|local_datetime|escape }}
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
             {{ form_start(form) }}
@@ -17,9 +36,6 @@
                     <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
                 </a>
                 <button type="submit" class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Update</button>
-                <a href="{{ path('subcategory_delete', { 'subcategoryId': subcategory.id }) }}">
-                    <button class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
-                </a>
             </div>
             {{ form_rest(form) }}
             {{ form_end(form) }}
