@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th class="text-left">Name</th>
+                        <th class="text-left">Categories</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,28 +28,53 @@
                             <td>
                                 <a class="block" href="{{ path('rank_method_read', { 'rankMethodId': rankMethod.id }) }}">{{ rankMethod.name|escape }}</a>
                             </td>
-                            {% if is_granted('rank_method_update', rankMethod) or is_granted('rank_method_delete', rankMethod) %}
+                            <td>
+                                <a href="{{ path('rank_method_read', { 'rankMethodId': rankMethod.id }) }}" class="block">
+                                    {% set visible = 3 %}
+                                    {% for category in rankMethod.categories|slice(0, visible) %}
+                                        {{ category.name|escape }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    {% if rankMethod.categories|length > visible %}
+                                        +{{ rankMethod.categories|length - visible }} more
+                                    {% elseif rankMethod.categories|length === 0 %}
+                                        —
+                                    {% endif %}
+                                </a>
+                            </td>
+                            {% if is_granted('rank_method_update', rankMethod) or is_granted('rank_method_read', rankMethod) or is_granted('rank_method_delete', rankMethod) %}
                                 <td class="text-right">
-                                    <span class="text-center inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
+                                    <span class="text-left inline-flex align-middle bg-black rounded-sm border border-gray-700 border-solid text-white font-bold cursor-pointer">
                                         {% if is_granted('rank_method_update', rankMethod) %}
                                             <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}" class="hover:bg-gray-600 p-1">
                                                 <i class="mdi mdi-pencil"></i>
                                             </a>
                                         {% endif %}
-                                        {% if is_granted('rank_method_delete', rankMethod) %}
-                                            <el-dropdown>
-                                                <button class="hover:bg-gray-600 p-1">
-                                                    <span class="sr-only">Open additional options menu</span>
-                                                    <i class="mdi mdi-chevron-down"></i>
-                                                </button>
-                                                <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-black text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                                        <el-dropdown>
+                                            <button class="hover:bg-gray-600 p-1">
+                                                <span class="sr-only">Open additional options menu</span>
+                                                <i class="mdi mdi-chevron-down"></i>
+                                            </button>
+                                            <el-menu anchor="bottom end" popover class="w-28 origin-top-right rounded-md bg-black text-white py-1 outline -outline-offset-1 outline-red-900 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                                                {% if is_granted('rank_method_read', rankMethod) %}
+                                                    <a href="{{ path('rank_method_read', { 'rankMethodId': rankMethod.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
+                                                        <i class="mdi mdi-eye"></i>
+                                                        View
+                                                    </a>
+                                                {% endif %}
+                                                {% if is_granted('rank_method_update', rankMethod) %}
+                                                    <a href="{{ path('rank_method_update', { 'rankMethodId': rankMethod.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
+                                                        <i class="mdi mdi-pencil"></i>
+                                                        Edit
+                                                    </a>
+                                                {% endif %}
+                                                {% if is_granted('rank_method_delete', rankMethod) %}
                                                     <a href="{{ path('rank_method_delete', { 'rankMethodId': rankMethod.id }) }}" class="block px-4 py-2 text-sm text-gray-300 focus:bg-gray-900 focus:outline-hidden">
                                                         <i class="mdi mdi-trash-can"></i>
                                                         Delete
                                                     </a>
-                                                </el-menu>
-                                            </el-dropdown>
-                                        {% endif %}
+                                                {% endif %}
+                                            </el-menu>
+                                        </el-dropdown>
                                     </span>
                                 </td>
                             {% endif %}
