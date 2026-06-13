@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\ApiToken;
 use App\Form\ApiTokenType;
 use App\Repository\ApiTokenRepository;
-use App\Repository\UserRepository;
 use App\Security\Voter\ApiTokenVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
