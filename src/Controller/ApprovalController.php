@@ -80,7 +80,7 @@ final class ApprovalController extends AbstractController
         ]);
     }
 
-    #[Route('/review/{climbId<\d+>}', name: 'review')]
+    #[Route('/{climbId<\d+>}/review', name: 'review')]
     public function review(
         int $climbId,
         ClimbRepository $climbRepository,
