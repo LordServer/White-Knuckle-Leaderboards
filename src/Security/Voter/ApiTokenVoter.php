@@ -18,21 +18,18 @@ final class ApiTokenVoter extends Voter
     public const string DELETE = 'api_token_delete';
 
     public function __construct(
-        private readonly AccessDecisionManagerInterface $accessDecisionManager,
     ) {
     }
 
-    protected function supports(string $attribute, mixed $subject): bool
-    {
-        if (!in_array($attribute, [self::CREATE, self::READ, self::UPDATE, self::DELETE])) {
-            return false;
-        }
-
-        if (!$subject instanceof ApiToken) {
-            return false;
-        }
-
-        return true;
+    protected function supports(
+        string $attribute,
+        mixed $subject,
+    ): bool {
+        return match ($attribute) {
+            self::READ, self::UPDATE, self::DELETE => $subject instanceof ApiToken,
+            self::CREATE, self::LIST => true,
+            default => false,
+        };
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -40,7 +37,7 @@ final class ApiTokenVoter extends Voter
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
-            $vote?->addReason('The user must be logged in to access this resource.');
+            $vote?->addReason('You must be logged in to access this resource.');
 
             return false;
         }
@@ -48,7 +45,8 @@ final class ApiTokenVoter extends Voter
         $apiToken = $subject;
 
         return match ($attribute) {
-            self::CREATE => $this->canCreate(),
+            self::LIST => $this->canList($token, $vote),
+            self::CREATE => $this->canCreate($token, $vote),
             self::READ => $this->canRead($apiToken, $token, $vote),
             self::UPDATE => $this->canUpdate($apiToken, $token, $vote),
             self::DELETE => $this->canDelete($apiToken, $token, $vote),
@@ -56,44 +54,62 @@ final class ApiTokenVoter extends Voter
         };
     }
 
-    private function canCreate(): bool
-    {
+    private function canList(
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
         return true;
     }
 
-    private function canRead(ApiToken $apiToken, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canCreate(
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
+        return true;
+    }
+
+    private function canRead(
+        ApiToken $apiToken,
+        TokenInterface $token,
+        ?Vote $vote,
+    ): bool {
         if ($token->getUser() === $apiToken->getOwnedBy()) {
             return true;
         }
         $vote?->addReason(sprintf(
-            'The logged in user (username: %s) does not own this API token.',
+            'You (username: %s) do not own this API token.',
             $token->getUser()->getUsername()
         ));
 
         return false;
     }
 
-    private function canUpdate(ApiToken $apiToken, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canUpdate(
+        ApiToken $apiToken,
+        TokenInterface $token,
+        ?Vote $vote,
+    ): bool {
         if ($token->getUser() === $apiToken->getOwnedBy()) {
             return true;
         }
         $vote?->addReason(sprintf(
-            'The logged in user (username: %s) does not own this API token.',
+            'You (username: %s) do not own this API token.',
             $token->getUser()->getUsername()
         ));
 
         return false;
     }
 
-    private function canDelete(mixed $apiToken, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canDelete(
+        mixed $apiToken,
+        TokenInterface $token,
+        ?Vote $vote
+    ): bool {
         if ($token->getUser() === $apiToken->getOwnedBy()) {
             return true;
         }
         $vote?->addReason(sprintf(
-            'The logged in user (username: %s) does not own this API token.',
+            'You (username: %s) do not own this API token.',
             $token->getUser()->getUsername()
         ));
 

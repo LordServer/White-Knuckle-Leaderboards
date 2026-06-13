@@ -14,19 +14,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/climber/api-tokens', name: 'api_tokens_')]
 final class ApiTokensController extends AbstractController
 {
     #[Route('', name: 'index')]
+    #[IsGranted(ApiTokenVoter::LIST)]
     public function apiTokens(
         ApiTokenRepository $apiTokenRepository,
         BreadcrumbsService $breadcrumbs,
         Request $request,
         PaginationService $paginationService,
     ): Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $apiTokens = $apiTokenRepository->findByOwnerOrderByIndex($this->getUser());
         $apiTokens->setMaxPerPage($request->query->get('perPage', 50));
         $apiTokens->setCurrentPage($request->query->get('page', 1));
@@ -54,6 +54,7 @@ final class ApiTokensController extends AbstractController
     }
 
     #[Route('/new', name: 'create')]
+    #[IsGranted(ApiTokenVoter::CREATE)]
     public function apiTokensCreate(
         ScopePermissionService $scopesManager,
         BreadcrumbsService $breadcrumbs,
@@ -61,8 +62,6 @@ final class ApiTokensController extends AbstractController
         EntityManagerInterface $entityManager,
     ): Response {
         $apiToken = new ApiToken();
-
-        $this->denyAccessUnlessGranted(ApiTokenVoter::CREATE, $apiToken);
 
         $user = $this->getUser();
         $apiScopes = $scopesManager->getAssignableScopes();
