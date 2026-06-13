@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/subcategory', name: 'subcategory_')]
 final class SubcategoryController extends AbstractController
@@ -49,14 +50,13 @@ final class SubcategoryController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
+    #[IsGranted(SubcategoryVoter::CREATE)]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
         BreadcrumbsService $breadcrumbs,
     ): Response {
         $subcategory = new Subcategory();
-
-        $this->denyAccessUnlessGranted(SubcategoryVoter::CREATE, $subcategory);
 
         $form = $this->createForm(SubcategoryType::class, $subcategory);
 
