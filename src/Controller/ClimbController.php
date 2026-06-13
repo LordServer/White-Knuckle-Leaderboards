@@ -248,7 +248,7 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        $form = $this->createForm(ClimbType::class, $climb);
+        $form = $this->createForm(ClimbType::class, $climb, ['delete' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

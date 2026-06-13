@@ -3,21 +3,112 @@
 {% block title %}Delete {{ pageName|striptags }}?{% endblock %}
 
 {% block body %}
+    {% set boxCss = 'bg-gray-900 mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm' %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <h1 class="text-2xl font-bold mt-1">
-            {{ pageName|raw }}
-        </h1>
-        {{ form_start(form) }}
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold mt-1">Delete {{ pageName|raw }}?</h1>
+            <div class="text-right">
+                <div class="group relative inline-block">
+                    <div class="text-xs text-gray-400">
+                        Created {{ climb.createdAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ climb.createdAt|local_datetime|escape }}
+                    </div>
+                </div>
+                <br>
+                <div class="group relative inline-block">
+                    <div class="text-sm text-gray-300">
+                        Updated {{ climb.updatedAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ climb.updatedAt|local_datetime|escape }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            {{ climb.mediaUrl }}
+        </div>
+        <div class="flex gap-2">
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Leaderboard</div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Category</div>
+                    <div>{{ climb.category.name|escape }}</div>
+                </div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Subcategory</div>
+                    <div>{{ climb.subcategory.name|escape }}</div>
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Details</div>
+                {% if climb.isReviewed is true and climb.status.value === 'approved' %}
+                    <div class="{{ boxCss }}">
+                        <div class="font-bold">Rank</div>
+                        <div>{% if climb.rank === null %}Obsolete{% else %}{{ climb.rank|ordinalize|escape }}{% endif %}</div>
+                    </div>
+                {% endif %}
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Score</div>
+                    <div>{{ climb.score|number_format()|escape }}</div>
+                </div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Time</div>
+                    <div>{{ climb.time|seconds_to_time|escape }}</div>
+                </div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Height</div>
+                    <div>{{ climb.height|number_format(2)|escape }} m</div>
+                </div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Speed</div>
+                    <div>{{ climb.speed|number_format(2)|escape }} m/s</div>
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col">
+                <div class="text-sm text-gray-700 pl-1">Verification</div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Climber</div>
+                    <div>{{ climb.climber.displayName|escape }}</div>
+                </div>
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Status</div>
+                    <div>{% if climb.isReviewed == 'true' %}{{ climb.status.value|capitalize }}{% else %}Pending Review{% endif %}</div>
+                </div>
+                {% if climb.isReviewed == 'true' %}
+                    <div class="{{ boxCss }}">
+                        <div class="font-bold">Reviewer</div>
+                        <div>{% if climb.verifier is not null %}{{ climb.verifier.displayName|escape }}{% else %}N/A{% endif %}</div>
+                    </div>
+                {% endif %}
+                <div class="{{ boxCss }}">
+                    <div class="font-bold">Date</div>
+                    <div class="group relative inline-block">
+                        <div>{{ climb.createdAt|date('Y-m-d H:i:s')|ago }}</div>
+                        <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">{{ climb.createdAt|local_datetime|escape }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="text-sm text-gray-700 pl-1">Notes</div>
+            <div class="border-gray-700 border mt-1 mr-0 mb-1 ml-0 p-1 rounded-sm">
+                <article class="prose prose-invert max-w-none">
+                    {{ climb.notes|markdown_to_html }}
+                </article>
+            </div>
+        </div>
         <div class="text-right pt-2">
+            {{ form_start(form) }}
+            {{ form_widget(form.delete, {'attr': {'class': 'bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400'}}) }}
+            {{ form_rest(form) }}
             <a href="{{ path('climb_read', { 'climbId': climb.id }) }}">
                 <button class="bg-black rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-gray-600">Cancel</button>
             </a>
-            <button type="submit" class="bg-red-900 rounded-sm border border-gray-600 border-solid text-white font-bold p-2 cursor-pointer hover:bg-red-400">Delete</button>
+            {{ form_end(form) }}
         </div>
-        <div class="hidden">
-            {{ form_rest(form) }}
-        </div>
-        {{ form_end(form) }}
     </div>
 {% endblock %}

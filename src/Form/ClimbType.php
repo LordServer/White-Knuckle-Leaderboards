@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
@@ -18,13 +19,25 @@ class ClimbType extends AbstractType
 {
     private Security $security;
 
-    public function __construct(Security $security)
-    {
+    public function __construct(
+        Security $security,
+    ) {
         $this->security = $security;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options,
+    ): void {
+        if ($options['delete']) {
+            $builder
+                ->add('delete', SubmitType::class, [
+                    'label' => 'Delete Climb',
+                ]);
+
+            return;
+        }
+
         if (isset($options['data'])) {
             $entry = $options['data'];
             $locked = $entry && $entry->isReviewed() && !$this->security->isGranted('ROLE_ADMIN');
@@ -89,10 +102,14 @@ class ClimbType extends AbstractType
             });
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
+    public function configureOptions(
+        OptionsResolver $resolver,
+    ): void {
         $resolver->setDefaults([
             'data_class' => Climb::class,
+            'delete' => false,
         ]);
+
+        $resolver->setAllowedTypes('delete', 'bool');
     }
 }
