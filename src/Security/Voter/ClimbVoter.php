@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ClimbVoter extends Voter
 {
+    public const string LIST = 'climb_list';
     public const string CREATE = 'climb_create';
     public const string READ = 'climb_read';
     public const string UPDATE = 'climb_update';
@@ -22,17 +23,15 @@ class ClimbVoter extends Voter
     ) {
     }
 
-    protected function supports(string $attribute, mixed $subject): bool
-    {
-        if (!in_array($attribute, [self::CREATE, self::READ, self::UPDATE, self::AUTHORIZE, self::DELETE])) {
-            return false;
-        }
-
-        if (!$subject instanceof Climb) {
-            return false;
-        }
-
-        return true;
+    protected function supports(
+        string $attribute,
+        mixed $subject,
+    ): bool {
+        return match ($attribute) {
+            self::READ, self::UPDATE, self::AUTHORIZE, self::DELETE => $subject instanceof Climb,
+            self::CREATE, self::LIST => true,
+            default => false,
+        };
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -48,27 +47,43 @@ class ClimbVoter extends Voter
         $climb = $subject;
 
         return match ($attribute) {
+            self::LIST => $this->canList($token, $vote),
             self::CREATE => $this->canCreate($token, $vote),
-            self::READ => $this->canRead(),
+            self::READ => $this->canRead($climb, $token, $vote),
             self::UPDATE => $this->canUpdate($climb, $token, $vote),
-            self::AUTHORIZE => $this->canAuthorize($subject, $token, $vote),
+            self::AUTHORIZE => $this->canAuthorize($climb, $token, $vote),
             self::DELETE => $this->canDelete($climb, $token, $vote),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
 
-    private function canCreate(): bool
-    {
+    private function canList(
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
         return true;
     }
 
-    private function canRead(): bool
-    {
+    private function canCreate(
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
         return true;
     }
 
-    private function canUpdate(Climb $climb, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canRead(
+        Climb $climb,
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
+        return true;
+    }
+
+    private function canUpdate(
+        Climb $climb,
+        TokenInterface $token,
+        Vote $vote,
+    ): bool {
         if ($token->getUser() === $climb->getClimber() && false === $climb->isReviewed()) {
             return true;
         } elseif ($token->getUser() !== $climb->getClimber()) {
@@ -102,8 +117,11 @@ class ClimbVoter extends Voter
         return false;
     }
 
-    private function canAuthorize(Climb $climb, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canAuthorize(
+        Climb $climb,
+        TokenInterface $token,
+        ?Vote $vote,
+    ): bool {
         if ($token->getUser() !== $climb->getClimber() && $this->accessDecisionManager->decide($token, ['ROLE_AUTHORIZER']) && false === $climb->isReviewed()) {
             return true;
         } elseif ($token->getUser() === $climb->getClimber()) {
@@ -124,8 +142,11 @@ class ClimbVoter extends Voter
         return false;
     }
 
-    private function canDelete(Climb $climb, TokenInterface $token, ?Vote $vote): bool
-    {
+    private function canDelete(
+        Climb $climb,
+        TokenInterface $token,
+        ?Vote $vote,
+    ): bool {
         if ($token->getUser() === $climb->getClimber()) {
             return true;
         }

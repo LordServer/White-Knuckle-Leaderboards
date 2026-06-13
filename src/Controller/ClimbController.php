@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/climb', name: 'climb_')]
 final class ClimbController extends AbstractController
@@ -79,12 +80,12 @@ final class ClimbController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
+    #[IsGranted(ClimbVoter::CREATE)]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
         BreadcrumbsService $breadcrumbs,
     ): Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $climb = new Climb();
 
