@@ -23,7 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/climb', name: 'climb_')]
 final class ClimbController extends AbstractController
 {
-    #[Route('/{categoryId<\d+>?1}/{subcategoryId<\d+>?1}', name: 'index')]
+    #[Route('/c{categoryId<\d+>?1}s{subcategoryId<\d+>?1}', name: 'index')]
     public function index(
         int $categoryId,
         int $subcategoryId,
@@ -79,7 +79,7 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create')]
+    #[Route('/new', name: 'create')]
     #[IsGranted(ClimbVoter::CREATE)]
     public function create(
         Request $request,
@@ -119,7 +119,7 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/read/{climbId<\d+>}', name: 'read')]
+    #[Route('/{climbId<\d+>}', name: 'read')]
     public function read(
         int $climbId,
         ClimbRepository $climbRepository,
@@ -166,7 +166,7 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{climbId<\d+>}', name: 'update')]
+    #[Route('/{climbId<\d+>}/edit', name: 'update')]
     public function update(
         int $climbId,
         ClimbRepository $climbRepository,
@@ -231,7 +231,7 @@ final class ClimbController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{climbId<\d+>}', name: 'delete')]
+    #[Route('/{climbId<\d+>}/delete', name: 'delete')]
     public function delete(
         int $climbId,
         ClimbRepository $climbRepository,
