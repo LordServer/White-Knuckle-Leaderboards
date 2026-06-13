@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/rank_method', name: 'rank_method_')]
 final class RankMethodController extends AbstractController
@@ -49,14 +50,13 @@ final class RankMethodController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
+    #[IsGranted(RankMethodVoter::CREATE)]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
         BreadcrumbsService $breadcrumbs,
     ): Response {
         $rankMethod = new RankMethod();
-
-        $this->denyAccessUnlessGranted(RankMethodVoter::CREATE, $rankMethod);
 
         $form = $this->createForm(RankMethodType::class, $rankMethod);
 
