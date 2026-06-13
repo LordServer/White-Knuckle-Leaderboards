@@ -5,7 +5,28 @@
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <h1 class="text-4xl font-bold mt-1">Editing {{ category.name|escape }}</h1>
+        <div class="flex justify-between items-center">
+            <h1 class="text-4xl font-bold mt-1">Editing {{ category.name|escape }}</h1>
+            <div class="text-right">
+                <div class="group relative inline-block">
+                    <div class="text-xs text-gray-400">
+                        Created {{ category.createdAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ category.createdAt|local_datetime|escape }}
+                    </div>
+                </div>
+                <br>
+                <div class="group relative inline-block">
+                    <div class="text-sm text-gray-300">
+                        Updated {{ category.updatedAt|date('Y-m-d H:i:s')|ago|escape }}
+                    </div>
+                    <div class="hidden group-hover:block absolute z-10 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
+                        {{ category.updatedAt|local_datetime|escape }}
+                    </div>
+                </div>
+            </div>
+        </div>
         <div>
             {{ form_start(form) }}
             <div class="flex gap-2">
