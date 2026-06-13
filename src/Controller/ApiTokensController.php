@@ -41,6 +41,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
+            ->add($this->getUser()->getDisplayName(), 'user_read', ['userId' => $this->getUser()->getId()])
             ->addApiTokens()
         ;
 
@@ -88,6 +89,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
+            ->add($this->getUser()->getDisplayName(), 'user_read', ['userId' => $this->getUser()->getId()])
             ->addApiTokens()
             ->add('New', 'api_tokens_create')
         ;
@@ -119,6 +121,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
+            ->add($this->getUser()->getDisplayName(), 'user_read', ['userId' => $this->getUser()->getId()])
             ->addApiTokens()
             ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
         ;
@@ -163,6 +166,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
+            ->add($this->getUser()->getDisplayName(), 'user_read', ['userId' => $this->getUser()->getId()])
             ->addApiTokens()
             ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
             ->add('Update', 'api_tokens_update', ['apiTokenId' => $apiTokenId])
@@ -207,6 +211,7 @@ final class ApiTokensController extends AbstractController
         $breadcrumbs
             ->addHome()
             ->addClimber()
+            ->add($this->getUser()->getDisplayName(), 'user_read', ['userId' => $this->getUser()->getId()])
             ->addApiTokens()
             ->add($tokenName, 'api_tokens_read', ['apiTokenId' => $apiTokenId])
             ->add('Delete', 'api_tokens_delete', ['apiTokenId' => $apiTokenId])
