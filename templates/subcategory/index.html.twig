@@ -19,6 +19,7 @@
                 <thead>
                 <tr>
                     <th class="text-left">Name</th>
+                    <th class="text-left">Categories</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,6 +27,19 @@
                         <tr class="hover:bg-gray-900 border-t border-gray-700">
                             <td>
                                 <a href="{{ path('subcategory_read', {'subcategoryId': subcategory.id}) }}" class="block">{{ subcategory.name|escape }}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('subcategory_read', {'subcategoryId': subcategory.id}) }}" class="block">
+                                    {% set visible = 1 %}
+                                    {% for category in subcategory.categories|slice(0, visible) %}
+                                        {{ category.name|escape }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    {% if subcategory.categories|length > visible %}
+                                        +{{ subcategory.categories|length - visible }} more
+                                    {% elseif subcategory.categories|length === 0 %}
+                                        —
+                                    {% endif %}
+                                </a>
                             </td>
                             {% if is_granted('subcategory_update', subcategory) or is_granted('subcategory_read', subcategory) or is_granted('subcategory_delete', subcategory) %}
                                 <td class="text-right">
