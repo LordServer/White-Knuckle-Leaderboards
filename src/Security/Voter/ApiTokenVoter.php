@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ApiTokenVoter extends Voter
 {
+    public const string LIST = 'api_token_list';
     public const string CREATE = 'api_token_create';
     public const string READ = 'api_token_read';
     public const string UPDATE = 'api_token_update';
