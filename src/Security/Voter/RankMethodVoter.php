@@ -33,12 +33,16 @@ class RankMethodVoter extends Voter
         };
     }
 
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
-    {
+    protected function voteOnAttribute(
+        string $attribute,
+        mixed $subject,
+        TokenInterface $token,
+        ?Vote $vote = null,
+    ): bool {
         $user = $token->getUser();
 
         if (!$user instanceof User) {
-            $vote?->addReason('The user is not logged in.');
+            $vote?->addReason('The user must be logged in to access this resource.');
 
             return false;
         }
@@ -57,7 +61,7 @@ class RankMethodVoter extends Voter
 
     private function canList(
         TokenInterface $token,
-        Vote $vote,
+        ?Vote $vote,
     ): bool {
         return true;
     }
