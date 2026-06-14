@@ -3,16 +3,32 @@
 namespace App\ApiResource;
 
 use ApiPlatform\Doctrine\Orm\State\Options;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata;
 use App\Entity\Subcategory;
 use App\State\EntityClassDtoStateProcessor;
 use App\State\EntityToDtoStateProvider;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-#[ApiResource(
+#[Metadata\ApiResource(
     shortName: 'Subcategory',
+    operations: [
+        new Metadata\Get(
+            security: 'is_granted("subcategory_api_read", object)',
+        ),
+        new Metadata\GetCollection(
+            security: 'is_granted("subcategory_api_list", object)',
+        ),
+        new Metadata\Post(
+            security: 'is_granted("subcategory_api_create", object)',
+        ),
+        new Metadata\Patch(
+            security: 'is_granted("subcategory_api_update", object)',
+        ),
+        new Metadata\Delete(
+            security: 'is_granted("subcategory_api_delete", object)',
+        ),
+    ],
     paginationItemsPerPage: 10,
     provider: EntityToDtoStateProvider::class,
     processor: EntityClassDtoStateProcessor::class,
@@ -20,7 +36,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 )]
 class SubcategoryApi
 {
-    #[ApiProperty(readable: false, writable: false, identifier: true)]
+    #[Metadata\ApiProperty(readable: false, writable: false, identifier: true)]
     public ?int $id = null;
 
     #[NotBlank]
@@ -29,20 +45,20 @@ class SubcategoryApi
     /**
      * @var array<int, CategoryApi>
      */
-    #[ApiProperty(writable: false)]
+    #[Metadata\ApiProperty(writable: false)]
     #[MaxDepth(1)]
     public array $categories = [];
 
     /**
      * @var array<int, ClimbApi>
      */
-    #[ApiProperty(writable: false)]
+    #[Metadata\ApiProperty(writable: false)]
     #[MaxDepth(1)]
     public array $climbs = [];
 
-    #[ApiProperty(writable: false)]
+    #[Metadata\ApiProperty(writable: false)]
     public ?\DateTimeImmutable $created_at = null;
 
-    #[ApiProperty(writable: false)]
+    #[Metadata\ApiProperty(writable: false)]
     public ?\DateTime $updated_at = null;
 }
