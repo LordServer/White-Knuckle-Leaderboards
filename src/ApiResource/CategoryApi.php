@@ -11,8 +11,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Entity\Category;
+use App\Entity\RankMethod;
 use App\State\EntityClassDtoStateProcessor;
 use App\State\EntityToDtoStateProvider;
+use AutoMapper\Attribute\Mapper;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -23,7 +25,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
             security: 'is_granted("category_api_read", object)',
         ),
         new GetCollection(
-            security: 'is_granted("category_api_read", object)',
+            security: 'is_granted("category_api_list", object)',
         ),
         new Post(
             security: 'is_granted("category_api_create", object)',
@@ -52,7 +54,7 @@ class CategoryApi
     public ?bool $is_archived = null;
 
     /**
-     * @var array<int, SubcategoryApi>
+     * @var int[]
      */
     #[NotBlank]
     #[MaxDepth(1)]
@@ -60,7 +62,7 @@ class CategoryApi
 
     #[NotBlank]
     #[MaxDepth(1)]
-    public ?string $rank_method = null;
+    public ?int $rank_method = null;
 
     #[NotBlank]
     public ?string $rules = null;
