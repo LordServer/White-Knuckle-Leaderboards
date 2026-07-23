@@ -23,6 +23,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 )]
 #[ApiFilter(SearchFilter::class, properties: [
     'username' => 'partial',
+    'discord_id' => 'partial',
 ])]
 class UserApi
 {
