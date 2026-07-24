@@ -4,18 +4,18 @@
         <div class="flex flex-row flex-wrap w-full">
             <div class="group relative inline-block flex-1">
                 <div>Climbs</div>
-                <div>{{ climb_stats().totalClimbs }}</div>
+fixed number formatting                <div>{{ climb_stats().totalClimbs|number_format }}</div>
                 <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
                     Total Climb Time: {{ climb_stats().totalTime|seconds_to_time }}<br>
-                    Total Climb Height: {{ climb_stats().totalHeight }} m<br>
-                    Total / Recent Climbs: {{ climb_stats().totalClimbs }} / {{ climb_stats().recentClimbs }}
+                    Total Climb Height: {{ climb_stats().totalHeight|number_format(2) }} m<br>
+                    Total / Recent Climbs: {{ climb_stats().totalClimbs|number_format }} / {{ climb_stats().recentClimbs|number_format }}
                 </div>
             </div>
             <div class="group relative inline-block flex-1">
                 <div>Climbers</div>
-                <div>{{ total_users()|escape }}</div>
+                <div>{{ total_users()|number_format|escape }}</div>
                 <div class="hidden group-hover:block absolute z-20 w-fit p-2 mt-2 text-sm bg-gray-900 text-white rounded-lg">
-                    Climbers (Total / Active): {{ total_users()|escape }} / {{ active_users()|escape }}
+                    Climbers (Total / Active): {{ total_users()|number_format|escape }} / {{ active_users()|number_format|escape }}
                 </div>
             </div>
         </div>
