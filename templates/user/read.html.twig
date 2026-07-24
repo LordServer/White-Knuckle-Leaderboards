@@ -5,12 +5,19 @@
 {% block body %}
     <div class="pt-2 pr-4 pb-2 pl-4">
         {% include 'partials/breadcrumbs.html.twig' %}
-        <h1>Hello {{ controller_name }}! ✅</h1>
-
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code>/var/www/wklb/src/Controller/UserController.php</code></li>
-            <li>Your template at <code>/var/www/wklb/templates/user/read.html.twig</code></li>
-        </ul>
+        <div class="flex">
+            <div class="flex-1">
+                <div>Total Stats</div>
+                <div>Total Climbed: {{ climberStats.totalHeight|number_format(2) }}m</div>
+                <div>Total Time: {{ climberStats.totalTime|seconds_to_time }}</div>
+                <div>Total Climbs: {{ climberStats.totalClimbs|number_format }}</div>
+            </div>
+            <div class="flex-1">
+                <div>Average Stats</div>
+                <div>Average Climbed: {{ climberStats.averageHeight|number_format(2) }}m</div>
+                <div>Average Time: {{ climberStats.averageTime|seconds_to_time }}</div>
+                <div>Average Speed: {{ climberStats.averageSpeed|number_format(2) }} m/s</div>
+            </div>
+        </div>
     </div>
 {% endblock %}

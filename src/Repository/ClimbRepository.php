@@ -256,6 +256,26 @@ class ClimbRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getUserClimbStats(User $user): array
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('user', $user),
+            new Parameter('status', 'approved'),
+        ]);
+
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id) as totalClimbs')
+            ->addSelect('coalesce(sum(c.time), 0) as totalTime')
+            ->addSelect('coalesce(sum(c.height), 0) as totalHeight')
+            ->where('c.climber = :user')
+            ->andWhere('c.is_reviewed = TRUE')
+            ->andWhere('c.status = :status')
+            ->setParameters($parameters)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
+
     //    /**
     //     * @return Climb[] Returns an array of Climb objects
     //     */

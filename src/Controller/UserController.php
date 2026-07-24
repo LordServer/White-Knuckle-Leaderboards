@@ -70,9 +70,15 @@ final class UserController extends AbstractController
     public function read(
         int $userId,
         UserRepository $userRepository,
+        ClimbRepository $climbRepository,
         BreadcrumbsService $breadcrumbs,
     ): Response {
         $climber = $userRepository->findOneBy(['id' => $userId]);
+        $climberStats = $climbRepository->getUserClimbStats($climber);
+
+        $climberStats['averageHeight'] = $climberStats['totalHeight'] / $climberStats['totalClimbs'];
+        $climberStats['averageTime'] = round($climberStats['totalTime'] / $climberStats['totalClimbs'], 3);
+        $climberStats['averageSpeed'] = $climberStats['averageHeight'] / $climberStats['averageTime'];
 
         // TODO: Setup user profile page, include best ranked run from each category?
 
@@ -90,6 +96,7 @@ final class UserController extends AbstractController
             'controller_name' => 'UserController',
             'climber' => $climber,
             'breadcrumbs' => $breadcrumbs->all(),
+            'climberStats' => $climberStats,
         ]);
     }
 
@@ -224,6 +231,4 @@ final class UserController extends AbstractController
             'breadcrumbs' => $breadcrumbs->all(),
         ]);
     }
-
-
 }
