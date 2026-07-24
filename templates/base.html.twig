@@ -15,10 +15,11 @@
 
         {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
         {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+            <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+            <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+            <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
+        <link rel="icon" href="{{ asset('build/images/favicon.ico') }}" type="image/x-icon">
     </head>
     <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white" data-controller="timezone">
         <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
@@ -26,7 +27,7 @@
         </div>
         <div class="mt-17 lg:w-4xl xl:w-7xl m-auto">
             <div class="flex flex-row flex-wrap w-full gap-4">
-                <main class="z-3 rounded-lg  h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] flex lg:flex-col lg:flex-2 w-full">
+                <main class="z-3 rounded-lg h-fit bg-black p-1 inset-shadow-gray-900 inset-shadow-sm drop-shadow-[4px_8px_2px_rgba(80,14,15,1.00)] flex lg:flex-col lg:flex-2 w-full">
                     {% block body %}{% endblock %}
                 </main>
                 <div class="flex flex-col flex-1 gap-4">
