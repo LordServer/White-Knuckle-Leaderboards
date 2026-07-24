@@ -35,5 +35,26 @@
                 </div>
             </div>
         </div>
+        <footer></footer>
+        <div>
+            <img
+                class="block left-0 w-[19.5%] mb-[-8.4%] bottom-0 select-none fixed animate-[wiggle_5s_ease-in-out_infinite]"
+                draggable="false"
+                src="{{ asset('build/images/open_hand.png') }}"
+                alt="White Knuckle Hand Left"
+                onmousedown="this.src='{{ asset('build/images/closed_hand.png') }}'"
+                onmouseup="this.src='{{ asset('build/images/open_hand.png') }}'"
+                onmouseleave="this.src='{{ asset('build/images/open_hand.png') }}'"
+            >
+            <img
+                class="block right-0 -scale-x-100 w-[19.5%] mb-[-8.4%] bottom-0 select-none fixed animate-[wiggle_5s_ease-in-out_infinite]"
+                draggable="false"
+                src="{{ asset('build/images/open_hand.png') }}"
+                alt="White Knuckle Hand Right"
+                onmousedown="this.src='{{ asset('build/images/closed_hand.png') }}'"
+                onmouseup="this.src='{{ asset('build/images/open_hand.png') }}'"
+                onmouseleave="this.src='{{ asset('build/images/open_hand.png') }}'"
+            >
+        </div>
     </body>
 </html>

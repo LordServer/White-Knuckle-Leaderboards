@@ -1,3 +1,16 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @source not "../../public";
+
+@keyframes wiggle {
+    0% {
+        transform: rotate(0.5deg)
+    }
+    50% {
+        transform: rotate(-0.5deg);
+        transform: translateY(15px)
+    }
+    100% {
+        transform: rotate(0.5deg)
+    }
+}
