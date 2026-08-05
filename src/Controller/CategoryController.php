@@ -61,8 +61,13 @@ final class CategoryController extends AbstractController
 
             $entityManager->persist($category);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success('Category created.');
 
             return $this->redirectToRoute('category_read', ['categoryId' => $category->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -127,8 +132,13 @@ final class CategoryController extends AbstractController
 
             $entityManager->persist($category);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$category->getName()} updated.");
 
             return $this->redirectToRoute('category_read', ['categoryId' => $category->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -168,8 +178,13 @@ final class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($category);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$category->getName()} deleted.");
 
             return $this->redirectToRoute('category_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
