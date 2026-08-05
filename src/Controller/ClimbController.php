@@ -269,8 +269,6 @@ final class ClimbController extends AbstractController
             ->add('Delete', 'climb_delete', ['climbId' => $climbId])
         ;
 
-        // TODO: Add more info to delete page
-
         return $this->render('climb/delete.html.twig', [
             'controller_name' => 'ClimbController',
             'form' => $form,
