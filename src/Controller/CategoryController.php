@@ -61,7 +61,7 @@ final class CategoryController extends AbstractController
 
             $entityManager->persist($category);
             $entityManager->flush();
-            flash()->use('theme.ruby')->success('Category created.');
+            flash()->use('theme.ruby')->success("{$category->getName()} created.");
 
             return $this->redirectToRoute('category_read', ['categoryId' => $category->getId()]);
         } elseif ($form->isSubmitted() && !$form->isValid()) {

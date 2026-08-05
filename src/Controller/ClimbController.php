@@ -107,7 +107,7 @@ final class ClimbController extends AbstractController
             $pageName = $climbName->pageName($climb);
             flash()
                 ->use('theme.ruby')
-                ->success('Climb submitted!');
+                ->success("{$pageName} submitted!");
 
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         } elseif ($form->isSubmitted() && !$form->isValid()) {
