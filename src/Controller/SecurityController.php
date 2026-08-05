@@ -10,6 +10,7 @@ final class SecurityController
     #[Route('/logout', name: 'app_logout')]
     public function logout()
     {
+        flash()->use('theme.ruby')->success('You have been logged out.');
         throw new AuthenticationException('Logging out');
     }
 }
