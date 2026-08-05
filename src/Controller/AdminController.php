@@ -42,8 +42,26 @@ final class AdminController extends AbstractController
             } else {
                 $climber->setBannedUntil(null);
             }
+
+            if (UserStatus::ACTIVE === $form->get('status')->getData()) {
+                flash()->use('theme.ruby')->success("{$climber->getDisplayName()} unbanned.");
+            } elseif (UserStatus::SUSPENDED === $form->get('status')->getData()) {
+                flash()->use('theme.ruby')->success("{$climber->getDisplayName()} suspended for {$form->get('banDays')->getData()} day(s).");
+            } elseif (UserStatus::BANNED === $form->get('status')->getData()) {
+                flash()->use('theme.ruby')->success("{$climber->getDisplayName()} banned permanently.");
+            } else {
+                flash()->use('theme.ruby')->error('Shits broke, yo.');
+                dd($form->get('status')->getData());
+            }
+
             $entityManager->persist($climber);
             $entityManager->flush();
+
+            return $this->redirectToRoute('user_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
