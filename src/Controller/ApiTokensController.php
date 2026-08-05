@@ -82,7 +82,8 @@ final class ApiTokensController extends AbstractController
             $entityManager->persist($apiToken);
             $entityManager->flush();
 
-            flash()->use('theme.ruby')->success('API token created.');
+            $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+            flash()->use('theme.ruby')->success("API {$tokenName} created.");
 
             return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
         } elseif ($form->isSubmitted() && !$form->isValid()) {
@@ -164,7 +165,7 @@ final class ApiTokensController extends AbstractController
 
             $entityManager->persist($apiToken);
             $entityManager->flush();
-            flash()->use('theme.ruby')->success("{$tokenName} updated.");
+            flash()->use('theme.ruby')->success("API {$tokenName} updated.");
 
             return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
         } elseif ($form->isSubmitted() && !$form->isValid()) {
@@ -214,7 +215,7 @@ final class ApiTokensController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($apiToken);
             $entityManager->flush();
-            flash()->use('theme.ruby')->success("Token deleted.");
+            flash()->use('theme.ruby')->success("API {$tokenName} deleted.");
 
             return $this->redirectToRoute('api_tokens_index');
         } elseif ($form->isSubmitted() && !$form->isValid()) {
