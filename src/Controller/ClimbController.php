@@ -101,8 +101,17 @@ final class ClimbController extends AbstractController
 
             $entityManager->persist($climb);
             $entityManager->flush();
+            flash()
+                ->use('theme.ruby')
+                ->success('Climb submitted!');
 
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                flash()
+                    ->use('theme.ruby')
+                    ->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -190,6 +199,9 @@ final class ClimbController extends AbstractController
 
             $entityManager->persist($climb);
             $entityManager->flush();
+            flash()
+                ->use('theme.ruby')
+                ->success('Climb updated!');
 
             return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
         }
@@ -260,6 +272,9 @@ final class ClimbController extends AbstractController
 
             $entityManager->remove($climb);
             $entityManager->flush();
+            flash()
+                ->use('theme.ruby')
+                ->success('Climb deleted!');
 
             if ($ranked) {
                 $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());

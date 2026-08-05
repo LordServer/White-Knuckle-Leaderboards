@@ -22,6 +22,7 @@
         <link rel="icon" href="{{ asset('build/images/favicon.ico') }}" type="image/x-icon">
     </head>
     <body style="background-image: url({{ asset('build/images/background-01.jpg') }})" class="bg-cover bg-center bg-no-repeat bg-fixed text-white" data-controller="timezone">
+        {{ flasher_render() }}
         <div class="bg-black fixed h-16 w-full opacity-75 backdrop-blur-xs top-0 left-0 z-50">
             {% include 'partials/navbar.html.twig' %}
         </div>
