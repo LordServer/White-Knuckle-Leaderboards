@@ -66,8 +66,13 @@ final class SubcategoryController extends AbstractController
 
             $entityManager->persist($subcategory);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$subcategory->getName()} created.");
 
             return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -132,8 +137,13 @@ final class SubcategoryController extends AbstractController
 
             $entityManager->persist($subcategory);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$subcategory->getName()} updated.");
 
             return $this->redirectToRoute('subcategory_read', ['subcategoryId' => $subcategory->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -173,8 +183,13 @@ final class SubcategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($subcategory);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$subcategory->getName()} deleted.");
 
             return $this->redirectToRoute('subcategory_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
