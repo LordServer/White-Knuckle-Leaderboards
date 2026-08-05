@@ -66,8 +66,13 @@ final class RankMethodController extends AbstractController
 
             $entityManager->persist($rankMethod);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("Rank Method created.");
 
             return $this->redirectToRoute('rank_method_read', ['rankMethodId' => $rankMethod->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -132,8 +137,13 @@ final class RankMethodController extends AbstractController
 
             $entityManager->persist($rankMethod);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$rankMethod->getName()} updated.");
 
             return $this->redirectToRoute('rank_method_read', ['rankMethodId' => $rankMethod->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -173,8 +183,13 @@ final class RankMethodController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($rankMethod);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$rankMethod->getName()} deleted.");
 
             return $this->redirectToRoute('rank_method_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
