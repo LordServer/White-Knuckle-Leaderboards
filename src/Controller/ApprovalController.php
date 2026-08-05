@@ -98,37 +98,6 @@ final class ApprovalController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        $form = $this->createForm(ApprovalType::class, $climb);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $climb = $form->getData();
-
-            if ($form->get('approve')->isClicked()) {
-                if ($climb->getClimber()->getId() === $user->getId()) {
-                    throw $this->createAccessDeniedException('You can not approve your own submissions');
-                }
-                $climb->setStatus(ClimbStatus::APPROVED);
-                $climb->setVerifier($user);
-                $climb->setIsReviewed(true);
-                $approved = true;
-            } elseif ($form->get('reject')->isClicked()) {
-                $climb->setStatus(ClimbStatus::REJECTED);
-                $climb->setVerifier($user);
-                $climb->setIsReviewed(true);
-                $approved = false;
-            }
-
-            $entityManager->persist($climb);
-            $entityManager->flush();
-
-            if ($approved) {
-                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
-            }
-
-            return $this->redirectToRoute('approval_index');
-        }
-
         if ('Normal' === $climb->getSubcategory()->getName()) {
             $pageName = $climb->getCategory()->getName();
         } else {
@@ -149,6 +118,43 @@ final class ApprovalController extends AbstractController
         }
 
         $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $form = $this->createForm(ApprovalType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $climb = $form->getData();
+
+            if ($form->get('approve')->isClicked()) {
+                if ($climb->getClimber()->getId() === $user->getId()) {
+                    throw $this->createAccessDeniedException('You can not approve your own submissions');
+                }
+                $climb->setStatus(ClimbStatus::APPROVED);
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+                $approved = true;
+                flash()->use('theme.ruby')->success("{$pageName} approved.");
+            } elseif ($form->get('reject')->isClicked()) {
+                $climb->setStatus(ClimbStatus::REJECTED);
+                $climb->setVerifier($user);
+                $climb->setIsReviewed(true);
+                $approved = false;
+                flash()->use('theme.ruby')->success("{$pageName} rejected.");
+            }
+
+            $entityManager->persist($climb);
+            $entityManager->flush();
+
+            if ($approved) {
+                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
+            }
+
+            return $this->redirectToRoute('approval_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
+        }
 
         $breadcrumbs
             ->addHome()
