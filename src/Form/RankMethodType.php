@@ -17,7 +17,7 @@ class RankMethodType extends AbstractType
         if ($options['delete']) {
             $builder
                 ->add('delete', SubmitType::class, [
-                    'label' => 'Delete Category',
+                    'label' => 'Delete Rank Method',
                 ]);
 
             return;
