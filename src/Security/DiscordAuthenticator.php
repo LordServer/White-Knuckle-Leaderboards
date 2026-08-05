@@ -70,6 +70,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                     $discordUser['roles'] = [];
                     $discordUser['nick'] = null;
                     $discordUser['avatar'] = null;
+                    flash()->use('theme.ruby')->info('Consider joining the official discord server!');
                 } else {
                     $discordUser = $discordMemberInfo;
                 }
@@ -184,6 +185,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
+        flash()->use('theme.ruby')->success('Penis has been exploded successfully!'); // TODO: update verbiage
 
         return new RedirectResponse($this->router->generate('app_index'));
     }
