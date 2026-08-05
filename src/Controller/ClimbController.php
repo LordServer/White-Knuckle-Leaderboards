@@ -187,25 +187,6 @@ final class ClimbController extends AbstractController
 
         $this->denyAccessUnlessGranted(ClimbVoter::UPDATE, $climb);
 
-        if (!$climb) {
-            throw $this->createNotFoundException('Climb not found');
-        }
-
-        $form = $this->createForm(ClimbType::class, $climb);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $climb = $form->getData();
-
-            $entityManager->persist($climb);
-            $entityManager->flush();
-            flash()
-                ->use('theme.ruby')
-                ->success('Climb updated!');
-
-            return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
-        }
-
         if ('Normal' === $climb->getSubcategory()->getName()) {
             $pageName = $climb->getCategory()->getName();
         } else {
@@ -226,6 +207,29 @@ final class ClimbController extends AbstractController
         }
 
         $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        if (!$climb) {
+            throw $this->createNotFoundException('Climb not found');
+        }
+
+        $form = $this->createForm(ClimbType::class, $climb);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $climb = $form->getData();
+
+            $entityManager->persist($climb);
+            $entityManager->flush();
+            flash()
+                ->use('theme.ruby')
+                ->success("{$pageName} updated!");
+
+            return $this->redirectToRoute('climb_read', ['climbId' => $climb->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
+        }
 
         $breadcrumbs
             ->addHome()
@@ -260,29 +264,6 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        $form = $this->createForm(ClimbType::class, $climb, ['delete' => true]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (null !== $climb->getRank()) {
-                $ranked = true;
-            } else {
-                $ranked = false;
-            }
-
-            $entityManager->remove($climb);
-            $entityManager->flush();
-            flash()
-                ->use('theme.ruby')
-                ->success('Climb deleted!');
-
-            if ($ranked) {
-                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
-            }
-
-            return $this->redirectToRoute('climb_index');
-        }
-
         if ('Normal' === $climb->getSubcategory()->getName()) {
             $pageName = $climb->getCategory()->getName();
         } else {
@@ -303,6 +284,33 @@ final class ClimbController extends AbstractController
         }
 
         $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+
+        $form = $this->createForm(ClimbType::class, $climb, ['delete' => true]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (null !== $climb->getRank()) {
+                $ranked = true;
+            } else {
+                $ranked = false;
+            }
+
+            $entityManager->remove($climb);
+            $entityManager->flush();
+            flash()
+                ->use('theme.ruby')
+                ->success("{$pageName} deleted!");
+
+            if ($ranked) {
+                $updateClimbRanks->updateClimbRanks($climb->getCategory(), $climb->getSubcategory());
+            }
+
+            return $this->redirectToRoute('climb_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
+        }
 
         $breadcrumbs
             ->addHome()
