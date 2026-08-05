@@ -12,6 +12,7 @@ use App\Security\Voter\ClimbVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use App\Service\UpdateClimbRanksService;
+use App\Util\ClimbName;
 use App\Util\TimeFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,6 +86,7 @@ final class ClimbController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         BreadcrumbsService $breadcrumbs,
+        ClimbName $climbName,
     ): Response {
         $user = $this->getUser();
         $climb = new Climb();
@@ -101,6 +103,8 @@ final class ClimbController extends AbstractController
 
             $entityManager->persist($climb);
             $entityManager->flush();
+
+            $pageName = $climbName->pageName($climb);
             flash()
                 ->use('theme.ruby')
                 ->success('Climb submitted!');
@@ -133,6 +137,7 @@ final class ClimbController extends AbstractController
         int $climbId,
         ClimbRepository $climbRepository,
         BreadcrumbsService $breadcrumbs,
+        ClimbName $climbName,
     ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
@@ -140,26 +145,7 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        if ('Normal' === $climb->getSubcategory()->getName()) {
-            $pageName = $climb->getCategory()->getName();
-        } else {
-            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
-
-        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
-        if (str_contains($rankMethod, 'Score')) {
-            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
-        } elseif (str_contains($rankMethod, 'Time')) {
-            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
-        } elseif (str_contains($rankMethod, 'Height')) {
-            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
-        } elseif (str_contains($rankMethod, 'Speed')) {
-            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+        $pageName = $climbName->pageName($climb);
 
         $breadcrumbs
             ->addHome()
@@ -182,31 +168,13 @@ final class ClimbController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         BreadcrumbsService $breadcrumbs,
+        ClimbName $climbName,
     ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
         $this->denyAccessUnlessGranted(ClimbVoter::UPDATE, $climb);
 
-        if ('Normal' === $climb->getSubcategory()->getName()) {
-            $pageName = $climb->getCategory()->getName();
-        } else {
-            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
-
-        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
-        if (str_contains($rankMethod, 'Score')) {
-            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
-        } elseif (str_contains($rankMethod, 'Time')) {
-            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
-        } elseif (str_contains($rankMethod, 'Height')) {
-            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
-        } elseif (str_contains($rankMethod, 'Speed')) {
-            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+        $pageName = $climbName->pageName($climb);
 
         if (!$climb) {
             throw $this->createNotFoundException('Climb not found');
@@ -255,6 +223,7 @@ final class ClimbController extends AbstractController
         EntityManagerInterface $entityManager,
         UpdateClimbRanksService $updateClimbRanks,
         BreadcrumbsService $breadcrumbs,
+        ClimbName $climbName,
     ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
@@ -264,26 +233,7 @@ final class ClimbController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        if ('Normal' === $climb->getSubcategory()->getName()) {
-            $pageName = $climb->getCategory()->getName();
-        } else {
-            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
-
-        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
-        if (str_contains($rankMethod, 'Score')) {
-            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
-        } elseif (str_contains($rankMethod, 'Time')) {
-            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
-        } elseif (str_contains($rankMethod, 'Height')) {
-            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
-        } elseif (str_contains($rankMethod, 'Speed')) {
-            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+        $pageName = $climbName->pageName($climb);
 
         $form = $this->createForm(ClimbType::class, $climb, ['delete' => true]);
 

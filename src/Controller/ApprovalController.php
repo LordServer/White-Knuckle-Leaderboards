@@ -11,6 +11,7 @@ use App\Security\Voter\ClimbVoter;
 use App\Service\BreadcrumbsService;
 use App\Service\PaginationService;
 use App\Service\UpdateClimbRanksService;
+use App\Util\ClimbName;
 use App\Util\TimeFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -88,6 +89,7 @@ final class ApprovalController extends AbstractController
         EntityManagerInterface $entityManager,
         UpdateClimbRanksService $updateClimbRanks,
         BreadcrumbsService $breadcrumbs,
+        ClimbName $climbName,
     ): Response {
         $climb = $climbRepository->findOneBy(['id' => $climbId]);
 
@@ -98,26 +100,7 @@ final class ApprovalController extends AbstractController
             throw $this->createNotFoundException('Climb not found');
         }
 
-        if ('Normal' === $climb->getSubcategory()->getName()) {
-            $pageName = $climb->getCategory()->getName();
-        } else {
-            $pageName = $climb->getSubcategory()->getName().' '.$climb->getCategory()->getName();
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">with a ';
-
-        $rankMethod = $climb->getCategory()->getRankMethod()->getName();
-        if (str_contains($rankMethod, 'Score')) {
-            $pageName = $pageName.'score of</span> '.number_format($climb->getScore());
-        } elseif (str_contains($rankMethod, 'Time')) {
-            $pageName = $pageName.'time of</span> '.TimeFormatter::secondsToTime($climb->getTime());
-        } elseif (str_contains($rankMethod, 'Height')) {
-            $pageName = $pageName.'height of</span> '.number_format($climb->getHeight(), 2).' m';
-        } elseif (str_contains($rankMethod, 'Speed')) {
-            $pageName = $pageName.'speed of</span> '.number_format($climb->getSpeed(), 2).' m/s';
-        }
-
-        $pageName = $pageName.' <span class="font-normal text-gray-700 text-sm">by</span> '.$climb->getClimber()->getDisplayName();
+        $pageName = $climbName->pageName($climb);
 
         $form = $this->createForm(ApprovalType::class, $climb);
 
