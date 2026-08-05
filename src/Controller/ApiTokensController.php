@@ -82,7 +82,13 @@ final class ApiTokensController extends AbstractController
             $entityManager->persist($apiToken);
             $entityManager->flush();
 
+            flash()->use('theme.ruby')->success('API token created.');
+
             return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
 
         $breadcrumbs
@@ -148,6 +154,8 @@ final class ApiTokensController extends AbstractController
             throw $this->createNotFoundException('API Token not found');
         }
 
+        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+
         $form = $this->createForm(ApiTokenType::class, $apiToken);
 
         $form->handleRequest($request);
@@ -156,11 +164,14 @@ final class ApiTokensController extends AbstractController
 
             $entityManager->persist($apiToken);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("{$tokenName} updated.");
 
             return $this->redirectToRoute('api_tokens_read', ['apiTokenId' => $apiToken->getId()]);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
-
-        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
 
         $breadcrumbs
             ->addHome()
@@ -195,17 +206,22 @@ final class ApiTokensController extends AbstractController
             throw $this->createNotFoundException('API Token not found');
         }
 
+        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
+
         $form = $this->createForm(ApiTokenType::class, $apiToken, ['delete' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($apiToken);
             $entityManager->flush();
+            flash()->use('theme.ruby')->success("Token deleted.");
 
             return $this->redirectToRoute('api_tokens_index');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors() as $error) {
+                flash()->use('theme.ruby')->error($error->getMessage());
+            }
         }
-
-        $tokenName = 'Token '.substr($apiToken->getToken(), 4, 12);
 
         $breadcrumbs
             ->addHome()
