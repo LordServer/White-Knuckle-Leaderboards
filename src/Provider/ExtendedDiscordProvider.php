@@ -13,7 +13,7 @@ class ExtendedDiscordProvider extends Discord
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return $this->apiDomain.'/users/@me/guilds/'.$_ENV['DISCORD_GUILD_ID'].'/member';
+        return $this->apiDomain.'/users/@me';
     }
 
     /**
@@ -22,5 +22,20 @@ class ExtendedDiscordProvider extends Discord
     protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
     {
         return new ExtendedDiscordResourceOwner($response);
+    }
+
+    public function getDiscordRoles(AccessToken $token): ?array
+    {
+        $url = $this->apiDomain.'/users/@me/guilds/'.$_ENV['DISCORD_GUILD_ID'].'/member';
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPHEADER => ["Authorization: Bearer {$token}"],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true) ?? null;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Provider\ExtendedDiscordProvider;
 use App\Provider\ExtendedDiscordResourceOwner;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @see https://symfony.com/doc/current/security/custom_authenticator.html
@@ -32,6 +34,8 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
         private readonly UserRepository $userRepository,
+        private readonly ExtendedDiscordProvider $discordProvider,
+        private readonly SerializerInterface $serializer,
     ) {
     }
 
@@ -58,17 +62,41 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
                 /** @var ExtendedDiscordResourceOwner $discordUser */
-                $discordUser = $client->fetchUserFromToken($accessToken);
+                $discordUserInfo = $client->fetchUserFromToken($accessToken);
+                $discordMemberInfo = $this->discordProvider->getDiscordRoles($accessToken);
 
-                $user = $this->userRepository->findOneBy(['discord_id' => $discordUser->getId()]);
-                $discord_roles = $discordUser->getDiscordRoles();
+                if (isset($discordMemberInfo['code'])) {
+                    $discordUser['user'] = $discordUserInfo->toArray();
+                    $discordUser['roles'] = [];
+                    $discordUser['nick'] = null;
+                    $discordUser['avatar'] = null;
+                } else {
+                    $discordUser = $discordMemberInfo;
+                }
+
+                if (null !== $discordUser['nick']) {
+                    $displayName = $discordUser['nick'];
+                } elseif (null !== $discordUser['user']['global_name']) {
+                    $displayName = $discordUser['user']['global_name'];
+                } else {
+                    $displayName = $discordUser['user']['username'];
+                }
+
+                if (null !== $discordUser['avatar']) {
+                    $avatarPath = 'guilds/'.$_ENV['DISCORD_GUILD_ID'].'/users/'.$discordUser['user']['id'].'/avatars/'.$discordUser['avatar'];
+                } else {
+                    $avatarPath = 'avatars/'.$discordUser['user']['id'].'/'.$discordUser['user']['avatar'];
+                }
+
+                $user = $this->userRepository->findOneBy(['discord_id' => $discordUser['user']['id']]);
+                $discord_roles = $discordUser['roles'];
 
                 if (null === $user) {
                     $user = new User();
-                    $user->setUsername($discordUser->getUsername());
-                    $user->setDisplayName($discordUser->getDisplayName());
-                    $user->setDiscordId($discordUser->getId());
-                    $user->setAvatar($discordUser->getAvatarHash());
+                    $user->setUsername($discordUser['user']['username']);
+                    $user->setDisplayName($displayName);
+                    $user->setDiscordId($discordUser['user']['id']);
+                    $user->setAvatar($avatarPath);
 
                     // Setup initial Roles
                     if (in_array($_ENV['DISCORD_ADMIN_ROLE_ID'], $discord_roles)) {
@@ -89,13 +117,14 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
                     $this->entityManager->persist($user);
                 } else {
-                    if ($discordUser->getAvatarHash() !== $user->getAvatar()) {
+                    if ($avatarPath !== $user->getAvatar()) {
                         $user->setAvatar($discordUser->getAvatarHash());
 
                         $this->entityManager->persist($user);
                     }
-                    if ($discordUser->getDisplayName() !== $user->getDisplayName()) {
-                        $user->setDisplayName($discordUser->getDisplayName());
+
+                    if ($displayName !== $user->getDisplayName()) {
+                        $user->setDisplayName($displayName);
 
                         $this->entityManager->persist($user);
                     }
